@@ -1,0 +1,115 @@
+/* FLAGS */
+
+.flag {
+  width: 16px;
+  height: 11px;
+  background-image: url(images/flags/missing.png);
+}
+.flag.de {
+  background-image: url(images/flags/de.png);
+}
+.flag.us {
+  background-image: url(images/flags/us.png);
+}
+.flag.nz {
+  background-image: url(images/flags/nz.png);
+}
+.flag.gb {
+  background-image: url(images/flags/gb.png);
+}
+.flag.fr {
+  background-image: url(images/flags/fr.png);
+}
+.flag.es {
+  background-image: url(images/flags/es.png);
+}
+.flag.it {
+  background-image: url(images/flags/it.png);
+}
+.flag.ru {
+  background-image: url(images/flags/ru.png);
+}
+.flag.cn {
+  background-image: url(images/flags/cn.png);
+}
+.flag.jp {
+  background-image: url(images/flags/jp.png);
+}
+.flag.gr {
+  background-image: url(images/flags/gr.png);
+}
+.flag.pg {
+  background-image: url(images/flags/pg.png);
+}
+.flag.ie {
+  background-image: url(images/flags/ie.png);
+}
+.flag.kr {
+  background-image: url(images/flags/kr.png);
+}
+.flag.sa {
+  background-image: url(images/flags/sa.png);
+}
+.flag.au {
+  background-image: url(images/flags/au.png);
+}
+.flag.ca {
+  background-image: url(images/flags/au.png);
+}
+.flag.va {
+  background-image: url(images/flags/va.png);
+}
+.flag.cz {
+  background-image: url(images/flags/cz.png);
+}
+.flag.za {
+  background-image: url(images/flags/za.png);
+}
+.flag.vn {
+  background-image: url(images/flags/vn.png);
+}
+.flag.pt {
+  background-image: url(images/flags/pt.png);
+}
+.flag.th {
+  background-image: url(images/flags/th.png);
+}
+.flag.il {
+  background-image: url(images/flags/il.png);
+}
+.flag.is {
+  background-image: url(images/flags/is.png);
+}
+.flag.dk {
+  background-image: url(images/flags/dk.png);
+}
+.flag.no {
+  background-image: url(images/flags/no.png);
+}
+.flag.hk {
+  background-image: url(images/flags/hk.png);
+}
+.flag.so {
+  background-image: url(images/flags/so.png);
+}
+.flag.cw {
+  background-image: url(images/flags/cw.png);
+}
+.flag.nl {
+  background-image: url(images/flags/nl.png);
+}
+.flag.hu {
+  background-image: url(images/flags/hu.png);
+}
+.flag.se {
+  background-image: url(images/flags/se.png);
+}
+.flag.ir {
+  background-image: url(images/flags/ir.png);
+}
+.flag.br {
+  background-image: url(images/flags/br.png);
+}
+.flag.fi {
+  background-image: url(images/flags/fi.png);
+}

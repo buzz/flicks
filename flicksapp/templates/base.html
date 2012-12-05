@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}Flicks - movie database{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css" media="all">
+      @import url("{{ STATIC_URL }}flags.css");
+      @import url("{{ STATIC_URL }}flicks.css");
+      @import url("{{ STATIC_URL }}slick.grid.css");
+      @import url("{{ STATIC_URL }}smoothness/jquery-ui-1.9.2.custom.css");
+    </style>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.8.24.custom.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.event.drag-2.2.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/slick.core.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/slick.grid.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/slick.rowselectionmodel.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/slick.django.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/flicks.init.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/flicks.str2iso.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/flicks.formatter.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/flicks.ui.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/flicks.store.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/flicks.grid.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/flicks.start.js"></script>
+  </head>
+  <body>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="message smallbox{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    <div id="toolbar">
+      <div id="advanced"><a href="{% url search %}">Advanced search</a></div>
+      <div id="top-search">
+        <form method="get" action="{% url search %}">
+          <input type="text" name="query" id="id_query" value="{% if query %}{{ query }}{% else %}Search{% endif %}">
+          <div style="display:none"><input type="submit" value="Search"></div>
+        </form>
+      </div>
+      {% block toolbar %}
+      <div id="buttons">
+        <a class="button list" href="{% url home %}">Browse films</a>
+        <a class="button add" href="{% url add %}">Add new</a>
+      </div>
+      {% endblock %}
+      <div id="info"></div>
+      <div class="clear"></div>
+    </div>
+    <div id="sidebar">
+      <div class="handle"></div>
+      <div class="movie-info">
+        <form id="movie-form" action="">
+          <div class="id"></div>
+          <input value="" name="title">
+          <div class="sep"></div>
+          <div class="image"><img src="" alt=""></div>
+          <label class="half-width">Year:</label><label class="half-width">Rating:</label>
+          <div class="clear-left"></div>
+          <div class="val year half-width"></div>
+          <div class="val rating half-width"></div>
+          <div class="clear-left"></div>
+          <label>Country:</label>
+          <div class="val countries"></div>
+          <label>Director(s):</label>
+          <div class="val directors"></div>
+          <label>Producer(s):</label>
+          <div class="val producers"></div>
+          <label>Writer(s):</label>
+          <div class="val writers"></div>
+          <label>Genre(s):</label>
+          <div class="val genres"></div>
+          <div class="clear"></div>
+          <div id="detail-tabs">
+            <ul>
+              <li><a href="#tabs-plot">Plot</a></li>
+              <li><a href="#tabs-cast" class="cast-tab">Cast</a></li>
+              <li><a href="#tabs-keywords">Keywords</a></li>
+            </ul>
+            <div id="tabs-plot"></div>
+            <div id="tabs-cast"></div>
+            <div id="tabs-keywords"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="content">
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+[
+  {
+    "model": "flicksapp.Movie",
+    "pk": 1,
+    "fields": {
+      "title": "Holy Mountain",
+      "added_on": "1999-12-04",
+			"year": 1992
+    }
+  },
+  {
+    "model": "flicksapp.Movie",
+    "pk": 2,
+    "fields": {
+      "title": "Ronja Räubertochter",
+      "added_on": "2012-01-01",
+			"year": 2001
+    }
+  }
+]
