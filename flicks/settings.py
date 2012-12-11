@@ -17,6 +17,9 @@ DATABASES = {
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'OPTIONS': {
+            'init_command': 'SET storage_engine=MyISAM', # for full-text index!
+        },
     }
 }
 
@@ -118,6 +121,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'flicksapp',
+    'south',
 )
 
 # A sample logging configuration. The only tangible logging

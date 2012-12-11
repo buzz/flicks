@@ -37,7 +37,6 @@ $(function() {
         var total_h = F.el.sidebar.find(".movie-info").height();
         var h = total_h - $tabs.position().top + 20;
         $tabs.height(h);
-        // $tabs.find(".ui-tabs-panel").height(h - 52);
         $tabs.find(".ui-tabs-panel").height(
           $tabs.innerHeight() - $tabs.find(".ui-tabs-nav").height() - 30);
       }
@@ -61,21 +60,132 @@ $(function() {
 
   // top search
   $("#top-search form").submit(function() {
-    var $input = $(this).find("input#id_query");
-    var q = $input.val();
-    F.store.setSearch(q);
-    F.gridChange();
+    var $input = $(this).find("input[name=query]");
+    F.search($input.val());
     return false;
   });
   $("#top-search input").focus(function() {
-    if ($(this).val() === "Search") {
-      $(this).attr("value", "");
+    var $t = $(this);
+    if ($t.val() === "Search") {
+      $t.attr("value", "");
     }
   })
   .blur(function() {
-    if ($(this).val() === "") {
-      $(this).attr("value", "Search");
+    var $t = $(this);
+    if ($t.val() === "") {
+      $t.attr("value", "Search");
     }
+  });
+  $("#top-search .clear-search").button({
+    icons: {
+      primary: "ui-icon-cancel"
+    },
+    text: false
+  }).click(function() {
+    $("#top-search input").val("Search");
+    F.search('');
+    return false;
+  });
+  F.el.tb.find("#show-advanced a").button({
+    icons: {
+      primary: "ui-icon-search"
+    },
+    text: false
+  }).click(function() {
+    F.el['adv-search'].slideDown('fast');
+    return false;
+  });
+
+  // advanced search
+  F.el["adv-search"].find(".close").button({
+    icons: {
+      primary: "ui-icon-closethick"
+    },
+    text: false
+  }).click(function() {
+    F.el['adv-search'].slideUp('fast');
+    return false;
+  });
+  F.el["adv-search"].find("input[type=submit]").button();
+  F.el["adv-search"].find("#as_radio_seen").buttonset();
+  F.el["adv-search"].find("#as_radio_favourite").buttonset();
+  F.el["adv-search"].find("form").submit(function() {
+    var $f = $(this);
+    var fields = {};
+    // collect text fields
+    $.each(
+      ["title", "country", "genre", "keyword", "cast", "director", "writer"],
+      function(i, f) {
+        var v = $f.find("#as_" + f).val();
+        if (v !== "")
+          fields[f] = v;
+      }
+    );
+    // collect boolean field seen
+    $.each(
+      ["seen", "favourite"],
+      function(i, f) {
+        var v = $f.find("#as_radio_" + f + " label[aria-pressed=true]")
+          .prev().val()
+        if (v !== "")
+          fields[f] = (v == 'true') ? true : false;
+      }
+    );
+    F.search(fields);
+    return false;
+  });
+  // auto-complete
+  var ac = {
+    'top-search': {
+      el: $("#top-search input[name=query]"),
+      what: 'title',
+    },
+    title: {
+      el: $("#adv-search #as_title"),
+    },
+    country: {
+      el: $("#adv-search #as_country"),
+    },
+    genre: {
+      el: $("#adv-search #as_genre"),
+    },
+    keyword: {
+      el: $("#adv-search #as_keyword"),
+    },
+    cast: {
+      el: $("#adv-search #as_cast"),
+    },
+    director: {
+      el: $("#adv-search #as_director"),
+    },
+    writer: {
+      el: $("#adv-search #as_writer"),
+    },
+  };
+  $.each(ac, function(k, v) {
+    v.el.autocomplete({
+      source: function(request, response) {
+        var q = request.term;
+        var what = ('what' in v) ? v.what : k;
+        if (!(what in F.autocomplete))
+          F.autocomplete[what] = {};
+        if (q in F.autocomplete[what]) {
+          response(F.autocomplete[what][q]);
+          return;
+        }
+        $.post(
+          "/autocomplete/",
+          {
+            q: q,
+            what: what,
+          },
+          function(data, status, xhr) {
+            F.autocomplete[what][q] = data;
+            response(data);
+          }
+        );
+      }
+    });
   });
 
   // create sidebar
@@ -95,25 +205,25 @@ $(function() {
         .attr("title", movie.votes + " votes");
     }
     $.each(['directors', 'producers', 'writers'], function() {
-      var p = $.map(movie[this], function(v) { return v.fields.name });
-      if (p.length > 4) {
-        p = p.slice(0, 4);
-        p.push('…');
-      }
-      F.el.sidebar.find("div." + this).text(p.join(', '));
+      F.el.sidebar.find("div." + this).html(
+        F.formatter.concatenate(movie[this], 'lookup ' + this, 4)
+      );
     });
     $.each(['genres', 'countries'], function() {
-      var p = $.map(movie[this], function(v) { return v.fields.name });
-      F.el.sidebar.find("div." + this).text(p.join(', '));
+      F.el.sidebar.find("div." + this).html(
+        F.formatter.concatenate(movie[this], 'lookup ' + this)
+      );
     });
+    if (movie["mpaa"].length > 0)
+      F.el.sidebar.find("div.mpaa").text(movie['mpaa']).show();
+    else
+      F.el.sidebar.find("div.mpaa").hide();
     // tabs
     F.el.sidebar.find("#tabs-plot").html(F.formatter.plot(movie['plot']));
     F.el.sidebar.find("#tabs-keywords").html(
-      $.map(movie['keywords'], function(k) {
-        return '<a class="lookup" href="/keyword/' + k.fields.name + '">' +
-          k.fields.name + "</a>";
-      }).join(', ')
+      F.formatter.concatenate(movie['keywords'], 'lookup keyword')
     );
+    F.el.sidebar.find("#tabs-notes").text(movie['notes']);
     // load cover
     if (movie.files !== undefined) {
       $.each(movie.files, function () {
@@ -132,12 +242,9 @@ $(function() {
   // sidebar tabs
   F.ui.loadCast = function() {
     var movie_id = F.store.getItem(F.grid.getSelectedRows()[0]).id;
-    $.post("/cast", { movie_id: movie_id}, function(r) {
+    $.post("/cast/", { movie_id: movie_id}, function(r) {
       $("#detail-tabs #tabs-cast").html(
-        $.map(r.cast, function(a) {
-          return '<a class="lookup" href="/person/' + a.fields.imdb_id + '">' +
-            a.fields.name + "</a>";
-        }).join(', ')
+        F.formatter.concatenate(r.cast, 'lookup cast')
       );
     });
   };
@@ -149,5 +256,27 @@ $(function() {
 
   // image gets loaded -> this can change height of sidebar !!
   F.el.sidebar.find(".image img").load(F.ui.relayout);
+
+  // lookup anchors (use delegate handler)
+  $(document).on("click", "a.lookup", function() {
+    var $this = $(this);
+    var classes = $this.attr('class').split(" ");
+    classes.splice(classes.indexOf("lookup"), 1);
+    var q = {};
+    q[classes[0]] = $this.text();
+    F.search(q);
+    return false;
+  });
+
+  // store events
+  F.store.onDataLoading.subscribe(F.ui.enable_spinner);
+  F.store.onDataLoaded.subscribe(function(e, args) {
+    if (F.store.getReqCount() < 1)
+      F.ui.disable_spinner();
+    F.el.grid.show();
+    F.el.sidebar.show();
+    F.el.info.html("Found  <strong>" + F.store.getLength() + "</strong> movie" +
+                   (F.store.getLength() > 1 ? "s" : "") + ".");
+  });
 
 });

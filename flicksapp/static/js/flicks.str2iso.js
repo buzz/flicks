@@ -3,6 +3,7 @@ $(function() {
   var F = $.flicks;
 
   var STR_TO_ISO = {
+    "None":             "none",
     "USA":              "us",
     "West Germany":     "de",
     "East Germany":     "de",
@@ -33,6 +34,7 @@ $(function() {
     "Korea":            "kr",
     "Korean":           "kr",
     "Arabic":           "sa",
+    "Austria":          "at",
     "Australia":        "au",
     "Canada":           "ca",
     "Latin":            "va",
@@ -68,12 +70,21 @@ $(function() {
     "Brazil":           "bl",
     "Finland":          "fi",
     "Finnish":          "fi",
-
+    "Poland":           "pl",
+    "Polish":           "pl",
+    "Switzerland":      "ch",
+    "Romania":          "ro",
+    "Romanian":         "ro",
+    "Turkish":          "tr",
+    "Turkey":           "tr",
+    "Mexico":           "mx",
+    "Catalonia":        "catalonia",
+    "Catalan":          "catalonia",
+    "Urdu":             "pk",
+    "India":            "in",
+    "Hindi":            "in",
   };
-  var STR_TO_ISO_KEYS = [];
-  $.each(STR_TO_ISO, function(k, v) {
-    STR_TO_ISO_KEYS.push(k);
-  });
+  var STR_TO_ISO_KEYS = F.helper.keys(STR_TO_ISO);
   F.str2iso = function(str) {
     if ($.inArray(str, STR_TO_ISO_KEYS) === -1) {
       console.info("Missing country/language key: '" + str + "'");

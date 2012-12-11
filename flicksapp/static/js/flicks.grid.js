@@ -2,12 +2,32 @@ $(function() {
 
   var F = $.flicks;
 
+  // django model store
+  F.store = Slick.Data.RemoteDjangoModel();
+  F.store.onDataLoaded.subscribe(function(e, args) {
+    for (var i = args.from; i <= args.to; ++i)
+      F.grid.invalidateRow(i);
+    F.grid.updateRowCount();
+    F.grid.render();
+    // select first row
+    if (F.grid.getActiveCell() === null) {
+      F.grid.setActiveCell(0, 0);
+    }
+  });
+
   // grid change
   F.gridChange = function() {
     if (F.grid !== undefined && F.store !== undefined) {
       var vp = F.grid.getViewport();
       F.store.ensureData(vp.top, vp.bottom);
     }
+  }
+
+  // perform search
+  F.search = function(q) {
+    F.store.clear();
+    F.store.setSearch(q);
+    F.gridChange();
   }
 
   var columns = [
@@ -20,7 +40,7 @@ $(function() {
       minWidth:  60,
 			cssClass:  'align-right',
       formatter: function(row, cell, value, columnDef, dataContext) {
-        return F.formatter.seen(dataContext.seen, value);
+        return F.formatter.number_seen_fav(dataContext, value);
       }
     },
     {
@@ -35,7 +55,9 @@ $(function() {
       name:      'Director',
       field:     'directors',
       sortable:  true,
-      formatter: F.formatter.concatenate
+      formatter: function(row, cell, value, columnDef, dataContext) {
+        return F.formatter.concatenate(value, 'lookup directors');
+      }
     },
     {
       id:        'year',
@@ -44,13 +66,13 @@ $(function() {
       sortable:  true,
       maxWidth:  60,
       minWidth:  60,
-      maxWidth:  120,
 			cssClass:  'align-right'
     },
     {
       id:        'rating',
       name:      'Rating',
       field:     'imdb_id',
+      sortField: 'rating',
       maxWidth:  50,
       minWidth:  50,
       sortable:  true,
@@ -63,7 +85,7 @@ $(function() {
       id:        'language',
       name:      'Language',
       field:     'languages',
-      sortable:  true,
+      sortable:  false,
       minWidth:  75,
       maxWidth:  75,
       formatter: function(row, cell, value, columnDef, dataContext) {
@@ -74,7 +96,7 @@ $(function() {
       id:        'subtiles',
       name:      'Subtitles',
       field:     'subtitles',
-      sortable:  true,
+      sortable:  false,
       minWidth:  65,
       maxWidth:  65,
       formatter: function(row, cell, value, columnDef, dataContext) {
@@ -85,7 +107,7 @@ $(function() {
       id:        'country',
       name:      'Country',
       field:     'countries',
-      sortable:  true,
+      sortable:  false,
       minWidth:  69,
       maxWidth:  69,
       formatter: function(row, cell, value, columnDef, dataContext) {
@@ -97,13 +119,17 @@ $(function() {
       name:      'Genres',
       field:     'genres',
       width:     200,
-      sortable:  true,
-      formatter: F.formatter.concatenate
+      sortable:  false,
+      formatter: function(row, cell, value, columnDef, dataContext) {
+        return F.formatter.concatenate(value, 'lookup genres');
+      }
     },
     {
       id:        'runtime',
       name:      'Runtime (min)',
       field:     'runtime',
+      minWidth:  60,
+      maxWidth:  60,
       sortable:  true,
 			cssClass:  'align-right'
     },
@@ -126,7 +152,9 @@ $(function() {
   F.grid = new Slick.Grid(F.el.grid, F.store, columns, options);
   F.grid.setSelectionModel(new Slick.RowSelectionModel());
   F.grid.onSort.subscribe(function(e, args) {
-    F.store.setSort(args.sortCol.field, args.sortAsc);
+    var sortField = ("sortField" in args.sortCol) ?
+      args.sortCol.sortField : args.sortCol.field;
+    F.store.setSort(sortField, args.sortAsc);
     F.gridChange();
   });
   F.grid.onSelectedRowsChanged.subscribe(function(e, args) {

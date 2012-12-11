@@ -4,16 +4,37 @@ $(function() {
 
   F.formatter = {
 
-    concatenate: function(row, cell, value, columnDef, dataContext) {
-      if (value === undefined)
-        return '';
-      return $.map(value, function(v) { return v.fields.name }).join(', ');
+    concatenate: function(value, cls, max) {
+      var r = '', _max;
+      if (max === undefined)
+        _max = value.length;
+      else
+        _max = Math.min(max, value.length);
+      if (cls === undefined)
+        cls = '';
+      for (var i = 0; i < _max; ++i) {
+        r += '<a href="#" class="' + cls + '">' + value[i].fields.name + '</a>';
+        if (i >= 0 && i < _max - 1)
+          r += ', ';
+      }
+      if (max !== undefined && value.length > max)
+        r += ', …';
+      return r;
     },
 
-    seen: function(seen, inner) {
-      var title = seen && 'Seen' || 'Not seen';
-      var cls = seen && 'yes' || 'no';
-      return (inner || '') + '<div title="' + title + '" class="icon seen-' +
+    number_seen_fav: function(dataContext, inner) {
+      var title, cls;
+      if (dataContext.favourite) {
+        title = "Favourite";
+        cls = "fav";
+      } else if (dataContext.seen) {
+        title = "Seen";
+        cls = "seen-yes";
+      } else {
+        title = "Not seen";
+        cls = "seen-no";
+      }
+      return (inner || '') + '<div title="' + title + '" class="icon ' +
         cls + '"></div>';
     },
 
@@ -24,7 +45,8 @@ $(function() {
         }
         var text = dataContext.rating || defaultValue;
         return '<a href="http://akas.imdb.com/title/tt' + value
-          + '" title="Open IMDb page"' + ' target="_blank">' + text + '</a>';
+          + '" title="Open IMDb page"' + ' target="_blank" class="imdb">'
+          + text + '</a>';
       }
       return '';
     },

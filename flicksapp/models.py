@@ -2,7 +2,7 @@ import datetime
 import re
 
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from imdb import IMDb
 
@@ -20,7 +20,22 @@ class Genre(models.Model):
     def __unicode__(self):
         return self.name
 
+class PersonManager(models.Manager):
+    def actors(self):
+        """Returns people that acted in at least one movie."""
+        return self.annotate(
+            acted_in_count=Count('acted_in')).filter(acted_in_count__gt=0)
+    def directors(self):
+        """Returns people that directed at least one movie."""
+        return self.annotate(
+            directed_count=Count('directed')).filter(directed_count__gt=0)
+    def writers(self):
+        """Returns people that have written at least one movie script."""
+        return self.annotate(
+            written_count=Count('written')).filter(written_count__gt=0)
+
 class Person(models.Model):
+    objects = PersonManager()
     imdb_id = models.PositiveIntegerField('IMDb ID', null=True, blank=True,
                                           unique=True,
                                           validators=[validate_imdb_id])
@@ -60,23 +75,52 @@ class File(models.Model):
         return self.name
 
 class MovieManager(models.Manager):
-    def search(self, q):
+    def simple_search(self, q):
         return self.filter(
-            Q(title__icontains=q) |
-            Q(runtime__icontains=q) |
-            Q(year__icontains=q) |
-            Q(notes__icontains=q)
-        )
+            # model fields
+            Q(title__search=q) |
+            Q(akas__search=q) |
+            # relation fields
+            Q(keywords__name__search=q) |
+            Q(directors__name__search=q)
+            ).distinct()
+
+    def adv_search(self, params):
+        qs = self.all()
+        def tokenize(arr):
+            return ['+%s*' % t for t in arr.split()]
+        if 'title' in params:
+            tokens = tokenize(params['title'])
+            for token in tokens:
+                qs = qs.filter(Q(title__search=token) | Q(akas__search=token))
+        # text fields
+        for k in ('countries', 'genres', 'keywords', 'cast', 'directors',
+                  'producers', 'writers'):
+            if k in params:
+                kwargs = {
+                    '%s__name__search' % k: '+"%s"' % params[k]
+                }
+                qs = qs.filter(**kwargs)
+        # boolean field
+        for k in ('seen', 'favourite'):
+            if k in params:
+                kwargs = {
+                    k: params[k]
+                }
+                qs = qs.filter(**kwargs)
+        return qs.distinct()
 
 class Movie(models.Model):
     objects = MovieManager()
 
     # imdb
-    imdb_id = models.PositiveIntegerField('IMDb ID', null=True, blank=True,
-                                          validators=[validate_imdb_id])
-    title = models.CharField('Title', max_length=400)
+    imdb_id = models.PositiveIntegerField(
+        'IMDb ID', null=True, blank=True, validators=[validate_imdb_id],
+        db_index=True)
+    title = models.CharField('Title', max_length=200)
     akas = models.TextField('Also known as')
-    year = models.PositiveIntegerField('Year', null=True, blank=True)
+    year = models.PositiveIntegerField('Year', null=True, blank=True,
+                                       db_index=True)
     rating = models.DecimalField('Rating', max_digits=3, decimal_places=1,
                                  null=True, blank=True)
     votes = models.PositiveIntegerField('Votes', null=True, blank=True)
@@ -97,11 +141,9 @@ class Movie(models.Model):
     keywords = models.ManyToManyField(Keyword, verbose_name='Keywords',
                                       related_name='movies')
     runtime = models.PositiveIntegerField('Runtime', null=True, blank=True)
-    aspect_ratio = models.CharField('Aspect ratio', max_length=6, blank=True)
     plot_outline = models.TextField('Plot outline', blank=True)
     plot = models.TextField('Plot', blank=True)
-    mpaa = models.CharField('MPAA', max_length=400, blank=True)
-    cover_url = models.URLField('Cover url', blank=True)
+    mpaa = models.CharField('MPAA', max_length=200, blank=True)
 
     # storage
     files = models.ManyToManyField(File, verbose_name='Files')
@@ -161,8 +203,6 @@ class Movie(models.Model):
                 self.plot = plots[0]
         if im.has_key('mpaa'):
             self.mpaa = im['mpaa']
-        if im.has_key('full-size cover url'):
-            self.cover_ul = im['full-size cover url']
         # countries, languages, genres, keywords
         for key, relation, cls in (('countries', self.countries, Country),
                                    ('languages', self.languages, Language),

@@ -1,4 +1,7 @@
 (function ($) {
+
+  var F = $.flicks;
+
   /***
    * A data store implementation to work with Django.
    */
@@ -6,7 +9,7 @@
     // private
     var PAGESIZE = 50;
     var data = {length: 0};
-    var searchstr = null;
+    var search = null;
     var sortcol = null;
     var sortasc = true;
     var h_request = null;
@@ -75,17 +78,30 @@
             offset: fromPage * PAGESIZE,
             count: ((toPage - fromPage) * PAGESIZE) + PAGESIZE
         };
-        if (searchstr !== null && searchstr.length > 0)
-          post_data.q = searchstr
+
+        // search
+        if (typeof search === "string" && search.length > 0)
+          // top search
+          post_data.q = search;
+        else if (search !== null && typeof search === "object") {
+          // advanced search
+          var keys = F.helper.keys(search);
+          if (keys.length > 0) {
+            post_data["adv_search"] = search;
+          }
+        }
+
+        // sorting
         if (sortcol !== null) {
           post_data.sortcol = sortcol;
           post_data.sortasc = sortasc;
         }
+
         req = $.ajax({
-          url: "grid/",
+          url: "/grid/",
           dataType: "json",
           type: "POST",
-          data: post_data,
+          data: JSON.stringify(post_data),
           success: function (r) {
             onSuccess(r, fromPage, toPage)
           },
@@ -130,8 +146,8 @@
       clear();
     }
 
-    function setSearch(str) {
-      searchstr = str;
+    function setSearch(s) {
+      search = s;
       clear();
     }
 

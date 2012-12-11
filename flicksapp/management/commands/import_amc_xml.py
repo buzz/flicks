@@ -39,8 +39,6 @@ class Command(BaseCommand):
             a = movie.attrib
             # keep track of imported fields
             fields = {}
-            if (i + 1) % 100 == 0:
-                self.stdout.write("Notice: Imported %d movies\n" % (i + 1))
             new_movie = Movie()
             try:
                 new_movie.id = int(a["Number"])
@@ -143,15 +141,6 @@ class Command(BaseCommand):
                 fields['seen'] = True
             except (KeyError, ValueError):
                 fields['seen'] = False
-            # picture
-            try:
-                f = File.objects.create(
-                    filename=a["Picture"].strip(), filetype=File.PICTURE_TYPE)
-                f.save()
-                new_movie.files.add(f)
-                fields['picture'] = True
-            except (KeyError, ValueError):
-                fields['picture'] = False
             # date added
             try:
                 new_movie.added_on = datetime.strptime(a["Date"], '%m/%d/%Y')

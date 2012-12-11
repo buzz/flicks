@@ -33,12 +33,12 @@ a:hover, a:active {
   margin-right: 8px;
 }
 
-#top-search input{
+#top-search input {
   width: 280px;
+  margin-right: 8px;
 }
 
-#advanced {
-  margin-top: 4px;
+#show-advanced {
   float: right;
 }
 
@@ -51,6 +51,65 @@ a:hover, a:active {
 #content {
   position: relative;
   float: right;
+}
+
+/* LOOKUP LINKS */
+
+a.lookup {
+  text-decoration: none;
+}
+
+a.lookup:hover, a.lookup:active {
+  text-decoration: underline;
+}
+
+/* ADV SEARCH */
+
+#adv-search {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 999;
+  display: none;
+  padding: 12px 16px;
+  background: -webkit-linear-gradient(top, rgba(247,247,247,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -moz-linear-gradient(top, rgba(247,247,247,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6+ */
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+#adv-search .close {
+  float: right;
+}
+
+#adv-search h1 {
+  margin: 0 0 24px;
+  font-size: 160%;
+  text-shadow: 0 1px 0 white;
+}
+
+#adv-search > form > label {
+  width: 120px;
+  font-size: 120%;
+  display: inline-block;
+}
+
+#adv-search input[type=text] {
+  width: 200px;
+}
+
+#adv-search input[type=submit] {
+  width: auto;
+  margin-top: 24px;
+}
+
+#adv-search .inline {
+  display: inline-block;
+}
+
+#adv-search .sep {
+  clear: both;
+  height: 6px;
 }
 
 /* SIDEBAR */
@@ -207,7 +266,11 @@ a:hover, a:active {
 }
 
 .slick-cell .seen-yes {
-  background-image: url(images/tick.png);
+  background-image: url(images/eye.png);
+}
+
+.slick-cell .fav {
+  background-image: url(images/heart.png);
 }
 
 .slick-cell .flag {
