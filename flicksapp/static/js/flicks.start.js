@@ -2,8 +2,16 @@ $(function() {
 
   var F = $.flicks;
 
-  // TODO: recreate state using cookies (eg. sorting, search, last
-  // selected movie, ...)
-  F.grid.onViewportChanged.notify();
+  // recreate state 
+  // TODO:  sorting, last selected movie
+  var q = F.state.get("q");
+  if (q)
+    F.store.setSearch(q);
+  var sorting = F.state.get("sorting");
+  if (sorting)
+    F.grid.setSortColumn(sorting.field, sorting.asc);
+
+  // load initial data
+  F.gridChange();
 
 });

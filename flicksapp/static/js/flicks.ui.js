@@ -20,7 +20,7 @@ $(function() {
       F.el.grid.css('height', h + 'px');
       F.el.sidebar.css('height', h + 'px');
       // grid / sidebar horiz.
-      if (F.ui.sidebar_collapsed) {
+      if (F.state.get('sidebar_collapsed')) {
         F.el.sidebar.addClass('collapsed').removeClass('expanded');
         var w = $(window).width() - $.flicks.constants.SIDEBAR_COLLAPSED_WIDTH;
         F.el.grid.css('width', w + 'px');
@@ -32,7 +32,7 @@ $(function() {
         F.el.sidebar.css('width', $.flicks.constants.SIDEBAR_WIDTH + 'px');
       }
       // max tabs height in sidebar
-      if (!F.ui.sidebar_collapsed) {
+      if (F.el.sidebar.is(":visible") && !F.state.get('sidebar_collapsed')) {
         var $tabs = F.el.sidebar.find("#detail-tabs");
         var total_h = F.el.sidebar.find(".movie-info").height();
         var h = total_h - $tabs.position().top + 20;
@@ -188,10 +188,11 @@ $(function() {
     });
   });
 
-  // create sidebar
-  F.ui.sidebar_collapsed = false;
+  // SIDEBAR
+
+  // handle click event
   $("#sidebar .handle").click(function() {
-    F.ui.sidebar_collapsed = !F.ui.sidebar_collapsed;
+    F.state.set('sidebar_collapsed', !F.state.get('sidebar_collapsed'));
     F.ui.relayout();
   });
   // load movie into sidebar
@@ -206,33 +207,31 @@ $(function() {
     }
     $.each(['directors', 'producers', 'writers'], function() {
       F.el.sidebar.find("div." + this).html(
-        F.formatter.concatenate(movie[this], 'lookup ' + this, 4)
+        F.formatter.concatenateA(movie[this], 'lookup ' + this, 4)
       );
     });
     $.each(['genres', 'countries'], function() {
       F.el.sidebar.find("div." + this).html(
-        F.formatter.concatenate(movie[this], 'lookup ' + this)
+        F.formatter.concatenateA(movie[this], 'lookup ' + this)
       );
     });
-    if (movie["mpaa"].length > 0)
+    if (movie["mpaa"].length > 0) {
+      F.el.sidebar.find("label.mpaa").show();
       F.el.sidebar.find("div.mpaa").text(movie['mpaa']).show();
-    else
+    } else {
+      F.el.sidebar.find("label.mpaa").hide();
       F.el.sidebar.find("div.mpaa").hide();
+    }
     // tabs
     F.el.sidebar.find("#tabs-plot").html(F.formatter.plot(movie['plot']));
     F.el.sidebar.find("#tabs-keywords").html(
-      F.formatter.concatenate(movie['keywords'], 'lookup keyword')
+      F.formatter.concatenateA(movie['keywords'], 'lookup keyword')
     );
     F.el.sidebar.find("#tabs-notes").text(movie['notes']);
     // load cover
-    if (movie.files !== undefined) {
-      $.each(movie.files, function () {
-        if (this.fields.filetype == 'P') {
-          var src = $.flicks.constants.COVER_BASE + this.fields.filename;
-          F.el.sidebar.find(".image img").attr("src", src);
-        }
-      });
-    }
+    var src =
+      $.flicks.constants.COVER_BASE + 'movies_' + movie.id + '.jpg';
+    F.el.sidebar.find(".image img").attr("src", src);
     // if cast tab open -> load cast
     if (!F.el.sidebar.find("#tabs-cast").hasClass("ui-tabs-hide")) {
       F.ui.loadCast();
@@ -244,7 +243,7 @@ $(function() {
     var movie_id = F.store.getItem(F.grid.getSelectedRows()[0]).id;
     $.post("/cast/", { movie_id: movie_id}, function(r) {
       $("#detail-tabs #tabs-cast").html(
-        F.formatter.concatenate(r.cast, 'lookup cast')
+        F.formatter.concatenateA(r.cast, 'lookup cast')
       );
     });
   };
@@ -275,8 +274,22 @@ $(function() {
       F.ui.disable_spinner();
     F.el.grid.show();
     F.el.sidebar.show();
-    F.el.info.html("Found  <strong>" + F.store.getLength() + "</strong> movie" +
-                   (F.store.getLength() > 1 ? "s" : "") + ".");
+    // info text
+    var info = "Found  <strong>" + F.store.getLength() + "</strong> movie" +
+      (F.store.getLength() > 1 ? "s" : "") + "."
+    var q = F.state.get("q");
+    if (q) {
+      if (typeof q === "string")
+        info += " (Searching for '" + q + "')";
+      else if (typeof q === "object") {
+        info += " (Searching for ";
+        $.each(q, function(k, v) {
+          info += k + ": " + v;
+        });
+        info += ")";
+      }
+    }
+    F.el.info.html(info);
   });
 
 });

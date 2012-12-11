@@ -23,13 +23,6 @@ $(function() {
     }
   }
 
-  // perform search
-  F.search = function(q) {
-    F.store.clear();
-    F.store.setSearch(q);
-    F.gridChange();
-  }
-
   var columns = [
     {
       id:        'number',
@@ -56,7 +49,7 @@ $(function() {
       field:     'directors',
       sortable:  true,
       formatter: function(row, cell, value, columnDef, dataContext) {
-        return F.formatter.concatenate(value, 'lookup directors');
+        return F.formatter.concatenate(value);
       }
     },
     {
@@ -121,7 +114,7 @@ $(function() {
       width:     200,
       sortable:  false,
       formatter: function(row, cell, value, columnDef, dataContext) {
-        return F.formatter.concatenate(value, 'lookup genres');
+        return F.formatter.concatenate(value);
       }
     },
     {
@@ -156,6 +149,10 @@ $(function() {
       args.sortCol.sortField : args.sortCol.field;
     F.store.setSort(sortField, args.sortAsc);
     F.gridChange();
+    F.state.set('sorting', {
+      field: sortField,
+      asc: args.sortAsc,
+    });
   });
   F.grid.onSelectedRowsChanged.subscribe(function(e, args) {
     if (args.rows.length == 1) {

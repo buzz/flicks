@@ -4,7 +4,23 @@ $(function() {
 
   F.formatter = {
 
-    concatenate: function(value, cls, max) {
+    concatenate: function(value, max) {
+      var r = '', _max;
+      if (max === undefined)
+        _max = value.length;
+      else
+        _max = Math.min(max, value.length);
+      for (var i = 0; i < _max; ++i) {
+        r += value[i].fields.name;
+        if (i >= 0 && i < _max - 1)
+          r += ', ';
+      }
+      if (max !== undefined && value.length > max)
+        r += ', …';
+      return r;
+    },
+
+    concatenateA: function(value, cls, max) {
       var r = '', _max;
       if (max === undefined)
         _max = value.length;
