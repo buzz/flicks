@@ -6,6 +6,10 @@ from django.db import models
 
 
 class Migration(SchemaMigration):
+    """
+    For MySQL full-text to index country names like UK and USA, use
+    'ft_min_word_len' of 4!!!
+    """
 
     def forwards(self, orm):
         db.execute("CREATE FULLTEXT INDEX flicksapp_movie_fulltext ON flicksapp_movie (title, akas, notes, plot)")

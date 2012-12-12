@@ -190,13 +190,117 @@ $(function() {
 
   // SIDEBAR
 
+  // sidebar action icon togglers
+  function favEnable(on) {
+    if (on) {
+      F.el.sidebar.find(".actions .fav")
+        .removeClass("fav-remove").addClass("fav-add")
+        .attr("title", "Add to favourites");
+    } else {
+      F.el.sidebar.find(".actions .fav")
+        .removeClass("fav-add").addClass("fav-remove")
+        .attr("title", "Remove from favourites");
+    }
+  }
+  function seenEnable(on) {
+    if (on) {
+      F.el.sidebar.find(".actions .seen")
+        .removeClass("unmark-seen").addClass("mark-seen")
+        .attr("title", "Mark seen");
+    } else {
+      F.el.sidebar.find(".actions .seen")
+        .removeClass("mark-seen").addClass("unmark-seen")
+        .attr("title", "Unmark seen");
+    }
+  }
+
   // handle click event
   $("#sidebar .handle").click(function() {
     F.state.set('sidebar_collapsed', !F.state.get('sidebar_collapsed'));
     F.ui.relayout();
   });
+
+  // movie info action handlers
+  F.el.sidebar.on("click", "a.fav-add", function() {
+    var id = F.el.sidebar.find(".id").text();
+    F.actions.favMovie(id, function() {
+      F.store.getItemById(id).favourite = true;
+      favEnable(false);
+      F.el.grid.find(".slick-row.active > div:first > div").addClass("fav");
+    });
+    return false;
+  })
+  .on("click", "a.fav-remove", function() {
+    var id = F.el.sidebar.find(".id").text();
+    F.actions.favMovie(id, function() {
+      F.store.getItemById(id).favourite = false;
+      favEnable(true);
+      F.el.grid.find(".slick-row.active > div:first > div").removeClass("fav");
+    }, true);
+    return false;
+  })
+  .on("click", "a.mark-seen", function() {
+    var id = F.el.sidebar.find(".id").text();
+    F.actions.markSeenMovie(id, function() {
+      F.store.getItemById(id).seen = true;
+      seenEnable(false);
+      F.el.grid.find(".slick-row.active > div:first > div").addClass("seen-yes")
+        .removeClass("seen-no");
+    });
+    return false;
+  })
+  .on("click", "a.unmark-seen", function() {
+    var id = F.el.sidebar.find(".id").text();
+    F.actions.markSeenMovie(id, function() {
+      F.store.getItemById(id).seen = false;
+      seenEnable(true);
+      F.el.grid.find(".slick-row.active > div:first > div").addClass("seen-no")
+        .removeClass("seen-yes");
+    }, true);
+    return false;
+  });
+
+  // lookup anchors
+  $(document).on("click", "a.lookup", function() {
+    var $this = $(this);
+    var classes = $this.attr('class').split(" ");
+    classes.splice(classes.indexOf("lookup"), 1);
+    var q = {};
+    q[classes[0]] = $this.text();
+    F.search(q);
+    return false;
+  });
+
   // load movie into sidebar
   F.ui.loadMovieDetails = function(movie) {
+    if (typeof movie == "undefined") {
+      console.warn("loadMovieDetails got movie 'undefined'!");
+      return;
+    }
+    // update actions
+    if (movie.favourite)
+      favEnable(false);
+    else
+      favEnable(true);
+    if (movie.seen)
+      seenEnable(false);
+    else
+      seenEnable(true);
+    // update link icons
+    if (movie.imdb_id) {
+      F.el.sidebar.find(".imdb-link").attr(
+        "href", F.constants.IMDB_BASE_URL + movie.imdb_id)
+        .show();
+      F.el.sidebar.find(".os-link").attr(
+        "href", F.constants.OS_IMDB_SEARCH + movie.imdb_id);
+    } else {
+      F.el.sidebar.find(".imdb-link").hide();
+      F.el.sidebar.find(".os-link").attr(
+        "href", F.constants.OS_TITLE_SEARCH + encodeURI(movie.title));
+    }
+    F.el.sidebar.find(".kg-link").attr(
+      "href", F.constants.KG_TITLE_SEARCH + encodeURI(movie.title));
+    // text fields
     F.el.sidebar.find("div.id").text(movie.id);
     F.el.sidebar.find("input[name=title]").val(movie.title);
     F.el.sidebar.find("div.year").text(movie.year == null ? '' : movie.year);
@@ -225,7 +329,7 @@ $(function() {
     // tabs
     F.el.sidebar.find("#tabs-plot").html(F.formatter.plot(movie['plot']));
     F.el.sidebar.find("#tabs-keywords").html(
-      F.formatter.concatenateA(movie['keywords'], 'lookup keyword')
+      F.formatter.concatenateA(movie['keywords'], 'lookup keywords')
     );
     F.el.sidebar.find("#tabs-notes").text(movie['notes']);
     // load cover
@@ -255,17 +359,6 @@ $(function() {
 
   // image gets loaded -> this can change height of sidebar !!
   F.el.sidebar.find(".image img").load(F.ui.relayout);
-
-  // lookup anchors (use delegate handler)
-  $(document).on("click", "a.lookup", function() {
-    var $this = $(this);
-    var classes = $this.attr('class').split(" ");
-    classes.splice(classes.indexOf("lookup"), 1);
-    var q = {};
-    q[classes[0]] = $this.text();
-    F.search(q);
-    return false;
-  });
 
   // store events
   F.store.onDataLoading.subscribe(F.ui.enable_spinner);

@@ -3,6 +3,7 @@ import re
 
 from django.db import models
 from django.db.models import Q, Count
+from django.core.exceptions import ValidationError
 
 from imdb import IMDb
 
@@ -79,9 +80,7 @@ class MovieManager(models.Manager):
         return self.filter(
             # model fields
             Q(title__search=q) |
-            Q(akas__search=q) |
             # relation fields
-            Q(keywords__name__search=q) |
             Q(directors__name__search=q)
             ).distinct()
 
@@ -157,6 +156,10 @@ class Movie(models.Model):
 
     def __unicode__(self):
         return u'%s (%s)' % (self.title, self.imdb_id)
+
+    def clean(self):
+        if self.favourite and not self.seen:
+            raise ValidationError('An unseen movie can not be favourited!.')
 
     def sync_with_imdb(self, ia=None):
         """Update movie with IMDb data. Use ia as IMDb access."""

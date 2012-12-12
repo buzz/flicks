@@ -10,9 +10,8 @@ $(function() {
     F.grid.updateRowCount();
     F.grid.render();
     // select first row
-    if (F.grid.getActiveCell() === null) {
+    if (F.grid.getActiveCell() === null)
       F.grid.setActiveCell(0, 0);
-    }
   });
 
   // grid change

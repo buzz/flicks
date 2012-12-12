@@ -8,10 +8,12 @@ $(function() {
   if (q)
     F.store.setSearch(q);
   var sorting = F.state.get("sorting");
+  console.log(sorting);
   if (sorting)
-    F.grid.setSortColumn(sorting.field, sorting.asc);
+    F.store.setSort(sorting.field, sorting.asc);
 
   // load initial data
   F.gridChange();
+  F.ui.relayout();
 
 });

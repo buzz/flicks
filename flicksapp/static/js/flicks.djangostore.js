@@ -8,7 +8,7 @@
   function RemoteDjangoModel() {
     // private
     var PAGESIZE = 50;
-    var data = {length: 0};
+    var data = [];
     var search = null;
     var sortcol = null;
     var sortasc = true;
@@ -33,10 +33,7 @@
     }
 
     function clear() {
-      for (var key in data) {
-        delete data[key];
-      }
-      data.length = 0;
+      data = [];
     }
 
     function ensureData(from, to) {
@@ -163,6 +160,13 @@
       return data[i];
     }
 
+    function getItemById(id) {
+      for (var i = 0; i < data.length; ++i) {
+        if (typeof data[i] !== 'undefined')
+          if (data[i].id == id) return data[i]
+      }
+    }
+
     init();
 
     return {
@@ -181,6 +185,7 @@
       // model interface methods
       "getLength": getLength,
       "getItem": getItem,
+      "getItemById": getItemById,
 
       // events
       "onDataLoading": onDataLoading,

@@ -40,15 +40,16 @@ $(function() {
 
     number_seen_fav: function(dataContext, inner) {
       var title, cls;
-      if (dataContext.favourite) {
-        title = "Favourite";
-        cls = "fav";
-      } else if (dataContext.seen) {
+      if (dataContext.seen) {
         title = "Seen";
         cls = "seen-yes";
       } else {
         title = "Not seen";
         cls = "seen-no";
+      }
+      if (dataContext.favourite) {
+        title = "Favourite";
+        cls += " fav";
       }
       return (inner || '') + '<div title="' + title + '" class="icon ' +
         cls + '"></div>';
@@ -60,7 +61,7 @@ $(function() {
           defaultValue = "N/A";
         }
         var text = dataContext.rating || defaultValue;
-        return '<a href="http://akas.imdb.com/title/tt' + value
+        return '<a href="' + F.constants.IMDB_BASE_URL + value
           + '" title="Open IMDb page"' + ' target="_blank" class="imdb">'
           + text + '</a>';
       }

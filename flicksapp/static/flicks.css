@@ -182,10 +182,44 @@ a.lookup:hover, a.lookup:active {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-#sidebar .movie-info .sep {
-  clear: both;
-  width: 490px;
-  height: 20px;
+#sidebar .actions {
+  margin: 12px 0 8px;
+}
+
+#sidebar .action {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+#sidebar .action.fav-add {
+  background-image: url(/static/images/heart_add.png);
+}
+
+#sidebar .action.fav-remove {
+  background-image: url(/static/images/heart_delete.png);
+}
+
+#sidebar .action.mark-seen {
+  background-image: url(/static/images/eye.png);
+}
+
+#sidebar .action.unmark-seen {
+  background-image: url(/static/images/eye_delete.png);
+}
+
+#sidebar .action.delete {
+  background-image: url(/static/images/delete.png);
+}
+
+#sidebar .action.find-cover {
+  background-image: url(/static/images/image_edit.png);
+}
+
+#sidebar .search-icon {
+  float: right;
+  margin-left: 10px;
 }
 
 #sidebar .image {

@@ -17,7 +17,7 @@ GRID_PREFETCH = ('countries', 'directors', 'producers', 'writers', 'genres',
 GRID_EXCLUDES = ('cast',)
 
 def home(request):
-    return render(request, 'list.html', {'film_table': None})
+    return render(request, 'base.html')
 
 def grid(request):
     if request.method == 'POST' and request.is_ajax():
@@ -125,3 +125,39 @@ def autocomplete(request):
             name__search=searchterm).order_by('-written_count')
         data = enc.encode([a.name for a in q[:AC_LIMIT]])
     return HttpResponse(data, mimetype='application/json')
+
+def fav(request):
+    """(Un)favourite a movie."""
+    id = request.POST.get('id', None)
+    unfav = request.POST.get('unfav', None)
+    enc = FlicksJSONEncoder()
+    try:
+        movie = Movie.objects.get(id=id)
+    except Movie.DoesNotExist():
+        return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
+                            mimetype='application/json', status=404)
+    if unfav:
+        movie.favourite = False
+    else:
+        movie.favourite = True
+    movie.save()
+    return HttpResponse(enc.encode({ 'success': True }),
+                        mimetype='application/json')
+
+def mark_seen(request):
+    """(Un)mark a movie seen."""
+    id = request.POST.get('id', None)
+    unmark = request.POST.get('unmark', None)
+    enc = FlicksJSONEncoder()
+    try:
+        movie = Movie.objects.get(id=id)
+    except Movie.DoesNotExist():
+        return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
+                            mimetype='application/json', status=404)
+    if unmark:
+        movie.seen = False
+    else:
+        movie.seen = True
+    movie.save()
+    return HttpResponse(enc.encode({ 'success': True }),
+                        mimetype='application/json')
