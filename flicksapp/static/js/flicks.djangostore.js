@@ -19,6 +19,7 @@
     // events
     var onDataLoading = new Slick.Event();
     var onDataLoaded = new Slick.Event();
+    var onError = new Slick.Event();
 
     function init() {
     }
@@ -102,19 +103,16 @@
           success: function (r) {
             onSuccess(r, fromPage, toPage)
           },
-          error: function () {
-            onError(fromPage, toPage)
+          error: function (r) {
+            req = null;
+            --req_count;
+            for (var i = fromPage * PAGESIZE;
+                 i < toPage * PAGESIZE + PAGESIZE; ++i)
+              data[i] = undefined;
+            onError.notify({ r: r, from: from, to: to });
           }
         });
       }, 50);
-    }
-
-    function onError(fromPage, toPage) {
-      req = null;
-      --req_count;
-      for (var i = fromPage * PAGESIZE; i < toPage * PAGESIZE + PAGESIZE; ++i) {
-        data[i] = undefined;
-      }
     }
 
     function onSuccess(resp, fromPage, toPage) {
@@ -141,6 +139,13 @@
       sortcol = column;
       sortasc = dir;
       clear();
+    }
+
+    function getSort() {
+      return {
+        sortcol: sortcol,
+        sortasc: sortasc
+      };
     }
 
     function setSearch(s) {
@@ -180,16 +185,18 @@
       "reloadData": reloadData,
       "setSort": setSort,
       "setSearch": setSearch,
-      "getReqCount": getReqCount,
 
       // model interface methods
       "getLength": getLength,
       "getItem": getItem,
       "getItemById": getItemById,
+      "getReqCount": getReqCount,
+      "getSort": getSort,
 
       // events
       "onDataLoading": onDataLoading,
-      "onDataLoaded": onDataLoaded
+      "onDataLoaded": onDataLoaded,
+      "onError": onError,
     };
   }
 

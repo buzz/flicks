@@ -93,6 +93,36 @@ $(function() {
     text: false
   }).click(function() {
     F.el['adv-search'].slideDown('fast');
+    // restore form input values from query
+    var q = $.flicks.state.get("q");
+    var q_obj = q;
+    if (typeof q != 'object')
+      q_obj = {};
+    var $form = F.el['adv-search'].find("form");
+    // text fields
+    $.each(
+      ["title", "countries", "genres", "keywords", "cast", "directors",
+       "writers"],
+      function(i, f) {
+        var $el = $form.find("#as_" + this);
+        if (f in q_obj)
+          $el.val(q[this]);
+        else
+          $el.val("");
+      });
+    // boolean fields
+    $.each(
+      ["seen", "favourite"],
+      function(i, f) {
+        var $radio = $form.find("#as_radio_" + this), $el;
+        if (f in q_obj)
+          $el = $radio.children('[value="' + q[this] + '"]');
+        else
+          $el = $form.children('[value=""]');
+        $el.attr("checked", true);
+        $radio.buttonset("refresh");
+      });
+    // TODO: range fields
     return false;
   });
 
@@ -106,22 +136,43 @@ $(function() {
     F.el['adv-search'].slideUp('fast');
     return false;
   });
-  F.el["adv-search"].find("input[type=submit]").button();
+  // sliders
+  $.each(["year", "runtime", "rating"], function(i, v) {
+    var min = F.hidden_info[v + "_min"], max = F.hidden_info[v + "_max"];
+    var updateDisplay = function(e, ui) {
+      F.el["adv-search"].find(".as_" + v + " .display").html(
+        "<strong>" + ui.values[0] + "</strong> - <strong>"
+          + ui.values[1]) + "</strong>";
+    };
+    F.el["adv-search"].find("#as_slider_" + v).slider({
+      range: true,
+      min: min,
+      max: max,
+      values: [min, max],
+      slide: updateDisplay,
+      step: (v == 'rating') ? 0.1 : 1,
+    });
+    updateDisplay(undefined, { values: [min, max] });
+  });
+  // buttons
   F.el["adv-search"].find("#as_radio_seen").buttonset();
   F.el["adv-search"].find("#as_radio_favourite").buttonset();
+  F.el["adv-search"].find("input[type=submit]").button();
+  // adv. search submit
   F.el["adv-search"].find("form").submit(function() {
     var $f = $(this);
     var fields = {};
     // collect text fields
     $.each(
-      ["title", "country", "genre", "keyword", "cast", "director", "writer"],
+      ["title", "countries", "genres", "keywords", "cast", "directors",
+       "writers", "mpaa"],
       function(i, f) {
         var v = $f.find("#as_" + f).val();
         if (v !== "")
           fields[f] = v;
       }
     );
-    // collect boolean field seen
+    // collect boolean fields
     $.each(
       ["seen", "favourite"],
       function(i, f) {
@@ -129,6 +180,16 @@ $(function() {
           .prev().val()
         if (v !== "")
           fields[f] = (v == 'true') ? true : false;
+      }
+    );
+    // collect slider range fields
+    $.each(
+      ["year", "runtime", "rating"],
+      function(i, f) {
+        var v = $f.find("#as_slider_" + f).slider("option", "values");
+        if (v[0] > F.hidden_info[f + "_min"] ||
+            v[1] < F.hidden_info[f + "_max"])
+          fields[f] = v;
       }
     );
     F.search(fields);
@@ -144,22 +205,22 @@ $(function() {
       el: $("#adv-search #as_title"),
     },
     country: {
-      el: $("#adv-search #as_country"),
+      el: $("#adv-search #as_countries"),
     },
     genre: {
-      el: $("#adv-search #as_genre"),
+      el: $("#adv-search #as_genres"),
     },
     keyword: {
-      el: $("#adv-search #as_keyword"),
+      el: $("#adv-search #as_keywords"),
     },
     cast: {
       el: $("#adv-search #as_cast"),
     },
     director: {
-      el: $("#adv-search #as_director"),
+      el: $("#adv-search #as_directors"),
     },
     writer: {
-      el: $("#adv-search #as_writer"),
+      el: $("#adv-search #as_writers"),
     },
   };
   $.each(ac, function(k, v) {
@@ -173,17 +234,24 @@ $(function() {
           response(F.autocomplete[what][q]);
           return;
         }
-        $.post(
-          "/autocomplete/",
-          {
+        $.ajax({
+          url: "/autocomplete/",
+          dataType: "json",
+          type: "POST",
+          data: {
             q: q,
             what: what,
           },
-          function(data, status, xhr) {
+          success: function(data, status, xhr) {
             F.autocomplete[what][q] = data;
             response(data);
-          }
-        );
+          },
+          error: function(r) {
+            F.modals.error(
+              "<strong>Auto-complete failed!</strong><br><br>Error text: "
+                + r.statusText);
+          },
+        });
       }
     });
   });
@@ -345,10 +413,20 @@ $(function() {
   // sidebar tabs
   F.ui.loadCast = function() {
     var movie_id = F.store.getItem(F.grid.getSelectedRows()[0]).id;
-    $.post("/cast/", { movie_id: movie_id}, function(r) {
-      $("#detail-tabs #tabs-cast").html(
-        F.formatter.concatenateA(r.cast, 'lookup cast')
-      );
+    $.ajax({
+      url: "/cast/",
+      type: "POST",
+      data: { movie_id: movie_id },
+      success: function(r) {
+        $("#detail-tabs #tabs-cast").html(
+          F.formatter.concatenateA(r.cast, 'lookup cast')
+        );
+      },
+      error: function(r) {
+        F.modals.error(
+          "<strong>Loading cast failed!</strong><br><br>Error text: "
+            + r.statusText);
+      }
     });
   };
   $("#detail-tabs").tabs();
@@ -375,11 +453,12 @@ $(function() {
       if (typeof q === "string")
         info += " (Searching for '" + q + "')";
       else if (typeof q === "object") {
-        info += " (Searching for ";
+        var fields = [];
         $.each(q, function(k, v) {
-          info += k + ": " + v;
+          if (typeof v != "undefined")
+            fields.push(k + ": <strong>" + v + "</strong>");
         });
-        info += ")";
+        info += " (Searching for " + fields.join(", ") + ")";
       }
     }
     F.el.info.html(info);

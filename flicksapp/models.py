@@ -77,12 +77,19 @@ class File(models.Model):
 
 class MovieManager(models.Manager):
     def simple_search(self, q):
-        return self.filter(
+        term = '%s*' % q
+        filters = (
             # model fields
-            Q(title__search=q) |
+            Q(title__search=term) |
             # relation fields
-            Q(directors__name__search=q)
-            ).distinct()
+            Q(directors__name__search=term)
+        )
+        # exact id filter
+        try:
+            filters = filters | Q(id__exact=int(q))
+        except ValueError:
+            pass
+        return self.filter(filters).distinct()
 
     def adv_search(self, params):
         qs = self.all()
@@ -92,6 +99,8 @@ class MovieManager(models.Manager):
             tokens = tokenize(params['title'])
             for token in tokens:
                 qs = qs.filter(Q(title__search=token) | Q(akas__search=token))
+        if 'mpaa' in params:
+            qs = qs.filter(Q(mpaa__contains=params['mpaa']))
         # text fields
         for k in ('countries', 'genres', 'keywords', 'cast', 'directors',
                   'producers', 'writers'):
@@ -105,6 +114,14 @@ class MovieManager(models.Manager):
             if k in params:
                 kwargs = {
                     k: params[k]
+                }
+                qs = qs.filter(**kwargs)
+        # range fields
+        for k in ('year', 'runtime', 'rating'):
+            if k in params:
+                v = params[k]
+                kwargs = {
+                    '%s__range' % k: (v[0], v[1])
                 }
                 qs = qs.filter(**kwargs)
         return qs.distinct()
@@ -147,12 +164,28 @@ class Movie(models.Model):
     # storage
     files = models.ManyToManyField(File, verbose_name='Files')
 
+    # karagarga
+    on_karagarga = models.BooleanField('On Karagarga', default=False)
+    karagarga_id = models.PositiveIntegerField(
+        'Karagarga ID', null=True, blank=True)
+
     # misc
     added_on = models.DateField('Added on', null=True)
     imdb_sync_on = models.DateTimeField('IMDb sync on', null=True)
     seen = models.BooleanField('Seen', default=False)
     favourite = models.BooleanField('Favourite', default=False)
     notes = models.TextField('Notes', blank=True)
+
+    def clear_relations(self):
+        """Completely clear all IMDb relation fields."""
+        self.countries = []
+        self.genres = []
+        self.directors = []
+        self.producers = []
+        self.writers = []
+        self.cast = []
+        self.languages = []
+        self.keywords = []
 
     def __unicode__(self):
         return u'%s (%s)' % (self.title, self.imdb_id)

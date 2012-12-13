@@ -3,11 +3,10 @@ from django.utils import simplejson
 from django.core.serializers import serialize
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.db.models import Count
+from django.db.models import Min, Max, Count
 
 from flicksapp.models import Movie, Person, Country, Genre, Keyword
 from flicksapp.utils import FlicksJSONEncoder
-
 
 # limit auto-complete results
 AC_LIMIT = 20
@@ -17,7 +16,21 @@ GRID_PREFETCH = ('countries', 'directors', 'producers', 'writers', 'genres',
 GRID_EXCLUDES = ('cast',)
 
 def home(request):
-    return render(request, 'base.html')
+    enc = FlicksJSONEncoder()
+    agg = Movie.objects.aggregate(Min('year'), Max('year'),
+                                  Min('rating'), Max('rating'),
+                                  Min('runtime'), Max('runtime'))
+    ctx = {
+        'hidden_info': enc.encode({
+            'year_min': agg['year__min'],
+            'year_max': agg['year__max'],
+            'rating_min': agg['rating__min'],
+            'rating_max': agg['rating__max'],
+            'runtime_min': agg['runtime__min'],
+            'runtime_max': agg['runtime__max'],
+        })
+    }
+    return render(request, 'base.html', ctx)
 
 def grid(request):
     if request.method == 'POST' and request.is_ajax():
@@ -69,7 +82,8 @@ def grid(request):
                                     excludes=GRID_EXCLUDES),
                 })
         return HttpResponse(data, mimetype='application/json')
-    return HttpResponse('')
+    return HttpResponse(enc.encode({ 'error': 'Malformed request!' }),
+                        mimetype='application/json', status=400)
 
 def cast(request):
     enc = FlicksJSONEncoder()

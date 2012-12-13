@@ -12,6 +12,15 @@ $(function() {
     // select first row
     if (F.grid.getActiveCell() === null)
       F.grid.setActiveCell(0, 0);
+    // update grid sort column glyph
+    var sortinfo = F.store.getSort();
+    F.grid.setSortColumn(sortinfo.sortcol, sortinfo.sortasc);
+  });
+  F.store.onError.subscribe(function(e, args) {
+    F.modals.error("<strong>Could not load movies!</strong><br><br>Error text: "
+                   + args.r.statusText);
+    if (F.store.getReqCount() < 1)
+      F.ui.disable_spinner();
   });
 
   // grid change

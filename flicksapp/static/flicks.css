@@ -28,6 +28,10 @@ a:hover, a:active {
   float: left;
 }
 
+#buttons > .button {
+  margin-right: 8px;
+}
+
 #top-search {
   float: right;
   margin-right: 8px;
@@ -44,13 +48,22 @@ a:hover, a:active {
 
 #info {
   margin: 4px 8px 0 0;
+  padding: 0 20px 0 10px;
   font-size: 120%;
   text-shadow: 0 1px 0 white;
+  max-height: 20px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 #content {
   position: relative;
   float: right;
+}
+
+#dialog {
+  display: none;
 }
 
 /* LOOKUP LINKS */
@@ -92,10 +105,23 @@ a.lookup:hover, a.lookup:active {
   width: 120px;
   font-size: 120%;
   display: inline-block;
+  vertical-align: top;
 }
 
 #adv-search input[type=text] {
   width: 200px;
+}
+
+#adv-search .slider-wrapper {
+  display: inline-block;
+  width: 200px;
+  margin-top: 4px;
+}
+
+#adv-search .slider-wrapper .display {
+  font-size: 110%;
+  margin-top: 4px;
+  text-align: center;
 }
 
 #adv-search input[type=submit] {
@@ -109,7 +135,7 @@ a.lookup:hover, a.lookup:active {
 
 #adv-search .sep {
   clear: both;
-  height: 6px;
+  height: 8px;
 }
 
 /* SIDEBAR */
@@ -194,27 +220,27 @@ a.lookup:hover, a.lookup:active {
 }
 
 #sidebar .action.fav-add {
-  background-image: url(/static/images/heart_add.png);
+  background-image: url(images/heart_add.png);
 }
 
 #sidebar .action.fav-remove {
-  background-image: url(/static/images/heart_delete.png);
+  background-image: url(images/heart_delete.png);
 }
 
 #sidebar .action.mark-seen {
-  background-image: url(/static/images/eye.png);
+  background-image: url(images/eye.png);
 }
 
 #sidebar .action.unmark-seen {
-  background-image: url(/static/images/eye_delete.png);
+  background-image: url(images/eye_delete.png);
 }
 
 #sidebar .action.delete {
-  background-image: url(/static/images/delete.png);
+  background-image: url(images/delete.png);
 }
 
 #sidebar .action.find-cover {
-  background-image: url(/static/images/image_edit.png);
+  background-image: url(images/image_edit.png);
 }
 
 #sidebar .search-icon {
@@ -280,7 +306,7 @@ a.lookup:hover, a.lookup:active {
 }
 
 .slick-row.active .slick-cell {
-  background-color: #e4e4e4;
+  background-color: #ffcdcd;
 }
 
 #spinner {
@@ -289,7 +315,7 @@ a.lookup:hover, a.lookup:active {
   bottom: 18px;
   width: 48px;
   height: 48px;
-  background-image: url(/static/images/spinner.gif);
+  background-image: url(images/spinner.gif);
   z-index: 1000;
 }
 
@@ -311,6 +337,35 @@ a.lookup:hover, a.lookup:active {
 .slick-cell .flag {
   margin-top: 1px;
   float: left;
+}
+
+.slick-sort-indicator-desc {
+  background: url(images/sort-desc.png);
+}
+
+.slick-sort-indicator-asc {
+  background: url(images/sort-asc.png);
+}
+
+/* MODAL */
+
+#modal.error {
+  background-image: url(images/delete.png);
+}
+
+#modal.warning {
+  background-image: url(images/warning.png);
+}
+
+#modal {
+  background: transparent no-repeat 12px 0;
+}
+
+#modal .content {
+  margin-left: 12px;
+  margin-right: 12px;
+  padding-left: 24px;
+  padding-top: 1px;
 }
 
 /* MISC */

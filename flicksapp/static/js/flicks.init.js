@@ -44,6 +44,9 @@
     // restore app state from cookie
     F.state.restore();
 
+    // make hidden info available
+    F.hidden_info = JSON.parse($("#hidden_info").html());
+
     // HTML elements
     F.el = {
       grid: $('#grid'),
@@ -51,6 +54,7 @@
       info: $("#info"),
       sidebar: $("#sidebar"),
       'adv-search': $("#adv-search"),
+      modal: $("#modal"),
     };
 
     // autocomplete cache

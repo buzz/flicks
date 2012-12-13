@@ -1,0 +1,11 @@
+- movie details
+ - notes, title, ... speichern
+ - tabs:
+  - aka tabs
+ - details speichern: notes, title, imdb number?
+ - film anlegen
+ - filme aus verzeichnis importieren?
+ - files importieren
+ - delete movie
+ - tile view
+ - play button
