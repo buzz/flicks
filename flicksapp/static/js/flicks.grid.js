@@ -142,13 +142,6 @@ $(function() {
     rowHeight: 19,
     multiSelect: false,
   };
-  var rows = []
-  for (var i = 0; i < 253; ++i) {
-    rows.push({
-      'title': 'CrossSword-' + i,
-      'runtime': Math.round(Math.random() * 200),
-    });
-  }
 
   F.grid = new Slick.Grid(F.el.grid, F.store, columns, options);
   F.grid.setSelectionModel(new Slick.RowSelectionModel());
