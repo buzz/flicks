@@ -56,6 +56,8 @@ $(function() {
     icons: {
       primary: "ui-icon-plusthick"
     }
+  }).click(function() {
+    console.log("Add movie button clicked.");
   });
 
   // top search
