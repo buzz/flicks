@@ -4,10 +4,10 @@
 - movie details
  - karagarga nummer/flag notwendig??
  - notes, title, ... speichern
- - tabs:
-  - aka tabs
  - details speichern: notes, title, imdb number?
  - film anlegen
+ - akas:
+  - also popup bei hover über titel?
  - filme aus verzeichnis importieren?
  - files importieren
  - delete movie
@@ -17,5 +17,7 @@
 - imdb sync button
 
 - fav/seen click
+
+- migrate from jquery ui to bootstrap for beauty?
 
 - statistics (later later)

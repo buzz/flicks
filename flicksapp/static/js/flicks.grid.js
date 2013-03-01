@@ -19,8 +19,7 @@ $(function() {
   F.store.onError.subscribe(function(e, args) {
     F.modals.error("<strong>Could not load movies!</strong><br><br>Error text: "
                    + args.r.statusText);
-    if (F.store.getReqCount() < 1)
-      F.ui.disable_spinner();
+    F.ui.disable_spinner();
   });
 
   // grid change

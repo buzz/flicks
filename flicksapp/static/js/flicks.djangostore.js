@@ -3,26 +3,31 @@
   var F = $.flicks;
 
   /***
-   * A data store implementation to work with Django.
+   * A data store implementation to work with Django. It provides an
+   * suitable interface to be used as an data store for SlickGrid.
+   *
+   * The store fetches and caches data from an REST API (eg. Django
+   * REST framework) in blocks (PAGESIZE elements per request).
+   *
    */
   function RemoteDjangoModel() {
     // private
     var PAGESIZE = 100;
-    var data = [];
     var search = null;
     var sortcol = null;
     var sortasc = true;
-    var h_request = null;
-    var req_count = 0;
-    var req = null; // ajax request
+    // keep track of current requests (array with elements being the
+    // requested page number)
+    var req_info = [];
+    // data cache (using array because it's faster then object)
+    // entries with indexes that are multiples of PAGESIZE indicate
+    // cache status (undefined means not cached)
+    var data = [];
 
     // events
     var onDataLoading = new Slick.Event();
     var onDataLoaded = new Slick.Event();
     var onError = new Slick.Event();
-
-    function init() {
-    }
 
     function isDataLoaded(from, to) {
       for (var i = from; i <= to; i++) {
@@ -37,99 +42,110 @@
       data = [];
     }
 
+    // ensures that data within a given range are either cached. if
+    // not the items are loaded in blocks of size PAGESIZE from the
+    // server. 'from' and 'to' are indexes that refer to the 'data'
+    // cache array.
     function ensureData(from, to) {
-      // is it neccessary to abort request?
-      //  . leads to broken pipes in django http stack
-      // if (req) {
-      //   console.debug("REQ ABORTED!");
-      //   req.abort();
-      // }
-
-      if (from < 0) {
-        from = 0;
-      }
-
-      // add one screen of items to 'to'. this makes sure we have a
-      // buffer of data ahead
+      // preload one extra screen of items before and after actual
+      // range
       to += to - from;
+      from -= to - from;
+      from = Math.max(0, from);
 
       var fromPage = Math.floor(from / PAGESIZE);
       var toPage = Math.floor(to / PAGESIZE);
 
+      // check data cache if pages are already loaded by narrowing
+      // down the slice that has to be loaded
       while (data[fromPage * PAGESIZE] !== undefined && fromPage < toPage)
         fromPage++;
-
       while (data[toPage * PAGESIZE] !== undefined && fromPage < toPage)
         toPage--;
 
-      if (fromPage > toPage || ((fromPage == toPage) && data[fromPage * PAGESIZE] !== undefined)) {
-        // TODO:  look-ahead ?
+      // no need to load data, already cached?
+      if (fromPage > toPage || ((fromPage == toPage) && data[fromPage * PAGESIZE] !== undefined))
         return;
+
+      // request arguments
+      var args = {
+        count: PAGESIZE
+      };
+
+      // search arguments
+      if (typeof search === "string" && search.length > 0)
+        // top search
+        args.q = search;
+      else if (search !== null && typeof search === "object") {
+        // advanced search
+        var keys = F.helper.keys(search);
+        if (keys.length > 0) {
+          args["adv_search"] = search;
+        }
       }
 
-      if (h_request != null) {
-        clearTimeout(h_request);
+      // sorting
+      if (sortcol !== null) {
+        args.sortcol = sortcol;
+        args.sortasc = sortasc;
       }
 
-      h_request = setTimeout(function () {
-        for (var i = fromPage; i <= toPage; i++)
-          data[i * PAGESIZE] = null; // null indicates a 'requested but not available yet'
-        onDataLoading.notify({from: from, to: to});
-        ++req_count;
-        var args = {
-          page: fromPage + 1,
-          count: ((toPage - fromPage) * PAGESIZE) + PAGESIZE
-        };
+      // fetch page blocks (most of the time there should be just one
+      // page block to fetch. but sometimes the range can overlap two
+      // pageblocks.
+      for (var i = fromPage; i <= toPage; ++i) {
+        // add 1 because the page parameter starts from 1 not 0
+        args.page = i + 1;
 
-        // search
-        if (typeof search === "string" && search.length > 0)
-          // top search
-          args.q = search;
-        else if (search !== null && typeof search === "object") {
-          // advanced search
-          var keys = F.helper.keys(search);
-          if (keys.length > 0) {
-            args["adv_search"] = search;
-          }
-        }
+        // ignore if an identical request is already active
+        if (_.indexOf(req_info, args.page) !== -1)
+          continue;
 
-        // sorting
-        if (sortcol !== null) {
-          args.sortcol = sortcol;
-          args.sortasc = sortasc;
-        }
+        onDataLoading.notify({
+          from: (fromPage - 1) * PAGESIZE,
+          to: (fromPage) * PAGESIZE,
+          req_info: req_info
+        });
 
-        req = $.ajax({
+        // create request
+        var req = $.ajax({
           url: "/movies/",
           dataType: "json",
           type: "GET",
           data: args,
-          success: function (r) {
-            onSuccess(r, fromPage, toPage)
-          },
-          error: function (r) {
-            req = null;
-            --req_count;
-            for (var i = fromPage * PAGESIZE;
-                 i < toPage * PAGESIZE + PAGESIZE; ++i)
-              data[i] = undefined;
-            onError.notify({ r: r, from: from, to: to });
-          }
+          // exploit context to store retrieved page
+          context: { page: args.page }
+        }).always(function() {
+          // remove request info
+          req_info = _.without(req_info, this.page);
+        }).done(function (r) {
+          onSuccess(r, this.page)
+        }).fail(function (r) {
+          // reset status indicator
+          for (var i = fromPage * PAGESIZE; i < (fromPage + 1) * PAGESIZE; ++i)
+            data[i] = undefined;
+          // a cancelled request is not considered erroneous
+          if (r.statusText != 'abort' && r.statusText != 'not found')
+              onError.notify({ r: r, from: from, to: to });
         });
-      }, 50);
+
+        // save request info
+        req_info.push(args.page);
+      }
+
     }
 
-    function onSuccess(resp, fromPage, toPage) {
-      var from = fromPage * PAGESIZE, to = from + resp.results.length;
+    function onSuccess(resp, fromPage) {
+      var from = (fromPage - 1) * PAGESIZE, to = from + resp.results.length;
       data.length = resp.count;
-      for (var i = 0; i < resp.results.length; ++i) {
-        m = resp.results[i];
-        data[from + i] = m;
-        data[from + i].index = from + i;
-      }
-      req = null;
-      --req_count;
-      onDataLoaded.notify({from: from, to: to});
+      // copy received data to cache
+      for (var i = from; i < to; ++i)
+        data[i] = resp.results[i - from];
+      onDataLoaded.notify({
+        from: from,
+        to: to,
+        req_info: req_info
+      });
     }
 
     function reloadData(from, to) {
@@ -156,10 +172,6 @@
       clear();
     }
 
-    function getReqCount() {
-      return req_count;
-    }
-
     function getLength() {
       return data.length;
     }
@@ -174,8 +186,6 @@
           if (data[i].id == id) return data[i]
       }
     }
-
-    init();
 
     return {
       // properties
@@ -193,7 +203,6 @@
       "getLength": getLength,
       "getItem": getItem,
       "getItemById": getItemById,
-      "getReqCount": getReqCount,
       "getSort": getSort,
 
       // events

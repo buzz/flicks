@@ -12,7 +12,7 @@ $(function() {
     F.store.setSort(sorting.field, sorting.asc);
 
   // load initial data
-  F.gridChange();
   F.ui.relayout();
+  F.gridChange();
 
 });
