@@ -104,9 +104,9 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-SERIALIZATION_MODULES = {
-    'json': 'wadofstuff.django.serializers.json',
-    'python': 'wadofstuff.django.serializers.python',
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 50,
+    'PAGINATE_BY_PARAM': 'count',
 }
 
 INSTALLED_APPS = (
@@ -122,6 +122,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'flicksapp',
     'south',
+    'rest_framework',
 )
 
 # A sample logging configuration. The only tangible logging

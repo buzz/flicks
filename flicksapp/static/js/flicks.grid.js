@@ -94,17 +94,6 @@ $(function() {
       }
     },
     {
-      id:        'subtiles',
-      name:      'Subtitles',
-      field:     'subtitles',
-      sortable:  false,
-      minWidth:  65,
-      maxWidth:  65,
-      formatter: function(row, cell, value, columnDef, dataContext) {
-        return F.formatter.flagList(value);
-      }
-    },
-    {
       id:        'country',
       name:      'Country',
       field:     'countries',

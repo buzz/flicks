@@ -84,14 +84,8 @@ $(function() {
     "India":            "in",
     "Hindi":            "in",
   };
-  var STR_TO_ISO_KEYS = F.helper.keys(STR_TO_ISO);
   F.str2iso = function(str) {
-    if ($.inArray(str, STR_TO_ISO_KEYS) === -1) {
-      console.info("Missing country/language key: '" + str + "'");
-      return 'missing';
-    } else {
-      return STR_TO_ISO[str];
-    }
+    return STR_TO_ISO[str];
   }
 
 });

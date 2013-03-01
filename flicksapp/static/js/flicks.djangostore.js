@@ -7,7 +7,7 @@
    */
   function RemoteDjangoModel() {
     // private
-    var PAGESIZE = 50;
+    var PAGESIZE = 100;
     var data = [];
     var search = null;
     var sortcol = null;
@@ -49,6 +49,10 @@
         from = 0;
       }
 
+      // add one screen of items to 'to'. this makes sure we have a
+      // buffer of data ahead
+      to += to - from;
+
       var fromPage = Math.floor(from / PAGESIZE);
       var toPage = Math.floor(to / PAGESIZE);
 
@@ -72,34 +76,34 @@
           data[i * PAGESIZE] = null; // null indicates a 'requested but not available yet'
         onDataLoading.notify({from: from, to: to});
         ++req_count;
-        var post_data = {
-            offset: fromPage * PAGESIZE,
-            count: ((toPage - fromPage) * PAGESIZE) + PAGESIZE
+        var args = {
+          page: fromPage + 1,
+          count: ((toPage - fromPage) * PAGESIZE) + PAGESIZE
         };
 
         // search
         if (typeof search === "string" && search.length > 0)
           // top search
-          post_data.q = search;
+          args.q = search;
         else if (search !== null && typeof search === "object") {
           // advanced search
           var keys = F.helper.keys(search);
           if (keys.length > 0) {
-            post_data["adv_search"] = search;
+            args["adv_search"] = search;
           }
         }
 
         // sorting
         if (sortcol !== null) {
-          post_data.sortcol = sortcol;
-          post_data.sortasc = sortasc;
+          args.sortcol = sortcol;
+          args.sortasc = sortasc;
         }
 
         req = $.ajax({
-          url: "/grid/",
+          url: "/movies/",
           dataType: "json",
-          type: "POST",
-          data: JSON.stringify(post_data),
+          type: "GET",
+          data: args,
           success: function (r) {
             onSuccess(r, fromPage, toPage)
           },
@@ -116,13 +120,12 @@
     }
 
     function onSuccess(resp, fromPage, toPage) {
-      var from = fromPage * PAGESIZE, to = from + resp.movies.length;
-      data.length = resp.total;
-      for (var i = 0; i < resp.movies.length; ++i) {
-        m = resp.movies[i];
-        data[from + i] = m.fields;
+      var from = fromPage * PAGESIZE, to = from + resp.results.length;
+      data.length = resp.count;
+      for (var i = 0; i < resp.results.length; ++i) {
+        m = resp.results[i];
+        data[from + i] = m;
         data[from + i].index = from + i;
-        data[from + i].id = m.pk;
       }
       req = null;
       --req_count;

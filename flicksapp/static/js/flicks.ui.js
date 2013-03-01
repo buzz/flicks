@@ -343,6 +343,9 @@ $(function() {
 
   // load movie into sidebar
   F.ui.loadMovieDetails = function(movie) {
+    // TODO: load full full movie information via ajax!!
+    // do nothing for now
+    return;
     if (typeof movie == "undefined") {
       console.warn("loadMovieDetails got movie 'undefined'!");
       return;

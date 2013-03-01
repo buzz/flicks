@@ -5,8 +5,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Min, Max, Count
 
+from rest_framework import generics
+
 from flicksapp.models import Movie, Person, Country, Genre, Keyword
 from flicksapp.utils import FlicksJSONEncoder
+from flicksapp.serializers import MovieListSerializer, MovieDetailSerializer
 
 # limit auto-complete results
 AC_LIMIT = 20
@@ -15,7 +18,10 @@ GRID_PREFETCH = ('countries', 'directors', 'producers', 'writers', 'genres',
                  'languages', 'files', 'keywords')
 GRID_EXCLUDES = ('cast',)
 
-def home(request):
+def bootstrap(request):
+    """
+    Serves as entry point for this web application.
+    """
     enc = FlicksJSONEncoder()
     agg = Movie.objects.aggregate(Min('year'), Max('year'),
                                   Min('rating'), Max('rating'),
@@ -175,3 +181,13 @@ def mark_seen(request):
     movie.save()
     return HttpResponse(enc.encode({ 'success': True }),
                         mimetype='application/json')
+
+#################### REST API
+
+class MovieList(generics.ListCreateAPIView):
+    model = Movie
+    serializer_class = MovieListSerializer
+
+class MovieDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Movie
+    serializer_class = MovieDetailSerializer

@@ -1,0 +1,10 @@
+Django==1.4.2
+FormEncode==1.2.4
+IMDbPY==4.9
+MySQL-python==1.2.4c1
+SQLAlchemy==0.7.9
+SQLObject==1.3.2
+South==0.7.6
+django-filter==0.5.4
+djangorestframework==2.2.1
+ipython==0.13.1

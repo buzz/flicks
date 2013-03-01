@@ -11,7 +11,7 @@ $(function() {
       else
         _max = Math.min(max, value.length);
       for (var i = 0; i < _max; ++i) {
-        r += value[i].fields.name;
+        r += value[i].name;
         if (i >= 0 && i < _max - 1)
           r += ', ';
       }
@@ -20,6 +20,7 @@ $(function() {
       return r;
     },
 
+    // comma-separated, wrapped in anchor tags
     concatenateA: function(value, cls, max) {
       var r = '', _max;
       if (max === undefined)
@@ -29,7 +30,7 @@ $(function() {
       if (cls === undefined)
         cls = '';
       for (var i = 0; i < _max; ++i) {
-        r += '<a href="#" class="' + cls + '">' + value[i].fields.name + '</a>';
+        r += '<a href="#" class="' + cls + '">' + value[i].name + '</a>';
         if (i >= 0 && i < _max - 1)
           r += ', ';
       }
@@ -72,8 +73,8 @@ $(function() {
       var html = "";
       if (countries !== undefined) {
         $.each(countries, function(i) {
-          html += '<div title="' + this.fields.name + '" class="flag '
-            + $.flicks.str2iso(this.fields.name) + '"></div>';
+          html += '<div title="' + this.name + '" class="flag '
+            + $.flicks.str2iso(this.name) + '"></div>';
         });
       }
       return html;
