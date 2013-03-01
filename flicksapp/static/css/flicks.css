@@ -163,11 +163,11 @@ a.lookup:hover, a.lookup:active {
 }
 
 #sidebar.collapsed .handle {
-  background-image: url(images/handle-collapsed.png);
+  background-image: url(../images/handle-collapsed.png);
 }
 
 #sidebar.expanded .handle {
-  background-image: url(images/handle-expanded.png);
+  background-image: url(../images/handle-expanded.png);
 }
 
 #sidebar.collapsed .movie-info {
@@ -221,27 +221,27 @@ a.lookup:hover, a.lookup:active {
 }
 
 #sidebar .action.fav-add {
-  background-image: url(images/heart_add.png);
+  background-image: url(../images/heart_add.png);
 }
 
 #sidebar .action.fav-remove {
-  background-image: url(images/heart_delete.png);
+  background-image: url(../images/heart_delete.png);
 }
 
 #sidebar .action.mark-seen {
-  background-image: url(images/eye.png);
+  background-image: url(../images/eye.png);
 }
 
 #sidebar .action.unmark-seen {
-  background-image: url(images/eye_delete.png);
+  background-image: url(../images/eye_delete.png);
 }
 
 #sidebar .action.delete {
-  background-image: url(images/delete.png);
+  background-image: url(../images/delete.png);
 }
 
 #sidebar .action.find-cover {
-  background-image: url(images/image_edit.png);
+  background-image: url(../images/image_edit.png);
 }
 
 #sidebar .search-icon {
@@ -316,7 +316,7 @@ a.lookup:hover, a.lookup:active {
   bottom: 18px;
   width: 48px;
   height: 48px;
-  background-image: url(images/spinner.gif);
+  background-image: url(../images/spinner.gif);
   z-index: 1000;
 }
 
@@ -328,11 +328,11 @@ a.lookup:hover, a.lookup:active {
 }
 
 .slick-cell .seen-yes {
-  background-image: url(images/eye.png);
+  background-image: url(../images/eye.png);
 }
 
 .slick-cell .fav {
-  background-image: url(images/heart.png);
+  background-image: url(../images/heart.png);
 }
 
 .slick-cell .flag {
@@ -341,21 +341,21 @@ a.lookup:hover, a.lookup:active {
 }
 
 .slick-sort-indicator-desc {
-  background: url(images/sort-desc.png);
+  background: url(../images/sort-desc.png);
 }
 
 .slick-sort-indicator-asc {
-  background: url(images/sort-asc.png);
+  background: url(../images/sort-asc.png);
 }
 
 /* MODAL */
 
 #modal.error {
-  background-image: url(images/delete.png);
+  background-image: url(../images/delete.png);
 }
 
 #modal.warning {
-  background-image: url(images/warning.png);
+  background-image: url(../images/warning.png);
 }
 
 #modal {
