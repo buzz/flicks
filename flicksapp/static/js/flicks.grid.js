@@ -4,6 +4,7 @@ $(function() {
 
   // django model store
   F.store = Slick.Data.RemoteDjangoModel();
+  // react on changed data
   F.store.onDataLoaded.subscribe(function(e, args) {
     for (var i = args.from; i <= args.to; ++i)
       F.grid.invalidateRow(i);

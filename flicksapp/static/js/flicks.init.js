@@ -3,35 +3,13 @@
   $.flicks = {};
   var F = $.flicks;
 
-  // helper functions
-  F.helper = {
-
-    // returns keys of an object
-    keys: function(obj) {
-      var keys = [];
-      $.each(obj, function(k) {
-        keys.push(k);
-      });
-      return keys;
-    },
-
-  };
-
-  // perform search
-  F.search = function(q) {
-    F.store.clear();
-    F.store.setSearch(q);
-    F.gridChange();
-    F.state.set('q', q);
-  }
-
   $(function() {
 
     // constants
     F.constants = {
       SIDEBAR_WIDTH: 500,
       SIDEBAR_COLLAPSED_WIDTH: 10,
-      COOKIE_NAME: 'FLICKS_STATE',
+      COOKIE_NAME: 'flicks_state',
       IMDB_BASE_URL: 'http://www.imdb.com/title/tt',
     };
 

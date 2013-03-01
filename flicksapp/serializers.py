@@ -1,5 +1,8 @@
-from flicksapp.models import Movie, Country, Language, Person, Genre, Keyword
 from rest_framework import serializers
+
+from flicksapp.models import Movie, Country, Language, Person, Genre, Keyword
+import flicksapp.constants as c
+
 
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,6 +46,4 @@ class MovieListSerializer(MovieDetailSerializer):
     """
     class Meta:
         model = Movie
-        fields = ('id', 'title', 'directors', 'year', 'rating', 'imdb_id',
-                  'languages', 'countries', 'genres', 'runtime', 'favourite',
-                  'seen')
+        fields = c.MOVIE_LIST_VIEW_FIELDS

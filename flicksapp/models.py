@@ -9,6 +9,7 @@ from imdb import IMDb
 
 from flicksapp.validators import validate_imdb_id
 
+
 class Country(models.Model):
     name = models.CharField('Country', max_length=200, unique=True)
 
@@ -75,60 +76,7 @@ class File(models.Model):
     def __unicode__(self):
         return self.name
 
-class MovieManager(models.Manager):
-    def simple_search(self, q):
-        term = '%s*' % q
-        filters = (
-            # model fields
-            Q(title__search=term) |
-            # relation fields
-            Q(directors__name__search=term)
-        )
-        # exact id filter
-        try:
-            filters = filters | Q(id__exact=int(q))
-        except ValueError:
-            pass
-        return self.filter(filters).distinct()
-
-    def adv_search(self, params):
-        qs = self.all()
-        def tokenize(arr):
-            return ['+%s*' % t for t in arr.split()]
-        if 'title' in params:
-            tokens = tokenize(params['title'])
-            for token in tokens:
-                qs = qs.filter(Q(title__search=token) | Q(akas__search=token))
-        if 'mpaa' in params:
-            qs = qs.filter(Q(mpaa__contains=params['mpaa']))
-        # text fields
-        for k in ('countries', 'genres', 'keywords', 'cast', 'directors',
-                  'producers', 'writers'):
-            if k in params:
-                kwargs = {
-                    '%s__name__search' % k: '+"%s"' % params[k]
-                }
-                qs = qs.filter(**kwargs)
-        # boolean field
-        for k in ('seen', 'favourite'):
-            if k in params:
-                kwargs = {
-                    k: params[k]
-                }
-                qs = qs.filter(**kwargs)
-        # range fields
-        for k in ('year', 'runtime', 'rating'):
-            if k in params:
-                v = params[k]
-                kwargs = {
-                    '%s__range' % k: (v[0], v[1])
-                }
-                qs = qs.filter(**kwargs)
-        return qs.distinct()
-
 class Movie(models.Model):
-    objects = MovieManager()
-
     # imdb
     imdb_id = models.PositiveIntegerField(
         'IMDb ID', null=True, blank=True, validators=[validate_imdb_id],

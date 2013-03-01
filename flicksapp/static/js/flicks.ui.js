@@ -80,6 +80,8 @@ $(function() {
       $t.attr("value", "Search");
     }
   });
+
+  // clear search button
   $("#top-search .clear-search").button({
     icons: {
       primary: "ui-icon-cancel"
@@ -90,80 +92,130 @@ $(function() {
     F.search('');
     return false;
   });
+
+  // show search form button
   F.el.tb.find("#show-advanced a").button({
     icons: {
       primary: "ui-icon-search"
     },
     text: false
   }).click(function() {
+    // render search form
+    var q = $.flicks.state.get("q"), template_data;
+    if (typeof q === 'object')
+      template_data = q;
+    else
+      template_data = F.search.empty_search;
+    var template = _.template($("#searchform-template").html(), template_data);
+    F.el['adv-search'].html(template);
+    F.ui.setupSearchForm();
     F.el['adv-search'].slideDown('fast');
-    // restore form input values from query
-    var q = $.flicks.state.get("q");
-    var q_obj = q;
-    if (typeof q != 'object')
-      q_obj = {};
-    var $form = F.el['adv-search'].find("form");
-    // text fields
-    $.each(
-      ["title", "countries", "genres", "keywords", "cast", "directors",
-       "writers"],
-      function(i, f) {
-        var $el = $form.find("#as_" + this);
-        if (f in q_obj)
-          $el.val(q[this]);
-        else
-          $el.val("");
-      });
-    // boolean fields
-    $.each(
-      ["seen", "favourite"],
-      function(i, f) {
-        var $radio = $form.find("#as_radio_" + this), $el;
-        if (f in q_obj)
-          $el = $radio.children('[value="' + q[this] + '"]');
-        else
-          $el = $form.children('[value=""]');
-        $el.attr("checked", true);
-        $radio.buttonset("refresh");
-      });
-    // TODO: range fields
     return false;
   });
 
-  // advanced search
-  F.el["adv-search"].find(".close").button({
-    icons: {
-      primary: "ui-icon-closethick"
-    },
-    text: false
-  }).click(function() {
-    F.el['adv-search'].slideUp('fast');
-    return false;
-  });
-  // sliders
-  $.each(["year", "runtime", "rating"], function(i, v) {
-    var min = F.hidden_info[v + "_min"], max = F.hidden_info[v + "_max"];
-    var updateDisplay = function(e, ui) {
-      F.el["adv-search"].find(".as_" + v + " .display").html(
-        "<strong>" + ui.values[0] + "</strong> - <strong>"
-          + ui.values[1]) + "</strong>";
-    };
-    F.el["adv-search"].find("#as_slider_" + v).slider({
-      range: true,
-      min: min,
-      max: max,
-      values: [min, max],
-      slide: updateDisplay,
-      step: (v == 'rating') ? 0.1 : 1,
+  // advanced search form: setup UI and restore form state
+  F.ui.setupSearchForm = function() {
+    F.el["adv-search"].find(".close").button({
+      icons: {
+        primary: "ui-icon-closethick"
+      },
+      text: false
+    }).click(function() {
+      F.el['adv-search'].slideUp('fast');
+      return false;
     });
-    updateDisplay(undefined, { values: [min, max] });
-  });
-  // buttons
-  F.el["adv-search"].find("#as_radio_seen").buttonset();
-  F.el["adv-search"].find("#as_radio_favourite").buttonset();
-  F.el["adv-search"].find("input[type=submit]").button();
-  // adv. search submit
-  F.el["adv-search"].find("form").submit(function() {
+    // sliders
+    $.each(["year", "runtime", "rating"], function(i, v) {
+      var min = F.hidden_info[v + "_min"], max = F.hidden_info[v + "_max"];
+      var updateDisplay = function(e, ui) {
+        F.el["adv-search"].find(".as_" + v + " .display").html(
+          "<strong>" + ui.values[0] + "</strong> - <strong>"
+            + ui.values[1]) + "</strong>";
+      };
+      var q = F.state.get('q'), values;
+      if (typeof q === 'object' && v + '_0' in q)
+        values = [q[v + '_0'], q[v + '_1']];
+      else
+        values = [min, max];
+      F.el["adv-search"].find("#as_slider_" + v).slider({
+        range: true,
+        min: min,
+        max: max,
+        values: values,
+        slide: updateDisplay,
+        step: (v == 'rating') ? 0.1 : 1,
+      });
+      updateDisplay(undefined, { values: [min, max] });
+    });
+    // buttons
+    F.el["adv-search"].find("#as_radio_seen").buttonset();
+    F.el["adv-search"].find("#as_radio_favourite").buttonset();
+    F.el["adv-search"].find("input[type=submit]").button();
+    // adv. search submit
+    F.el["adv-search"].find("form").submit(F.ui.submitAdvancedSearch);
+    // auto-complete
+    var ac = {
+      'top-search': {
+        el: $("#top-search input[name=query]"),
+        what: 'title',
+      },
+      title: {
+        el: $("#adv-search #as_title"),
+      },
+      country: {
+        el: $("#adv-search #as_countries"),
+      },
+      genre: {
+        el: $("#adv-search #as_genres"),
+      },
+      keyword: {
+        el: $("#adv-search #as_keywords"),
+      },
+      cast: {
+        el: $("#adv-search #as_cast"),
+      },
+      director: {
+        el: $("#adv-search #as_directors"),
+      },
+      writer: {
+        el: $("#adv-search #as_writers"),
+      },
+    };
+    $.each(ac, function(k, v) {
+      v.el.autocomplete({
+        source: function(request, response) {
+          var q = request.term;
+          var what = ('what' in v) ? v.what : k;
+          if (!(what in F.autocomplete))
+            F.autocomplete[what] = {};
+          if (q in F.autocomplete[what]) {
+            response(F.autocomplete[what][q]);
+            return;
+          }
+          $.ajax({
+            url: "/autocomplete/",
+            dataType: "json",
+            type: "POST",
+            data: {
+              q: q,
+              what: what,
+            },
+            success: function(data, status, xhr) {
+              F.autocomplete[what][q] = data;
+              response(data);
+            },
+            error: function(r) {
+              F.modals.error(
+                "<strong>Auto-complete failed!</strong><br><br>Error text: "
+                  + r.statusText);
+            },
+          });
+        }
+      });
+    });
+  }
+
+  F.ui.submitAdvancedSearch = function() {
     var $f = $(this);
     var fields = {};
     // collect text fields
@@ -180,10 +232,17 @@ $(function() {
     $.each(
       ["seen", "favourite"],
       function(i, f) {
-        var v = $f.find("#as_radio_" + f + " label[aria-pressed=true]")
-          .prev().val()
+        // get value of checkboxes. if it was already clicked by the
+        // user the 'aria-pressed' attribute is present. if not we go
+        // for the 'checked' attribute
+        var $el = $f.find("#as_radio_" + f + " label[aria-pressed=true]"), v;
+        if ($el.length != 0)
+          $el = $el.prev();
+        else
+          $el = $f.find("#as_radio_" + f + " input[checked]");
+        v = $el.val();
         if (v !== "")
-          fields[f] = (v == 'true') ? true : false;
+          fields[f] = v;
       }
     );
     // collect slider range fields
@@ -192,73 +251,15 @@ $(function() {
       function(i, f) {
         var v = $f.find("#as_slider_" + f).slider("option", "values");
         if (v[0] > F.hidden_info[f + "_min"] ||
-            v[1] < F.hidden_info[f + "_max"])
-          fields[f] = v;
+            v[1] < F.hidden_info[f + "_max"]) {
+          fields[f + '_0'] = v[0];
+          fields[f + '_1'] = v[1];
+        }
       }
     );
     F.search(fields);
     return false;
-  });
-  // auto-complete
-  var ac = {
-    'top-search': {
-      el: $("#top-search input[name=query]"),
-      what: 'title',
-    },
-    title: {
-      el: $("#adv-search #as_title"),
-    },
-    country: {
-      el: $("#adv-search #as_countries"),
-    },
-    genre: {
-      el: $("#adv-search #as_genres"),
-    },
-    keyword: {
-      el: $("#adv-search #as_keywords"),
-    },
-    cast: {
-      el: $("#adv-search #as_cast"),
-    },
-    director: {
-      el: $("#adv-search #as_directors"),
-    },
-    writer: {
-      el: $("#adv-search #as_writers"),
-    },
-  };
-  $.each(ac, function(k, v) {
-    v.el.autocomplete({
-      source: function(request, response) {
-        var q = request.term;
-        var what = ('what' in v) ? v.what : k;
-        if (!(what in F.autocomplete))
-          F.autocomplete[what] = {};
-        if (q in F.autocomplete[what]) {
-          response(F.autocomplete[what][q]);
-          return;
-        }
-        $.ajax({
-          url: "/autocomplete/",
-          dataType: "json",
-          type: "POST",
-          data: {
-            q: q,
-            what: what,
-          },
-          success: function(data, status, xhr) {
-            F.autocomplete[what][q] = data;
-            response(data);
-          },
-          error: function(r) {
-            F.modals.error(
-              "<strong>Auto-complete failed!</strong><br><br>Error text: "
-                + r.statusText);
-          },
-        });
-      }
-    });
-  });
+  }
 
   // SIDEBAR
 
@@ -344,14 +345,7 @@ $(function() {
     });
   }
 
-  // store events
-  F.store.onDataLoading.subscribe(F.ui.enable_spinner);
-  F.store.onDataLoaded.subscribe(function(e, args) {
-    if (args.req_info.length == 0)
-      F.ui.disable_spinner();
-    F.el.grid.show();
-    F.el.sidebar.show();
-    // info text
+  F.ui.updateInfoText = function() {
     var info = "Found  <strong>" + F.store.getLength() + "</strong> movie" +
       (F.store.getLength() > 1 ? "s" : "") + "."
     var q = F.state.get("q");
@@ -361,13 +355,24 @@ $(function() {
       else if (typeof q === "object") {
         var fields = [];
         $.each(q, function(k, v) {
-          if (typeof v != "undefined")
+          if (typeof v != "undefined" && v !== '')
             fields.push(k + ": <strong>" + v + "</strong>");
         });
-        info += " (Searching for " + fields.join(", ") + ")";
+        if (fields.length > 0)
+          info += " (Searching for " + fields.join(", ") + ")";
       }
     }
     F.el.info.html(info);
+  };
+
+  // listen for store events
+  F.store.onDataLoading.subscribe(F.ui.enable_spinner);
+  F.store.onDataLoaded.subscribe(function(e, args) {
+    if (args.req_info.length == 0)
+      F.ui.disable_spinner();
+    F.el.grid.show();
+    F.el.sidebar.show();
+    F.ui.updateInfoText();
   });
 
 });

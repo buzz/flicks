@@ -1,6 +1,9 @@
 - grid item loading geht nicht richtig wenn man weit runterscrollt
  - djangostore komplett schön machen!
 
+- order by, sort is not working (django-filter doesn't seem to support desc ordering?)
+ - possible solutions: implement ordering without django-filter or switch to tastypie
+
 - movie details
  - karagarga nummer/flag notwendig??
  - notes, title, ... speichern

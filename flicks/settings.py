@@ -105,8 +105,9 @@ TEMPLATE_DIRS = (
 )
 
 REST_FRAMEWORK = {
-    'PAGINATE_BY': 50,
+    'PAGINATE_BY': 100,
     'PAGINATE_BY_PARAM': 'count',
+    'FILTER_BACKEND': 'rest_framework.filters.DjangoFilterBackend',
 }
 
 INSTALLED_APPS = (

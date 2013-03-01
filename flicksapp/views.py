@@ -10,6 +10,9 @@ from rest_framework import generics
 from flicksapp.models import Movie, Person, Country, Genre, Keyword
 from flicksapp.utils import FlicksJSONEncoder
 from flicksapp.serializers import MovieListSerializer, MovieDetailSerializer
+from flicksapp.filters import MovieFilterSet
+import flicksapp.constants as c
+
 
 # limit auto-complete results
 AC_LIMIT = 20
@@ -171,6 +174,11 @@ def mark_seen(request):
 class MovieList(generics.ListCreateAPIView):
     model = Movie
     serializer_class = MovieListSerializer
+    filter_class = MovieFilterSet
+
+    def get_queryset(self):
+        # limit fields for optimization
+        return Movie.objects.only(*c.MOVIE_LIST_VIEW_FIELDS)
 
 class MovieDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Movie

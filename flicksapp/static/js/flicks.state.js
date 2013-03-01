@@ -36,6 +36,7 @@
     // defaults
     _state: {
       sidebar_collapsed: false,
+      q: F.search.empty_search
       // sorting
       // search
       // selected movie

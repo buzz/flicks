@@ -1,3 +1,6 @@
+
+<!-- Sidebar -->
+
 <script type="text/template" id="sidebar-template">
   <div class="movie-info">
     <form id="movie-form" action="">
@@ -98,4 +101,84 @@
       </div>
     </form>
   </div>
+</script>
+
+<!-- Search form -->
+
+<script type="text/template" id="searchform-template">
+  <button class="close">Close</button>
+  <h1>Advanced search</h1>
+  <form action="#">
+    <label for="as_title">Title</label>
+    <input type="text" name="title" id="as_title" value="<%= title %>">
+    <div class="sep"></div>
+
+    <label for="as_countries">Country</label>
+    <input type="text" name="countries" id="as_countries" value="<%= countries %>">
+    <div class="sep"></div>
+
+    <label for="as_genres">Genre</label>
+    <input type="text" name="genres" id="as_genres" value="<%= genres %>">
+    <div class="sep"></div>
+
+    <label for="as_keywords">Keyword</label>
+    <input type="text" name="keywords" id="as_keywords" value="<%= keywords %>">
+    <div class="sep"></div>
+
+    <label for="as_cast">Cast</label>
+    <input type="text" name="cast" id="as_cast" value="<%= cast %>">
+    <div class="sep"></div>
+
+    <label for="as_directors">Director</label>
+    <input type="text" name="directors" id="as_directors" value="<%= directors %>">
+    <div class="sep"></div>
+
+    <label for="as_writers">Writer</label>
+    <input type="text" name="writers" id="as_writers" value="<%= writers %>">
+    <div class="sep"></div>
+
+    <label for="as_mpaa">MPAA rating</label>
+    <input type="text" name="mpaa" id="as_mpaa" value="<%= mpaa %>">
+    <div class="sep"></div>
+
+    <label for="as_radio_seen">Seen</label>
+    <div id="as_radio_seen" class="inline">
+      <input type="radio" id="as_radio_seen_dont_care" name="seen" value=""<% print(seen === '' ? ' checked="checked"' : ''); %> /><label for="as_radio_seen_dont_care">Don't care</label>
+      <input type="radio" id="as_radio_seen_yes" name="seen" value="True"<% print(seen === 'True' ? ' checked="checked"' : ''); %> /><label for="as_radio_seen_yes">Yes</label>
+      <input type="radio" id="as_radio_seen_no" name="seen" value="False"<% print(seen === 'False' ? ' checked="checked"' : ''); %> /><label for="as_radio_seen_no">No</label>
+    </div>
+    <div class="sep"></div>
+
+    <label for="as_radio_favourite">Favourite</label>
+    <div id="as_radio_favourite" class="inline">
+      <input type="radio" id="as_radio_favourite_dont_care" name="favourite" value=""<% print(favourite === '' ? ' checked="checked"' : ''); %> /><label for="as_radio_favourite_dont_care">Don't care</label>
+      <input type="radio" id="as_radio_favourite_yes" name="favourite" value="True"<% print(favourite === 'True' ? ' checked="checked"' : ''); %> /><label for="as_radio_favourite_yes">Yes</label>
+      <input type="radio" id="as_radio_favourite_no" name="favourite" value="False"<% print(favourite === 'False' ? ' checked="checked"' : ''); %> /><label for="as_radio_favourite_no">No</label>
+    </div>
+    <div class="sep"></div>
+
+    <label for="as_year">Year</label>
+    <div class="slider-wrapper as_year">
+      <div id="as_slider_year"></div>
+      <div class="display"></div>
+    </div>
+    <div class="sep"></div>
+
+    <label for="as_runtime">Runtime (min)</label>
+    <div class="slider-wrapper as_runtime">
+      <div id="as_slider_runtime"></div>
+      <div class="display"></div>
+    </div>
+    <div class="sep"></div>
+
+    <label for="as_rating">Rating</label>
+    <div class="slider-wrapper as_rating">
+      <div id="as_slider_rating"></div>
+      <div class="display"></div>
+    </div>
+    <div class="sep"></div>
+
+    <label></label>
+    <input type="submit" value="Search">
+  </form>
 </script>

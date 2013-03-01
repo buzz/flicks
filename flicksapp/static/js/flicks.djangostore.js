@@ -73,21 +73,20 @@
       };
 
       // search arguments
-      if (typeof search === "string" && search.length > 0)
-        // top search
-        args.q = search;
-      else if (search !== null && typeof search === "object") {
+      if (typeof search === "string" && search.length > 0) {
+        // top/simple search
+        args.title = search;
+        args.director = search;
+      } else if (search !== null && typeof search === "object") {
         // advanced search
-        var keys = F.helper.keys(search);
-        if (keys.length > 0) {
-          args["adv_search"] = search;
-        }
+        $.extend(args, search);
       }
 
       // sorting
       if (sortcol !== null) {
-        args.sortcol = sortcol;
-        args.sortasc = sortasc;
+        // args.o = sortcol;
+        // TODO asc/desc not working!
+        args.o = (sortasc ? '' : '-') + sortcol;
       }
 
       // fetch page blocks (most of the time there should be just one
