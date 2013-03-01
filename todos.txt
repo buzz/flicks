@@ -1,4 +1,8 @@
+- grid item loading geht nicht richtig wenn man weit runterscrollt
+ - djangostore komplett schön machen!
+
 - movie details
+ - karagarga nummer/flag notwendig??
  - notes, title, ... speichern
  - tabs:
   - aka tabs
@@ -9,3 +13,9 @@
  - delete movie
  - tile view
  - play button
+
+- imdb sync button
+
+- fav/seen click
+
+- statistics (later later)

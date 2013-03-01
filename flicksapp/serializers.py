@@ -4,6 +4,7 @@ from rest_framework import serializers
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
+        fields = ('id', 'name')
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,10 +22,11 @@ class KeywordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Keyword
 
-class MovieListSerializer(serializers.ModelSerializer):
+class MovieDetailSerializer(serializers.ModelSerializer):
     """
-    Includes all relevant information for the grid view.
+    Includes full movie information
     """
+    cast = PersonSerializer(many=True)
     directors = PersonSerializer(many=True)
     producers = PersonSerializer(many=True)
     writers = PersonSerializer(many=True)
@@ -34,12 +36,13 @@ class MovieListSerializer(serializers.ModelSerializer):
     keywords = KeywordSerializer(many=True)
     class Meta:
         model = Movie
-        fields = ('id', 'title', 'directors', 'year', 'rating', 'languages',
-                  'countries', 'genres', 'runtime')
 
-class MovieDetailSerializer(serializers.ModelSerializer):
+class MovieListSerializer(MovieDetailSerializer):
     """
-    Includes full movie information
+    Includes only data for the grid view.
     """
     class Meta:
         model = Movie
+        fields = ('id', 'title', 'directors', 'year', 'rating', 'imdb_id',
+                  'languages', 'countries', 'genres', 'runtime', 'favourite',
+                  'seen')

@@ -1,0 +1,101 @@
+<script type="text/template" id="sidebar-template">
+  <div class="movie-info">
+    <form id="movie-form" action="">
+      <div class="id"><%= id %></div>
+      <input value="<%= title %>" name="title">
+      <div class="actions">
+        <% if (favourite) { %>
+          <a class="action fav fav-remove" href="#" title="Remove from favourites"></a>
+        <% } else { %>
+          <a class="action fav fav-add" href="#" title="Add to favourites"></a>
+        <% } %>
+        <% if (seen) { %>
+          <a class="action seen unmark-seen" href="#" title="Unmark seen"></a>
+        <% } else { %>
+          <a class="action seen mark-seen" href="#" title="Mark seen"></a>
+        <% } %>
+        <a class="action find-cover" href="#" title="Find a cover"></a>
+        <a class="action delete" href="#" title="Delete film"></a>
+        <a class="search-icon kg-link" href="https://karagarga.net/browse.php?search_type=title&search=<%= title %>" target="_blank"><img src="/static/images/karagarga.png" title="Karagarga"></a>
+        <% if (imdb_id) { %>
+          <a class="search-icon imdb-link" href="http://www.imdb.com/title/tt<%= imdb_id %>" target="_blank"><img src="/static/images/imdb.png" title="IMDb"></a>
+          <a class="search-icon os-link" href="http://www.opensubtitles.org/en/search/imdbid-<%= imdb_id %>" target="_blank"><img src="/static/images/opensubtitles.png" title="OpenSubtitles"></a>
+        <% } %>
+        <div class="clear"></div>
+      </div>
+      <div class="image"><img alt="Cover" src="/static/images/covers/movies_<%= id %>.jpg"></div>
+      <label class="half-width">Year:</label><label class="half-width">Rating:</label>
+      <div class="clear-left"></div>
+      <div class="val year half-width">
+        <a href="#" class="lookup year"><%= year %></a>
+      </div>
+      <div class="val rating half-width" title="<%= votes %> votes"><%= rating %></div>
+      <div class="clear-left"></div>
+      <label>Countries:</label>
+      <div class="val countries">
+        <% _.each(_.toArray(countries), function(c, idx, arr) { %>
+          <a href="#" class="lookup countries"><%= c.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
+        <% }); %>
+      </div>
+      <label>Directors:</label>
+      <div class="val directors">
+        <% _.each(_.toArray(directors), function(p, idx, arr) { %>
+          <a href="#" class="lookup directors"><%= p.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
+        <% }); %>
+      </div>
+      <label>Producers:</label>
+      <div class="val producers">
+        <% _.each(_.toArray(producers), function(p, idx, arr) { %>
+          <a href="#" class="lookup producers"><%= p.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
+        <% }); %>
+      </div>
+      <label>Writers:</label>
+      <div class="val writers">
+        <% _.each(_.toArray(writers), function(p, idx, arr) { %>
+          <a href="#" class="lookup writers"><%= p.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
+        <% }); %>
+      </div>
+      <label>Genres:</label>
+      <div class="val genres">
+        <% _.each(_.toArray(genres), function(g, idx, arr) { %>
+          <a href="#" class="lookup genres"><%= g.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
+        <% }); %>
+      </div>
+      <% if (mpaa) { %>
+        <label class="mpaa">MPAA:</label>
+        <div class="val mpaa"><%= mpaa %></div>
+      <% } %>
+      <div class="clear"></div>
+      <div id="detail-tabs">
+        <ul>
+          <li><a href="#tabs-plot">Plot</a></li>
+          <li><a href="#tabs-cast" class="cast-tab">Cast</a></li>
+          <li><a href="#tabs-keywords">Keywords</a></li>
+          <li><a href="#tabs-notes">Notes</a></li>
+          <li><a href="#tabs-files">Files</a></li>
+        </ul>
+        <div id="tabs-plot">
+          <% var plot_splitted = plot.split('::'); %>
+          <% if (plot_splitted.length > 1) { %>
+            <p><%= plot_splitted[0] %></p>
+            <p class="author"><%= plot_splitted[1] %></p>
+          <% } else { %>
+            <%= plot %>
+          <% } %>
+        </div>
+        <div id="tabs-cast">
+          <% _.each(_.toArray(cast), function(p, idx, arr) { %>
+            <a href="#" class="lookup cast"><%= p.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
+          <% }); %>
+        </div>
+        <div id="tabs-keywords">
+          <% _.each(_.toArray(keywords), function(k, idx, arr) { %>
+            <a href="#" class="lookup keywords"><%= k.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
+          <% }); %>
+        </div>
+        <div id="tabs-notes"><%= notes %></div>
+        <div id="tabs-files"><%= files %></div>
+      </div>
+    </form>
+  </div>
+</script>

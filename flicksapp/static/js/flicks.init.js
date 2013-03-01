@@ -29,16 +29,10 @@
 
     // constants
     F.constants = {
-      COVER_BASE: '/static/images/covers/',
       SIDEBAR_WIDTH: 500,
       SIDEBAR_COLLAPSED_WIDTH: 10,
       COOKIE_NAME: 'FLICKS_STATE',
       IMDB_BASE_URL: 'http://www.imdb.com/title/tt',
-      OS_IMDB_SEARCH: 'http://www.opensubtitles.org/en/search/imdbid-',
-      OS_TITLE_SEARCH:
-        'http://www.opensubtitles.org/en/search2/sublanguageid-en/moviename-',
-      KG_TITLE_SEARCH:
-        'https://karagarga.net/browse.php?search_type=title&search=',
     };
 
     // restore app state from cookie

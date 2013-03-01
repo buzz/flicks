@@ -34,11 +34,13 @@ $(function() {
       // max tabs height in sidebar
       if (F.el.sidebar.is(":visible") && !F.state.get('sidebar_collapsed')) {
         var $tabs = F.el.sidebar.find("#detail-tabs");
-        var total_h = F.el.sidebar.find(".movie-info").height();
-        var h = total_h - $tabs.position().top + 20;
-        $tabs.height(h);
-        $tabs.find(".ui-tabs-panel").height(
-          $tabs.innerHeight() - $tabs.find(".ui-tabs-nav").height() - 30);
+        if ($tabs.length > 0) {
+          var total_h = F.el.sidebar.find(".movie-info").height();
+          var h = total_h - $tabs.position().top + 20;
+          $tabs.height(h);
+          $tabs.find(".ui-tabs-panel").height(
+            $tabs.innerHeight() - $tabs.find(".ui-tabs-nav").height() - 30);
+        }
       }
       F.grid.resizeCanvas();
       F.grid.autosizeColumns();
@@ -260,30 +262,6 @@ $(function() {
 
   // SIDEBAR
 
-  // sidebar action icon togglers
-  function favEnable(on) {
-    if (on) {
-      F.el.sidebar.find(".actions .fav")
-        .removeClass("fav-remove").addClass("fav-add")
-        .attr("title", "Add to favourites");
-    } else {
-      F.el.sidebar.find(".actions .fav")
-        .removeClass("fav-add").addClass("fav-remove")
-        .attr("title", "Remove from favourites");
-    }
-  }
-  function seenEnable(on) {
-    if (on) {
-      F.el.sidebar.find(".actions .seen")
-        .removeClass("unmark-seen").addClass("mark-seen")
-        .attr("title", "Mark seen");
-    } else {
-      F.el.sidebar.find(".actions .seen")
-        .removeClass("mark-seen").addClass("unmark-seen")
-        .attr("title", "Unmark seen");
-    }
-  }
-
   // handle click event
   $("#sidebar .handle").click(function() {
     F.state.set('sidebar_collapsed', !F.state.get('sidebar_collapsed'));
@@ -343,105 +321,120 @@ $(function() {
 
   // load movie into sidebar
   F.ui.loadMovieDetails = function(movie) {
-    // TODO: load full full movie information via ajax!!
-    // do nothing for now
-    return;
-    if (typeof movie == "undefined") {
-      console.warn("loadMovieDetails got movie 'undefined'!");
+    if (!movie)
       return;
-    }
-    // update actions
-    if (movie.favourite)
-      favEnable(false);
-    else
-      favEnable(true);
-    if (movie.seen)
-      seenEnable(false);
-    else
-      seenEnable(true);
-    // update link icons
-    if (movie.imdb_id) {
-      F.el.sidebar.find(".imdb-link").attr(
-        "href", F.constants.IMDB_BASE_URL + movie.imdb_id)
-        .show();
-      F.el.sidebar.find(".os-link").attr(
-        "href", F.constants.OS_IMDB_SEARCH + movie.imdb_id);
-    } else {
-      F.el.sidebar.find(".imdb-link").hide();
-      F.el.sidebar.find(".os-link").attr(
-        "href", F.constants.OS_TITLE_SEARCH + encodeURI(movie.title));
-    }
-    F.el.sidebar.find(".kg-link").attr(
-      "href", F.constants.KG_TITLE_SEARCH + encodeURI(movie.title));
-    // text fields
-    F.el.sidebar.find("div.id").text(movie.id);
-    F.el.sidebar.find("input[name=title]").val(movie.title);
-    F.el.sidebar.find("div.year").text(movie.year == null ? '' : movie.year);
-    if (movie.rating !== null) {
-      F.el.sidebar.find("div.rating")
-        .text(movie.rating == null ? '' : movie.rating)
-        .attr("title", movie.votes + " votes");
-    }
-    $.each(['directors', 'producers', 'writers'], function() {
-      F.el.sidebar.find("div." + this).html(
-        F.formatter.concatenateA(movie[this], 'lookup ' + this, 4)
-      );
-    });
-    $.each(['genres', 'countries'], function() {
-      F.el.sidebar.find("div." + this).html(
-        F.formatter.concatenateA(movie[this], 'lookup ' + this)
-      );
-    });
-    if (movie["mpaa"].length > 0) {
-      F.el.sidebar.find("label.mpaa").show();
-      F.el.sidebar.find("div.mpaa").text(movie['mpaa']).show();
-    } else {
-      F.el.sidebar.find("label.mpaa").hide();
-      F.el.sidebar.find("div.mpaa").hide();
-    }
-    // tabs
-    F.el.sidebar.find("#tabs-plot").html(F.formatter.plot(movie['plot']));
-    F.el.sidebar.find("#tabs-keywords").html(
-      F.formatter.concatenateA(movie['keywords'], 'lookup keywords')
-    );
-    F.el.sidebar.find("#tabs-notes").text(movie['notes']);
-    // load cover
-    var src =
-      $.flicks.constants.COVER_BASE + 'movies_' + movie.id + '.jpg';
-    F.el.sidebar.find(".image img").attr("src", src);
-    // if cast tab open -> load cast
-    if (!F.el.sidebar.find("#tabs-cast").hasClass("ui-tabs-hide")) {
-      F.ui.loadCast();
-    }
-    F.ui.relayout();
-  };
-  // sidebar tabs
-  F.ui.loadCast = function() {
-    var movie_id = F.store.getItem(F.grid.getSelectedRows()[0]).id;
     $.ajax({
-      url: "/cast/",
-      type: "POST",
-      data: { movie_id: movie_id },
-      success: function(r) {
-        $("#detail-tabs #tabs-cast").html(
-          F.formatter.concatenateA(r.cast, 'lookup cast')
-        );
+      url: "/movies/" + movie.id,
+      dataType: "json",
+      type: "GET",
+      success: function (movie) {
+        // render sidebar template
+        var template = _.template($("#sidebar-template").html(), movie);
+        F.el.sidebar.html(template);
+        $("#detail-tabs").tabs();
+        F.ui.relayout();
+        // image gets loaded -> this can change height of sidebar !!
+        F.el.sidebar.find(".image img").load(F.ui.relayout);
       },
-      error: function(r) {
+      error: function (r) {
         F.modals.error(
-          "<strong>Loading cast failed!</strong><br><br>Error text: "
-            + r.statusText);
+          "<strong>Loading movied details failed " + movie.id +
+            "!</strong><br><br>Error text: " + r.statusText);
       }
     });
-  };
-  $("#detail-tabs").tabs();
-  $("#detail-tabs .cast-tab").click(function() {
-    $("#detail-tabs #tabs-cast").html("");
-    F.ui.loadCast();
-  });
+  }
 
-  // image gets loaded -> this can change height of sidebar !!
-  F.el.sidebar.find(".image img").load(F.ui.relayout);
+  // template
+  // function NOUSE() {
+  //   // update actions
+  //   if (movie.favourite)
+  //     favEnable(false);
+  //   else
+  //     favEnable(true);
+  //   if (movie.seen)
+  //     seenEnable(false);
+  //   else
+  //     seenEnable(true);
+  //   // update link icons
+  //   if (movie.imdb_id) {
+  //     F.el.sidebar.find(".imdb-link").attr(
+  //       "href", F.constants.IMDB_BASE_URL + movie.imdb_id)
+  //       .show();
+  //     F.el.sidebar.find(".os-link").attr(
+  //       "href", F.constants.OS_IMDB_SEARCH + movie.imdb_id);
+  //   } else {
+  //     F.el.sidebar.find(".imdb-link").hide();
+  //     F.el.sidebar.find(".os-link").attr(
+  //       "href", F.constants.OS_TITLE_SEARCH + encodeURI(movie.title));
+  //   }
+  //   F.el.sidebar.find(".kg-link").attr(
+  //     "href", F.constants.KG_TITLE_SEARCH + encodeURI(movie.title));
+  //   // text fields
+  //   F.el.sidebar.find("div.id").text(movie.id);
+  //   F.el.sidebar.find("input[name=title]").val(movie.title);
+  //   F.el.sidebar.find("div.year").text(movie.year == null ? '' : movie.year);
+  //   if (movie.rating !== null) {
+  //     F.el.sidebar.find("div.rating")
+  //       .text(movie.rating == null ? '' : movie.rating)
+  //       .attr("title", movie.votes + " votes");
+  //   }
+  //   $.each(['directors', 'producers', 'writers'], function() {
+  //     F.el.sidebar.find("div." + this).html(
+  //       F.formatter.concatenateA(movie[this], 'lookup ' + this, 4)
+  //     );
+  //   });
+  //   $.each(['genres', 'countries'], function() {
+  //     F.el.sidebar.find("div." + this).html(
+  //       F.formatter.concatenateA(movie[this], 'lookup ' + this)
+  //     );
+  //   });
+  //   if (movie["mpaa"].length > 0) {
+  //     F.el.sidebar.find("label.mpaa").show();
+  //     F.el.sidebar.find("div.mpaa").text(movie['mpaa']).show();
+  //   } else {
+  //     F.el.sidebar.find("label.mpaa").hide();
+  //     F.el.sidebar.find("div.mpaa").hide();
+  //   }
+  //   // tabs
+  //   F.el.sidebar.find("#tabs-plot").html(F.formatter.plot(movie['plot']));
+  //   F.el.sidebar.find("#tabs-keywords").html(
+  //     F.formatter.concatenateA(movie['keywords'], 'lookup keywords')
+  //   );
+  //   F.el.sidebar.find("#tabs-notes").text(movie['notes']);
+  //   // load cover
+  //   var src =
+  //     $.flicks.constants.COVER_BASE + 'movies_' + movie.id + '.jpg';
+  //   F.el.sidebar.find(".image img").attr("src", src);
+  //   // if cast tab open -> load cast
+  //   if (!F.el.sidebar.find("#tabs-cast").hasClass("ui-tabs-hide")) {
+  //     F.ui.loadCast();
+  //   }
+  //   F.ui.relayout();
+  // };
+  // // sidebar tabs
+  // F.ui.loadCast = function() {
+  //   var movie_id = F.store.getItem(F.grid.getSelectedRows()[0]).id;
+  //   $.ajax({
+  //     url: "/cast/",
+  //     type: "POST",
+  //     data: { movie_id: movie_id },
+  //     success: function(r) {
+  //       $("#detail-tabs #tabs-cast").html(
+  //         F.formatter.concatenateA(r.cast, 'lookup cast')
+  //       );
+  //     },
+  //     error: function(r) {
+  //       F.modals.error(
+  //         "<strong>Loading cast failed!</strong><br><br>Error text: "
+  //           + r.statusText);
+  //     }
+  //   });
+  // };
+  // $("#detail-tabs").tabs();
+  // $("#detail-tabs .cast-tab").click(function() {
+  //   $("#detail-tabs #tabs-cast").html("");
+  //   F.ui.loadCast();
+  // });
 
   // store events
   F.store.onDataLoading.subscribe(F.ui.enable_spinner);

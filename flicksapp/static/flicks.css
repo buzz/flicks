@@ -84,7 +84,8 @@ a.lookup:hover, a.lookup:active {
   right: 0;
   z-index: 999;
   display: none;
-  padding: 12px 16px;
+  padding: 16px 32px;
+  opacity: 0.975;
   background: -webkit-linear-gradient(top, rgba(247,247,247,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10+,Safari5.1+ */
   background: -moz-linear-gradient(top, rgba(247,247,247,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6+ */
   border-bottom-left-radius: 4px;

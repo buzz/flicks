@@ -67,7 +67,6 @@ $(function() {
       sortable:  true,
       maxWidth:  60,
       minWidth:  60,
-			cssClass:  'align-right'
     },
     {
       id:        'rating',

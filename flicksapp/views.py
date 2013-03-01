@@ -91,20 +91,8 @@ def grid(request):
     return HttpResponse(enc.encode({ 'error': 'Malformed request!' }),
                         mimetype='application/json', status=400)
 
-def cast(request):
-    enc = FlicksJSONEncoder()
-    movie_id = request.POST.get('movie_id', None)
-    try:
-        cast = Movie.objects.get(id=movie_id).cast.all()
-    except Movie.DoesNotExist:
-        return HttpResponse(enc.encode({ 'error': 'Could not find movie' }),
-                            mimetype='application/json', status=404)
-    data = enc.encode({
-            'cast': serialize('python', cast),
-            })
-    return HttpResponse(data, mimetype='application/json')
-
 def add(request):
+    # TODO
     pass
 
 def autocomplete(request):
