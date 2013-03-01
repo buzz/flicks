@@ -325,7 +325,7 @@ $(function() {
     if (!movie)
       return;
     $.ajax({
-      url: "/movies/" + movie.id,
+      url: "/movie/" + movie.id,
       dataType: "json",
       type: "GET",
       success: function (movie) {
@@ -339,7 +339,7 @@ $(function() {
       },
       error: function (r) {
         F.modals.error(
-          "<strong>Loading movied details failed " + movie.id +
+          "<strong>Loading movie details failed " + movie.id +
             "!</strong><br><br>Error text: " + r.statusText);
       }
     });

@@ -69,7 +69,7 @@
 
       // request arguments
       var args = {
-        count: PAGESIZE
+        limit: PAGESIZE
       };
 
       // search arguments
@@ -83,11 +83,8 @@
       }
 
       // sorting
-      if (sortcol !== null) {
-        // args.o = sortcol;
-        // TODO asc/desc not working!
-        args.o = (sortasc ? '' : '-') + sortcol;
-      }
+      if (sortcol !== null)
+        args.order_by = (sortasc ? '' : '-') + sortcol;
 
       // fetch page blocks (most of the time there should be just one
       // page block to fetch. but sometimes the range can overlap two
@@ -135,11 +132,11 @@
     }
 
     function onSuccess(resp, fromPage) {
-      var from = (fromPage - 1) * PAGESIZE, to = from + resp.results.length;
-      data.length = resp.count;
+      var from = (fromPage - 1) * PAGESIZE, to = from + resp.objects.length;
+      data.length = resp.meta.total_count;
       // copy received data to cache
       for (var i = from; i < to; ++i)
-        data[i] = resp.results[i - from];
+        data[i] = resp.objects[i - from];
       onDataLoaded.notify({
         from: from,
         to: to,

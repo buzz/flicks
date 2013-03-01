@@ -55,7 +55,7 @@ $(function() {
       id:        'director',
       name:      'Director',
       field:     'directors',
-      sortable:  true,
+      sortable:  false,
       formatter: function(row, cell, value, columnDef, dataContext) {
         return F.formatter.concatenate(value);
       }
@@ -137,11 +137,11 @@ $(function() {
     var sortField = ("sortField" in args.sortCol) ?
       args.sortCol.sortField : args.sortCol.field;
     F.store.setSort(sortField, args.sortAsc);
-    F.gridChange();
     F.state.set('sorting', {
       field: sortField,
       asc: args.sortAsc,
     });
+    F.gridChange();
   });
   F.grid.onSelectedRowsChanged.subscribe(function(e, args) {
     if (args.rows.length == 1) {

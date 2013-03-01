@@ -104,12 +104,6 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-REST_FRAMEWORK = {
-    'PAGINATE_BY': 100,
-    'PAGINATE_BY_PARAM': 'count',
-    'FILTER_BACKEND': 'rest_framework.filters.DjangoFilterBackend',
-}
-
 INSTALLED_APPS = (
     # 'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -123,7 +117,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'flicksapp',
     'south',
-    'rest_framework',
+    'tastypie',
 )
 
 # A sample logging configuration. The only tangible logging
