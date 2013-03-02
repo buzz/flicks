@@ -72,11 +72,10 @@
       };
 
       // search arguments
-      if (typeof search === "string" && search.length > 0) {
+      if (typeof search === "string" && search.length > 0)
         // top/simple search
-        args.title__search = search + '*';
-        args.director__search = search + '*';
-      } else if (typeof search === "object") {
+        args.q = search;
+      else if (typeof search === "object") {
         // advanced search
         var searchargs = {};
         _.each(search, function(v, k) {

@@ -111,6 +111,7 @@ class MovieListResource(ModelResource):
         authorization = Authorization() # anyone can write!
         ordering = ('id', 'title', 'year', 'rating', 'runtime')
         filtering = {
+            'id': 'exact',
             'title': 'search',
             'mpaa': 'search',
             'seen': 'exact',
@@ -131,6 +132,7 @@ class MovieListResource(ModelResource):
         if filters is None:
             filters = {}
         orm_filters = super(MovieListResource, self).build_filters(filters)
+
         # all the fields tastypie would ignore because they are not
         # fields in resource
         queries = ('cast__name__search', 'producers__name__search',
@@ -140,6 +142,27 @@ class MovieListResource(ModelResource):
             if q in filters:
                 kwargs = { q: filters[q] }
                 orm_filters[q] = Q(**kwargs)
-        print "resulting orm:"
-        print orm_filters
+
+        # "simple search" (the search input at the top of the app) is
+        # special because instead of filtering (logical AND) it search
+        # in several fields at the same time (logical OR).
+        if 'q' in filters:
+            q = filters['q']
+            qs = Q(title__search=q) | Q(directors__name__search=q)
+            if q.isdigit():
+                qs = qs | Q(id__exact=q)
+            orm_filters['q'] = qs
+
         return orm_filters
+
+    def apply_filters(self, request, applicable_filters):
+        """
+        We override this method to support our custom filter 'q'
+        """
+        if 'q' in applicable_filters:
+            q = applicable_filters.pop('q')
+        else:
+            q = None
+        semi_filtered = super(MovieListResource, self).apply_filters(
+            request, applicable_filters)
+        return semi_filtered.filter(q) if q else semi_filtered
