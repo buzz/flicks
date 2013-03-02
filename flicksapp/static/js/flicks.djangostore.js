@@ -74,11 +74,31 @@
       // search arguments
       if (typeof search === "string" && search.length > 0) {
         // top/simple search
-        args.title = search;
-        args.director = search;
-      } else if (search !== null && typeof search === "object") {
+        args.title__search = search + '*';
+        args.director__search = search + '*';
+      } else if (typeof search === "object") {
         // advanced search
-        $.extend(args, search);
+        var searchargs = {};
+        _.each(search, function(v, k) {
+          if (typeof v === 'string' && v !== '') {
+            // string model field
+            if (_.indexOf(['title', 'mpaa'], k) !== -1)
+              searchargs[k + '__search'] = v;
+            // string model field
+            else if (_.indexOf(['seen', 'favourite'], k) !== -1)
+              searchargs[k] = v;
+            // related field
+            else if (_.indexOf(['countries', 'genres', 'keywords', 'cast',
+                                'directors', 'producers'], k) !== -1)
+              searchargs[k + '__name__search'] = v;
+          }
+          // range field
+          else if (typeof v === 'object' && v[0] !== '' && v[1] !== '') {
+            if (_.indexOf(['year', 'runtime', 'rating'], k) !== -1)
+              searchargs[k + '__range'] = v[0] + ',' + v[1];
+          }
+        });
+        $.extend(args, searchargs);
       }
 
       // sorting

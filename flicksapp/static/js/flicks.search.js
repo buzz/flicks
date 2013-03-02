@@ -24,6 +24,7 @@
   }
 
   // empty search (show all)
+  // (we supply empty strings so the search form template doesn't complain)
   F.search.empty_search = {
     title: '',
     countries: '',

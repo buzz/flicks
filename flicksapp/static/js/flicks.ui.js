@@ -126,15 +126,17 @@ $(function() {
     });
     // sliders
     $.each(["year", "runtime", "rating"], function(i, v) {
+      // min/max boundaries
       var min = F.hidden_info[v + "_min"], max = F.hidden_info[v + "_max"];
       var updateDisplay = function(e, ui) {
         F.el["adv-search"].find(".as_" + v + " .display").html(
           "<strong>" + ui.values[0] + "</strong> - <strong>"
             + ui.values[1]) + "</strong>";
       };
+      // set values
       var q = F.state.get('q'), values;
-      if (typeof q === 'object' && v + '_0' in q)
-        values = [q[v + '_0'], q[v + '_1']];
+      if (typeof q === 'object' && v in q)
+        values = [q[v][0], q[v][1]];
       else
         values = [min, max];
       F.el["adv-search"].find("#as_slider_" + v).slider({
@@ -251,10 +253,8 @@ $(function() {
       function(i, f) {
         var v = $f.find("#as_slider_" + f).slider("option", "values");
         if (v[0] > F.hidden_info[f + "_min"] ||
-            v[1] < F.hidden_info[f + "_max"]) {
-          fields[f + '_0'] = v[0];
-          fields[f + '_1'] = v[1];
-        }
+            v[1] < F.hidden_info[f + "_max"])
+          fields[f] = v;
       }
     );
     F.search(fields);

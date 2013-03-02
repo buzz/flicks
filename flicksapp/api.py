@@ -1,6 +1,7 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.paginator import Paginator
+from tastypie.constants import ALL_WITH_RELATIONS
 
 from flicksapp.models import Movie, Person, Genre, Keyword, File, Language,\
     Country
@@ -13,6 +14,9 @@ class PersonResource(ModelResource):
         resource_name = 'person'
         fields = ('name',)
         include_resource_uri = False
+        filtering = {
+            'name': 'search',
+        }
 
 class GenreResource(ModelResource):
     class Meta:
@@ -20,6 +24,9 @@ class GenreResource(ModelResource):
         resource_name = 'genre'
         fields = ('name',)
         include_resource_uri = False
+        filtering = {
+            'name': 'search',
+        }
 
 class KeywordResource(ModelResource):
     class Meta:
@@ -27,6 +34,9 @@ class KeywordResource(ModelResource):
         resource_name = 'keyword'
         fields = ('name',)
         include_resource_uri = False
+        filtering = {
+            'name': 'search',
+        }
 
 class FileResource(ModelResource):
     class Meta:
@@ -41,6 +51,9 @@ class LanguageResource(ModelResource):
         resource_name = 'language'
         fields = ('name',)
         include_resource_uri = False
+        filtering = {
+            'name': 'search',
+        }
 
 class CountryResource(ModelResource):
     class Meta:
@@ -48,6 +61,9 @@ class CountryResource(ModelResource):
         resource_name = 'country'
         fields = ('name',)
         include_resource_uri = False
+        filtering = {
+            'name': 'search',
+        }
 
 class MovieDetailResource(ModelResource):
     """
@@ -76,9 +92,25 @@ class MovieListResource(ModelResource):
     languages = fields.ToManyField(LanguageResource, 'languages', full=True)
     countries = fields.ToManyField(CountryResource, 'countries', full=True)
     class Meta:
-        queryset = Movie.objects.only(*c.MOVIE_LIST_VIEW_FIELDS)
+        queryset = Movie.objects.only(*c.MOVIE_LIST_VIEW_FIELDS)\
+            .prefetch_related('countries', 'genres', 'directors')
         fields = c.MOVIE_LIST_VIEW_FIELDS
         resource_name = 'movies'
         include_resource_uri = False
         ordering = ('id', 'title', 'year', 'rating', 'runtime')
+        filtering = {
+            'title': 'search',
+            'mpaa': 'search',
+            'seen': 'exact',
+            'favourite': 'exact',
+            'countries': ALL_WITH_RELATIONS,
+            'genres': ALL_WITH_RELATIONS,
+            'keywords': ALL_WITH_RELATIONS,
+            'cast': ALL_WITH_RELATIONS,
+            'directors': ALL_WITH_RELATIONS,
+            'producers': ALL_WITH_RELATIONS,
+            'year': 'range',
+            'runtime': 'range',
+            'rating': 'range',
+        }
         paginator_class = Paginator
