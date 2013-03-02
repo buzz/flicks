@@ -3,8 +3,7 @@
   var F = $.flicks;
 
   /***
-   * A data store implementation to work with Django. It provides an
-   * suitable interface to be used as an data store for SlickGrid.
+   * A REST data store implementation to be used with SlickGrid.
    *
    * The store fetches and caches data from an REST API (eg. Django
    * REST framework) in blocks (PAGESIZE elements per request).
@@ -90,16 +89,16 @@
       // page block to fetch. but sometimes the range can overlap two
       // pageblocks.
       for (var i = fromPage; i <= toPage; ++i) {
-        // add 1 because the page parameter starts from 1 not 0
-        args.page = i + 1;
+        // results offset
+        args.offset = i * PAGESIZE;
 
         // ignore if an identical request is already active
-        if (_.indexOf(req_info, args.page) !== -1)
+        if (_.indexOf(req_info, args.offset) !== -1)
           continue;
 
         onDataLoading.notify({
-          from: (fromPage - 1) * PAGESIZE,
-          to: (fromPage) * PAGESIZE,
+          from: args.offset,
+          to: args.offset + PAGESIZE,
           req_info: req_info
         });
 
@@ -110,12 +109,12 @@
           type: "GET",
           data: args,
           // exploit context to store retrieved page
-          context: { page: args.page }
+          context: { offset: args.offset }
         }).always(function() {
           // remove request info
-          req_info = _.without(req_info, this.page);
+          req_info = _.without(req_info, this.offset);
         }).done(function (r) {
-          onSuccess(r, this.page)
+          onSuccess(r, this.offset)
         }).fail(function (r) {
           // reset status indicator
           for (var i = fromPage * PAGESIZE; i < (fromPage + 1) * PAGESIZE; ++i)
@@ -126,13 +125,13 @@
         });
 
         // save request info
-        req_info.push(args.page);
+        req_info.push(args.offset);
       }
 
     }
 
-    function onSuccess(resp, fromPage) {
-      var from = (fromPage - 1) * PAGESIZE, to = from + resp.objects.length;
+    function onSuccess(resp, from) {
+      var to = from + resp.objects.length;
       data.length = resp.meta.total_count;
       // copy received data to cache
       for (var i = from; i < to; ++i)

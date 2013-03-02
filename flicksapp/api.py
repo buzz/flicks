@@ -1,5 +1,6 @@
-from tastypie.resources import ModelResource
 from tastypie import fields
+from tastypie.resources import ModelResource
+from tastypie.paginator import Paginator
 
 from flicksapp.models import Movie, Person, Genre, Keyword, File, Language,\
     Country
@@ -80,3 +81,4 @@ class MovieListResource(ModelResource):
         resource_name = 'movies'
         include_resource_uri = False
         ordering = ('id', 'title', 'year', 'rating', 'runtime')
+        paginator_class = Paginator

@@ -131,8 +131,11 @@ $(function() {
     multiSelect: false,
   };
 
+  // create grid
   F.grid = new Slick.Grid(F.el.grid, F.store, columns, options);
   F.grid.setSelectionModel(new Slick.RowSelectionModel());
+
+  // events
   F.grid.onSort.subscribe(function(e, args) {
     var sortField = ("sortField" in args.sortCol) ?
       args.sortCol.sortField : args.sortCol.field;
