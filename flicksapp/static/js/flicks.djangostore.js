@@ -1,4 +1,4 @@
-(function ($) {
+(function() {
 
   var F = $.flicks;
 
@@ -136,7 +136,7 @@
           // remove request info
           req_info = _.without(req_info, this.offset);
         }).done(function (r) {
-          onSuccess(r, this.offset)
+          onSuccess(r, this.offset);
         }).fail(function (r) {
           // reset status indicator
           for (var i = fromPage * PAGESIZE; i < (fromPage + 1) * PAGESIZE; ++i)
@@ -232,4 +232,5 @@
   // Slick.Data.RemoteModel
   $.extend(true, window, { Slick: {
     Data: { RemoteDjangoModel: RemoteDjangoModel }}});
-})(jQuery);
+
+})();

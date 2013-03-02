@@ -1,4 +1,4 @@
-(function ($) {
+(function() {
 
   var F = $.flicks;
 
@@ -29,6 +29,17 @@
         $.extend(F.state._state, JSON.parse(cookie_state));
     },
 
+    // recreate state
+    // TODO:  sorting, last selected movie
+    recreateAppState: function() {
+      var q = F.state.get("q");
+      if (q)
+        F.store.setSearch(q);
+      var sorting = F.state.get("sorting");
+      if (sorting)
+        F.store.setSort(sorting.field, sorting.asc);
+    },
+
     _persist: function() {
       $.cookie(F.constants.COOKIE_NAME, JSON.stringify(F.state._state));
     },
@@ -45,4 +56,4 @@
 
   };
 
-})(jQuery);
+})();

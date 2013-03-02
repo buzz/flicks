@@ -1,4 +1,4 @@
-(function ($) {
+(function() {
 
   var F = $.flicks;
 
@@ -19,8 +19,12 @@
     F.modals.show_modal("Warning", "warning", msg);
   };
 
-  $(function() {
+  F.modals.info = function(msg) {
+    F.modals.show_modal("Info", "info", msg);
+  };
 
+  F.modals.init = function() {
+    // initialize modal
     F.el.modal.dialog({
       autoOpen: false,
       modal: true,
@@ -30,7 +34,6 @@
         },
       },
     });
+  };
 
-  });
-
-})(jQuery);
+})();

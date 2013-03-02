@@ -1,4 +1,4 @@
-$(function() {
+(function() {
 
   //////////////////////////////////////////////////////////////////////////////
   // flicks.ui-events.js
@@ -11,14 +11,21 @@ $(function() {
   // Connect UI user events
   F.ui.setupUIEvents = function() {
 
+    ////////// Window resize
+
+    $(window).resize(F.ui.relayout);
+
     ////////// Toolbar
 
+    $("a.button.tile-view").click(function() {
+      console.log("Tiel view button clicked.");
+    });
     $("a.button.add").click(function() {
-      console.log("Add movie button clicked.");
+      F.el['dialog-add-movie'].dialog('open');
     });
     $("#top-search form").submit(function() {
       var $input = $(this).find("input[name=query]");
-      F.search($input.val());
+      F.search.do($input.val());
       return false;
     });
     $(document).on('click', '#top-search .clear-search', function() {
@@ -61,12 +68,12 @@ $(function() {
         q[field] = $this.text();
       else
         q[field] = '"' + $this.text() + '"';
-      F.search(q);
+      F.search.do(q);
       return false;
     });
   // movie action buttons
   F.el.sidebar.on("click", "a.fav-add", function() {
-    var id = F.el.sidebar.find(".id").text();
+    var id = F.movie.current.id;
     F.movie.fav(id, false, function() {
       F.store.getItemById(id).favourite = F.movie.current.favourite = true;
       F.ui.currentMovieChanged();
@@ -74,7 +81,7 @@ $(function() {
     return false;
   })
   .on("click", "a.fav-remove", function() {
-    var id = F.el.sidebar.find(".id").text();
+    var id = F.movie.current.id;
     F.movie.fav(id, true, function() {
       F.store.getItemById(id).favourite = F.movie.current.favourite = false;
       F.ui.currentMovieChanged();
@@ -82,7 +89,7 @@ $(function() {
     return false;
   })
   .on("click", "a.mark-seen", function() {
-    var id = F.el.sidebar.find(".id").text();
+    var id = F.movie.current.id;
     F.movie.markSeen(id, false, function() {
       F.store.getItemById(id).seen = F.movie.current.seen = true;
       F.ui.currentMovieChanged();
@@ -90,14 +97,24 @@ $(function() {
     return false;
   })
   .on("click", "a.unmark-seen", function() {
-    var id = F.el.sidebar.find(".id").text();
+    var id = F.movie.current.id;
     F.movie.markSeen(id, true, function() {
       F.store.getItemById(id).seen = F.movie.current.seen = false;
       F.ui.currentMovieChanged();
+    });
+    return false;
+  })
+  .on("click", "a.delete", function() {
+    F.movie.delete(F.movie.current, function(movie) {
+      F.store.clear();
+      F.grid.invalidate();
+      F.gridChange();
+      F.modals.info(
+        '<strong>Movie deleted: "' + movie.title + '" (' + movie.id + ')!');
     });
     return false;
   });
 
   }
 
-});
+})();

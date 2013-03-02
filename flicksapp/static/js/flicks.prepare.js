@@ -1,9 +1,14 @@
-(function ($) {
+(function() {
+
+  //////////////////////////////////////////////////////////////////////////////
+  //
+  // Prepare
+  //
 
   $.flicks = {};
   var F = $.flicks;
 
-  $(function() {
+  F.prepare = function() {
 
     // constants
     F.constants = {
@@ -12,9 +17,6 @@
       COOKIE_NAME: 'flicks_state',
       IMDB_BASE_URL: 'http://www.imdb.com/title/tt',
     };
-
-    // restore app state from cookie
-    F.state.restore();
 
     // make hidden info available
     F.hidden_info = JSON.parse($("#hidden_info").html());
@@ -27,15 +29,13 @@
       sidebar: $("#sidebar"),
       'adv-search': $("#adv-search"),
       modal: $("#modal"),
+      'dialog-add-movie': $("#dialog-add-movie"),
     };
-
-    // autocomplete cache
-    F.autocomplete = {};
 
     // set django csrf token
     var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
     $.ajaxSetup({ headers: { 'X-CSRFToken': csrftoken } });
 
-  });
+  }
 
-})(jQuery);
+})();

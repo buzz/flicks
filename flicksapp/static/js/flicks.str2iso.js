@@ -1,4 +1,4 @@
-$(function() {
+(function() {
 
   var F = $.flicks;
 
@@ -88,4 +88,4 @@ $(function() {
     return STR_TO_ISO[str];
   }
 
-});
+})();

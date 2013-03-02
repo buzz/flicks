@@ -1,22 +1,24 @@
-$(function() {
+(function() {
 
   var F = $.flicks;
 
-  // recreate state 
-  // TODO:  sorting, last selected movie
-  var q = F.state.get("q");
-  if (q)
-    F.store.setSearch(q);
-  var sorting = F.state.get("sorting");
-  if (sorting)
-    F.store.setSort(sorting.field, sorting.asc);
+  $(function() {
+    F.prepare();
+    F.setupGrid();
 
-  // setup UI
-  F.ui.setupUI();
-  F.ui.setupUIEvents();
+    // app state
+    F.state.restore();
+    F.state.recreateAppState();
 
-  // load initial data
-  F.ui.relayout();
-  F.gridChange();
+    // UI
+    F.addMovie.init();
+    F.modals.init();
+    F.ui.setupUI();
+    F.ui.setupUIEvents();
+    F.ui.relayout();
 
-});
+    // load initial data
+    F.gridChange();
+  });
+
+})();

@@ -9,7 +9,7 @@
   </div>
   {% block toolbar %}
   <div id="buttons">
-    <a class="button list" href="#">Tile view</a>
+    <a class="button tile-view" href="#">Tile view</a>
     <a class="button add" href="#">Add new</a>
   </div>
   {% endblock %}
@@ -27,4 +27,13 @@
 </div>
 <div id="modal" class="modal" title="">
   <p class="content"></p>
+</div>
+<div id="dialog-add-movie" title="Add movie">
+  <form>
+    <label for="add_movie_title">Title search</label>
+    <input type="text" name="title" id="add_movie_title" class="text ui-widget-content ui-corner-all" /><br />
+    <p>or</p>
+    <label for="add_movie_imdb_id">IMDb #</label>
+    <input type="text" name="imdb_id" id="add_movie_imdb_id" class="text ui-widget-content ui-corner-all" />
+  </form>
 </div>

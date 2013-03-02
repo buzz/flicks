@@ -1,4 +1,4 @@
-$(function() {
+(function() {
 
   //////////////////////////////////////////////////////////////////////////////
   // flicks.ui.js
@@ -54,7 +54,6 @@ $(function() {
       F.grid.autosizeColumns();
     }
   };
-  $(window).resize(F.ui.relayout);
 
   // render and show adv search form
   F.ui.show_adv_search = function() {
@@ -108,7 +107,7 @@ $(function() {
       F.ui.updateInfoText();
     });
     // toolbar buttons
-    $("a.button.list").button({
+    $("a.button.tile-view").button({
       icons: {
         primary: "ui-icon-video"
       }
@@ -218,7 +217,7 @@ $(function() {
           fields[f] = v;
       }
     );
-    F.search(fields);
+    F.search.do(fields);
     return false;
   }
 
@@ -250,5 +249,4 @@ $(function() {
     F.ui.renderSidebar(F.movie.current);
   };
 
-
-});
+})();

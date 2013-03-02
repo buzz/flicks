@@ -1,9 +1,15 @@
-(function ($) {
+(function() {
+
+  //////////////////////////////////////////////////////////////////////////////
+  //
+  // Search related
+  //
 
   var F = $.flicks;
+  F.search = {};
 
   // perform search
-  F.search = function(q) {
+  F.search.do = function(q) {
     F.store.clear();
     F.grid.updateRowCount()
     F.store.setSearch(q);
@@ -21,7 +27,7 @@
 
   // clear search
   F.search.clear = function() {
-    F.search('');
+    F.search.do('');
   };
 
   // empty search (show all)
@@ -39,4 +45,4 @@
     favourite: ''
   };
 
-})(jQuery);
+})();

@@ -124,7 +124,7 @@ class Movie(models.Model):
     favourite = models.BooleanField('Favourite', default=False)
     notes = models.TextField('Notes', blank=True)
 
-    def clear_relations(self):
+    def clear_imdb_relations(self):
         """Completely clear all IMDb relation fields."""
         self.countries = []
         self.genres = []
@@ -151,6 +151,9 @@ class Movie(models.Model):
             ia = IMDb()
         im = ia.get_movie(
             self.imdb_id, info=('main', 'plot', 'akas', 'keywords'))
+
+        # first clear all imdb relations
+        self.clear_imdb_relations()
 
         # get simple fields
         self.title = im['title']

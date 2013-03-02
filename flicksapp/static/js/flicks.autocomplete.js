@@ -1,8 +1,13 @@
-$(function() {
+(function() {
+
+  //////////////////////////////////////////////////////////////////////////////
+  //
+  // Auto-complete
+  //
 
   var F = $.flicks;
-
-  F.autocomplete =  {};
+  F.autocomplete = {};
+  F.autocomplete.cache = {};
 
   // setups autocomplete for a specific element
   // 'field' is the model field to search
@@ -13,9 +18,9 @@ $(function() {
         var q = request.term;
         // try cache first
         if (!(field in F.autocomplete))
-          F.autocomplete[field] = {};
-        if (q in F.autocomplete[field]) {
-          response(F.autocomplete[field][q]);
+          F.autocomplete.cache[field] = {};
+        if (q in F.autocomplete.cache[field]) {
+          response(F.autocomplete.cache[field][q]);
           return;
         }
         $.ajax({
@@ -27,7 +32,7 @@ $(function() {
             what: field,
           },
           success: function(data, status, xhr) {
-            F.autocomplete[field][q] = data;
+            F.autocomplete.cache[field][q] = data;
             response(data);
           },
           error: function(r) {
@@ -59,4 +64,4 @@ $(function() {
     });
   };
 
-});
+})();

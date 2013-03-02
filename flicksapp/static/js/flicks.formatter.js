@@ -1,4 +1,4 @@
-$(function() {
+(function() {
 
   var F = $.flicks;
 
@@ -92,4 +92,4 @@ $(function() {
 
   };
 
-});
+})();
