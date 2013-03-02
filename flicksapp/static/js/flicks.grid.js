@@ -148,7 +148,7 @@ $(function() {
   });
   F.grid.onSelectedRowsChanged.subscribe(function(e, args) {
     if (args.rows.length == 1) {
-      F.ui.loadMovieDetails(F.store.getItem(args.rows[0]));
+      F.movie.loadMovie(F.store.getItem(args.rows[0]).id, F.ui.renderSidebar);
     }
   });
   F.grid.onViewportChanged.subscribe(function(e, args) {

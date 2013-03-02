@@ -92,7 +92,7 @@ a.lookup:hover, a.lookup:active {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
-#adv-search .close {
+#adv-search .close, #adv-search .clear-search {
   float: right;
 }
 
@@ -303,7 +303,7 @@ a.lookup:hover, a.lookup:active {
 }
 
 .slick-row:hover .slick-cell {
-  background-color: #f7f7f7;
+  background-color: rgb(199, 221, 231);
 }
 
 .slick-row.active .slick-cell {

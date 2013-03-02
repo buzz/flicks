@@ -1,8 +1,7 @@
-- grid item loading geht nicht richtig wenn man weit runterscrollt
- - djangostore komplett schön machen!
-
-- order by, sort is not working (django-filter doesn't seem to support desc ordering?)
- - possible solutions: implement ordering without django-filter or switch to tastypie
+- wenn man das grid komplett runterscrollt, wird der ganze store
+  gleichzeitig geladen. possible solutions:
+ - timeout einbauen, zB 50ms (code in der git history!)
+ - requests abbrechen, wenn ausserhalb des viewports
 
 - movie details
  - karagarga nummer/flag notwendig??
@@ -18,8 +17,6 @@
  - play button
 
 - imdb sync button
-
-- fav/seen click
 
 - migrate from jquery ui to bootstrap for beauty?
 

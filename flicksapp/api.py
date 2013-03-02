@@ -122,7 +122,7 @@ class MovieListResource(ModelResource):
             'cast': ALL_WITH_RELATIONS,
             'directors': ALL_WITH_RELATIONS,
             'producers': ALL_WITH_RELATIONS,
-            'year': 'range',
+            'year': ('range', 'exact'),
             'runtime': 'range',
             'rating': 'range',
         }

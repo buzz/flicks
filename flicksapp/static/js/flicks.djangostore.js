@@ -80,10 +80,13 @@
         var searchargs = {};
         _.each(search, function(v, k) {
           if (typeof v === 'string' && v !== '') {
-            // string model field
+            // exact model field
+            if (k === 'year')
+              searchargs[k] = v;
+            // string model field (search)
             if (_.indexOf(['title', 'mpaa'], k) !== -1)
               searchargs[k + '__search'] = v;
-            // string model field
+            // boolean model field
             else if (_.indexOf(['seen', 'favourite'], k) !== -1)
               searchargs[k] = v;
             // related field

@@ -1,5 +1,12 @@
 $(function() {
 
+  //////////////////////////////////////////////////////////////////////////////
+  // flicks.ui.js
+  //
+  // Code that deals with UI updates (like filling data into DOM
+  // elements, rendering client templates, ...)
+  //
+
   var F = $.flicks;
 
   F.ui = {};
@@ -51,6 +58,11 @@ $(function() {
 
   // render and show adv search form
   F.ui.show_adv_search = function() {
+    F.ui.render_adv_search();
+    F.el['adv-search'].slideDown('fast');
+  };
+
+  F.ui.render_adv_search = function() {
     var q = $.flicks.state.get("q"), template_data;
     if (typeof q === 'object')
       template_data = q;
@@ -59,13 +71,42 @@ $(function() {
     var template = _.template($("#searchform-template").html(), template_data);
     F.el['adv-search'].html(template);
     F.ui.setupSearchForm();
-    F.el['adv-search'].slideDown('fast');
+  };
+
+  // update toolbar status text
+  F.ui.updateInfoText = function() {
+    var info = "Found  <strong>" + F.store.getLength() + "</strong> movie" +
+      (F.store.getLength() > 1 ? "s" : "") + "."
+    var q = F.state.get("q");
+    if (q) {
+      if (typeof q === "string")
+        info += " (Searching for '" + q + "')";
+      else if (typeof q === "object") {
+        var fields = [];
+        $.each(q, function(k, v) {
+          if (typeof v != "undefined" && v !== '')
+            fields.push(k + ": <strong>" + v + "</strong>");
+        });
+        if (fields.length > 0)
+          info += " (Searching for " + fields.join(", ") + ")";
+      }
+    }
+    F.el.info.html(info);
   };
 
   //////////////////////////////////////////////////////////////////////////////
   // Initialize UI
 
   F.ui.setupUI = function() {
+    // UI has to react on store events
+    F.store.onDataLoading.subscribe(F.ui.enable_spinner);
+    F.store.onDataLoaded.subscribe(function(e, args) {
+      if (args.req_info.length == 0)
+        F.ui.disable_spinner();
+      F.el.grid.show();
+      F.el.sidebar.show();
+      F.ui.updateInfoText();
+    });
     // toolbar buttons
     $("a.button.list").button({
       icons: {
@@ -77,7 +118,7 @@ $(function() {
         primary: "ui-icon-plusthick"
       }
     });
-    // clear search button
+    // clear search button (in toolbar)
     $("#top-search .clear-search").button({
       icons: {
         primary: "ui-icon-cancel"
@@ -91,19 +132,22 @@ $(function() {
       },
       text: false
     });
+    // auto-complete for top search
+    F.autocomplete.setupTopSearch();
   }
 
   // advanced search form: setup UI and restore form state
   F.ui.setupSearchForm = function() {
-    F.el["adv-search"].find(".close").button({
-      icons: {
-        primary: "ui-icon-closethick"
-      },
-      text: false
-    }).click(function() {
-      F.el['adv-search'].slideUp('fast');
-      return false;
+    // buttons
+    F.el["adv-search"].find(".clear-search").button({
+      icons: { primary: "ui-icon-cancel" }, text: false
     });
+    F.el["adv-search"].find(".close").button({
+      icons: { primary: "ui-icon-closethick" }, text: false
+    });
+    F.el["adv-search"].find("input[type=submit]").button();
+    F.el["adv-search"].find("#as_radio_seen").buttonset();
+    F.el["adv-search"].find("#as_radio_favourite").buttonset();
     // sliders
     $.each(["year", "runtime", "rating"], function(i, v) {
       // min/max boundaries
@@ -113,7 +157,7 @@ $(function() {
           "<strong>" + ui.values[0] + "</strong> - <strong>"
             + ui.values[1]) + "</strong>";
       };
-      // set values
+      // restore values
       var q = F.state.get('q'), values;
       if (typeof q === 'object' && v in q)
         values = [q[v][0], q[v][1]];
@@ -129,72 +173,8 @@ $(function() {
       });
       updateDisplay(undefined, { values: [min, max] });
     });
-    // buttons
-    F.el["adv-search"].find("#as_radio_seen").buttonset();
-    F.el["adv-search"].find("#as_radio_favourite").buttonset();
-    F.el["adv-search"].find("input[type=submit]").button();
-    // adv. search submit
-    F.el["adv-search"].find("form").submit(F.ui.submitAdvancedSearch);
     // auto-complete
-    var ac = {
-      'top-search': {
-        el: $("#top-search input[name=query]"),
-        what: 'title',
-      },
-      title: {
-        el: $("#adv-search #as_title"),
-      },
-      country: {
-        el: $("#adv-search #as_countries"),
-      },
-      genre: {
-        el: $("#adv-search #as_genres"),
-      },
-      keyword: {
-        el: $("#adv-search #as_keywords"),
-      },
-      cast: {
-        el: $("#adv-search #as_cast"),
-      },
-      director: {
-        el: $("#adv-search #as_directors"),
-      },
-      writer: {
-        el: $("#adv-search #as_writers"),
-      },
-    };
-    $.each(ac, function(k, v) {
-      v.el.autocomplete({
-        source: function(request, response) {
-          var q = request.term;
-          var what = ('what' in v) ? v.what : k;
-          if (!(what in F.autocomplete))
-            F.autocomplete[what] = {};
-          if (q in F.autocomplete[what]) {
-            response(F.autocomplete[what][q]);
-            return;
-          }
-          $.ajax({
-            url: "/autocomplete/",
-            dataType: "json",
-            type: "POST",
-            data: {
-              q: q,
-              what: what,
-            },
-            success: function(data, status, xhr) {
-              F.autocomplete[what][q] = data;
-              response(data);
-            },
-            error: function(r) {
-              F.modals.error(
-                "<strong>Auto-complete failed!</strong><br><br>Error text: "
-                  + r.statusText);
-            },
-          });
-        }
-      });
-    });
+    F.autocomplete.setupAdvancedSearch();
   }
 
   // submit advanced search
@@ -244,99 +224,31 @@ $(function() {
 
   // SIDEBAR
 
-  // movie info action handlers
-  F.el.sidebar.on("click", "a.fav-add", function() {
-    var id = F.el.sidebar.find(".id").text();
-    F.actions.favMovie(id, function() {
-      F.store.getItemById(id).favourite = true;
-      favEnable(false);
-      F.el.grid.find(".slick-row.active > div:first > div").addClass("fav");
-    });
-    return false;
-  })
-  .on("click", "a.fav-remove", function() {
-    var id = F.el.sidebar.find(".id").text();
-    F.actions.favMovie(id, function() {
-      F.store.getItemById(id).favourite = false;
-      favEnable(true);
-      F.el.grid.find(".slick-row.active > div:first > div").removeClass("fav");
-    }, true);
-    return false;
-  })
-  .on("click", "a.mark-seen", function() {
-    var id = F.el.sidebar.find(".id").text();
-    F.actions.markSeenMovie(id, function() {
-      F.store.getItemById(id).seen = true;
-      seenEnable(false);
-      F.el.grid.find(".slick-row.active > div:first > div").addClass("seen-yes")
-        .removeClass("seen-no");
-    });
-    return false;
-  })
-  .on("click", "a.unmark-seen", function() {
-    var id = F.el.sidebar.find(".id").text();
-    F.actions.markSeenMovie(id, function() {
-      F.store.getItemById(id).seen = false;
-      seenEnable(true);
-      F.el.grid.find(".slick-row.active > div:first > div").addClass("seen-no")
-        .removeClass("seen-yes");
-    }, true);
-    return false;
-  });
-
-  // load movie into sidebar
-  F.ui.loadMovieDetails = function(movie) {
-    if (!movie)
-      return;
-    $.ajax({
-      url: "/movie/" + movie.id,
-      dataType: "json",
-      type: "GET",
-      success: function (movie) {
-        // render sidebar template
-        var template = _.template($("#sidebar-template").html(), movie);
-        F.el.sidebar.children('.movie-info').html(template);
-        $("#detail-tabs").tabs();
-        F.ui.relayout();
-        // image gets loaded -> this can change height of sidebar !!
-        F.el.sidebar.find(".image img").load(F.ui.relayout);
-      },
-      error: function (r) {
-        F.modals.error(
-          "<strong>Loading movie details failed " + movie.id +
-            "!</strong><br><br>Error text: " + r.statusText);
-      }
-    });
-  }
-
-  F.ui.updateInfoText = function() {
-    var info = "Found  <strong>" + F.store.getLength() + "</strong> movie" +
-      (F.store.getLength() > 1 ? "s" : "") + "."
-    var q = F.state.get("q");
-    if (q) {
-      if (typeof q === "string")
-        info += " (Searching for '" + q + "')";
-      else if (typeof q === "object") {
-        var fields = [];
-        $.each(q, function(k, v) {
-          if (typeof v != "undefined" && v !== '')
-            fields.push(k + ": <strong>" + v + "</strong>");
-        });
-        if (fields.length > 0)
-          info += " (Searching for " + fields.join(", ") + ")";
-      }
-    }
-    F.el.info.html(info);
+  // toggle
+  F.ui.toggleSidebar = function() {
+    F.state.set('sidebar_collapsed', !F.state.get('sidebar_collapsed'));
+    F.ui.relayout();
+  };
+  // render the sidebar
+  F.ui.renderSidebar = function(movie) {
+    // render sidebar template
+    var template = _.template($("#sidebar-template").html(), movie);
+    F.el.sidebar.children('.movie-info').html(template);
+    $("#detail-tabs").tabs();
+    F.ui.relayout();
+    // image gets loaded -> this can change height of sidebar !!
+    F.el.sidebar.find(".image img").load(F.ui.relayout);
   };
 
-  // listen for store events
-  F.store.onDataLoading.subscribe(F.ui.enable_spinner);
-  F.store.onDataLoaded.subscribe(function(e, args) {
-    if (args.req_info.length == 0)
-      F.ui.disable_spinner();
-    F.el.grid.show();
-    F.el.sidebar.show();
-    F.ui.updateInfoText();
-  });
+  // CURRENT MOVIE
+
+  // if the user updates the current movie we have to rerender sidebar
+  // and the grid row
+  F.ui.currentMovieChanged = function() {
+    F.grid.invalidateRow(F.grid.getSelectedRows()[0]);
+    F.grid.render();
+    F.ui.renderSidebar(F.movie.current);
+  };
+
 
 });
