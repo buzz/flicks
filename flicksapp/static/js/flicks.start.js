@@ -11,6 +11,10 @@ $(function() {
   if (sorting)
     F.store.setSort(sorting.field, sorting.asc);
 
+  // setup UI
+  F.ui.setupUI();
+  F.ui.setupUIEvents();
+
   // load initial data
   F.ui.relayout();
   F.gridChange();

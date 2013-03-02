@@ -11,17 +11,18 @@
     // save search to app state
     var q_state = F.state.get('q');
     if (typeof q === 'object')
-      // over write new state over old while preserving keys in old q
-      if (typeof q_state == 'object') {
-        F.state.set(
-          'q', $.extend({}, F.search.empty_search, q_state, q));
-      } else {
-        F.state.set(
-          'q', $.extend({}, F.search.empty_search, q));
-      }
+      // always make sure needed variables are present in q object
+      // (important for template rendering)
+      F.state.set(
+        'q', $.extend({}, F.search.empty_search, q));
     else
       F.state.set('q', q);
-  }
+  };
+
+  // clear search
+  F.search.clear = function() {
+    F.search('');
+  };
 
   // empty search (show all)
   // (we supply empty strings so the search form template doesn't complain)

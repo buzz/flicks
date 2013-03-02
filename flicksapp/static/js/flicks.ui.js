@@ -12,7 +12,8 @@ $(function() {
     $("#spinner").fadeOut();
   };
 
-  // give elements max height
+  // resize grid, sidebar and sidebar tabs dynamically to fill window
+  // height
   F.ui.relayout = function() {
     if(F.grid !== 'undefined') {
       // grid / sidebar max. height
@@ -48,59 +49,8 @@ $(function() {
   };
   $(window).resize(F.ui.relayout);
 
-  // toolbar buttons
-  $("a.button.list").button({
-    icons: {
-      primary: "ui-icon-video"
-    }
-  });
-  $("a.button.add").button({
-    icons: {
-      primary: "ui-icon-plusthick"
-    }
-  }).click(function() {
-    console.log("Add movie button clicked.");
-  });
-
-  // top search
-  $("#top-search form").submit(function() {
-    var $input = $(this).find("input[name=query]");
-    F.search($input.val());
-    return false;
-  });
-  $("#top-search input").focus(function() {
-    var $t = $(this);
-    if ($t.val() === "Search") {
-      $t.attr("value", "");
-    }
-  })
-  .blur(function() {
-    var $t = $(this);
-    if ($t.val() === "") {
-      $t.attr("value", "Search");
-    }
-  });
-
-  // clear search button
-  $("#top-search .clear-search").button({
-    icons: {
-      primary: "ui-icon-cancel"
-    },
-    text: false
-  }).click(function() {
-    $("#top-search input").val("Search");
-    F.search('');
-    return false;
-  });
-
-  // show search form button
-  F.el.tb.find("#show-advanced a").button({
-    icons: {
-      primary: "ui-icon-search"
-    },
-    text: false
-  }).click(function() {
-    // render search form
+  // render and show adv search form
+  F.ui.show_adv_search = function() {
     var q = $.flicks.state.get("q"), template_data;
     if (typeof q === 'object')
       template_data = q;
@@ -110,8 +60,38 @@ $(function() {
     F.el['adv-search'].html(template);
     F.ui.setupSearchForm();
     F.el['adv-search'].slideDown('fast');
-    return false;
-  });
+  };
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Initialize UI
+
+  F.ui.setupUI = function() {
+    // toolbar buttons
+    $("a.button.list").button({
+      icons: {
+        primary: "ui-icon-video"
+      }
+    });
+    $("a.button.add").button({
+      icons: {
+        primary: "ui-icon-plusthick"
+      }
+    });
+    // clear search button
+    $("#top-search .clear-search").button({
+      icons: {
+        primary: "ui-icon-cancel"
+      },
+      text: false
+    });
+    // show search form button
+    F.el.tb.find("#show-advanced a").button({
+      icons: {
+        primary: "ui-icon-search"
+      },
+      text: false
+    });
+  }
 
   // advanced search form: setup UI and restore form state
   F.ui.setupSearchForm = function() {
@@ -217,6 +197,7 @@ $(function() {
     });
   }
 
+  // submit advanced search
   F.ui.submitAdvancedSearch = function() {
     var $f = $(this);
     var fields = {};
@@ -263,12 +244,6 @@ $(function() {
 
   // SIDEBAR
 
-  // handle click event
-  $("#sidebar .handle").click(function() {
-    F.state.set('sidebar_collapsed', !F.state.get('sidebar_collapsed'));
-    F.ui.relayout();
-  });
-
   // movie info action handlers
   F.el.sidebar.on("click", "a.fav-add", function() {
     var id = F.el.sidebar.find(".id").text();
@@ -309,17 +284,6 @@ $(function() {
     return false;
   });
 
-  // lookup anchors
-  $(document).on("click", "a.lookup", function() {
-    var $this = $(this);
-    var classes = $this.attr('class').split(" ");
-    classes.splice(classes.indexOf("lookup"), 1);
-    var q = {};
-    q[classes[0]] = $this.text();
-    F.search(q);
-    return false;
-  });
-
   // load movie into sidebar
   F.ui.loadMovieDetails = function(movie) {
     if (!movie)
@@ -331,7 +295,7 @@ $(function() {
       success: function (movie) {
         // render sidebar template
         var template = _.template($("#sidebar-template").html(), movie);
-        F.el.sidebar.html(template);
+        F.el.sidebar.children('.movie-info').html(template);
         $("#detail-tabs").tabs();
         F.ui.relayout();
         // image gets loaded -> this can change height of sidebar !!

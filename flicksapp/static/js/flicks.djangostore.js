@@ -89,7 +89,7 @@
               searchargs[k] = v;
             // related field
             else if (_.indexOf(['countries', 'genres', 'keywords', 'cast',
-                                'directors', 'producers'], k) !== -1)
+                                'directors', 'producers', 'writers'], k) !== -1)
               searchargs[k + '__name__search'] = v;
           }
           // range field

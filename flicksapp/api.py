@@ -134,7 +134,8 @@ class MovieListResource(ModelResource):
         # all the fields tastypie would ignore because they are not
         # fields in resource
         queries = ('cast__name__search', 'producers__name__search',
-                   'writers__name__search', 'keywords__name__search')
+                   'writers__name__search', 'keywords__name__search',
+                   'mpaa__search')
         for q in queries:
             if q in filters:
                 kwargs = { q: filters[q] }
