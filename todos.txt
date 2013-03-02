@@ -20,4 +20,7 @@
 
 - migrate from jquery ui to bootstrap for beauty?
 
+- searching for terms with accent and other non-latin letters doesn't
+  work
+
 - statistics (later later)
