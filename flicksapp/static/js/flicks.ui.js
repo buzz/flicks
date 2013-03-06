@@ -12,10 +12,10 @@
   F.ui = {};
 
   // spinner
-  F.ui.enable_spinner = function() {
+  F.ui.enableSpinner = function() {
     $("#spinner").fadeIn();
   };
-  F.ui.disable_spinner = function() {
+  F.ui.disableSpinner = function() {
     $("#spinner").fadeOut();
   };
 
@@ -56,12 +56,12 @@
   };
 
   // render and show adv search form
-  F.ui.show_adv_search = function() {
-    F.ui.render_adv_search();
+  F.ui.showAdvSearch = function() {
+    F.ui.renderAdvSearch();
     F.el['adv-search'].slideDown('fast');
   };
 
-  F.ui.render_adv_search = function() {
+  F.ui.renderAdvSearch = function() {
     var q = $.flicks.state.get("q"), template_data;
     if (typeof q === 'object')
       template_data = q;
@@ -98,10 +98,10 @@
 
   F.ui.setupUI = function() {
     // UI has to react on store events
-    F.store.onDataLoading.subscribe(F.ui.enable_spinner);
+    F.store.onDataLoading.subscribe(F.ui.enableSpinner);
     F.store.onDataLoaded.subscribe(function(e, args) {
       if (args.req_info.length == 0)
-        F.ui.disable_spinner();
+        F.ui.disableSpinner();
       F.el.grid.show();
       F.el.sidebar.show();
       F.ui.updateInfoText();

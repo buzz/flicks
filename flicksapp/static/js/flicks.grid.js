@@ -22,7 +22,7 @@
     F.store.onError.subscribe(function(e, args) {
       F.modals.error("<strong>Could not load movies!</strong><br><br>Error text: "
                      + args.r.statusText);
-      F.ui.disable_spinner();
+      F.ui.disableSpinner();
     });
 
     // grid change

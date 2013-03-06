@@ -34,7 +34,7 @@
     });
     // show advanced search button
     F.el.tb.find("#show-advanced a").click(function() {
-      F.ui.show_adv_search();
+      F.ui.showAdvSearch();
       return false;
     });
 
@@ -42,7 +42,7 @@
 
     $(document).on('click', '#adv-search .clear-search', function() {
       F.search.clear();
-      F.ui.render_adv_search();
+      F.ui.renderAdvSearch();
       return false;
     });
     $(document).on('click', '#adv-search .close', function() {
@@ -55,7 +55,7 @@
     ////////// Sidebar
 
     // sidebar toggle
-    $("#sidebar .handle").click(F.ui.toggle_sidebar);
+    $("#sidebar .handle").click(F.ui.toggleSidebar);
     // make director names, etc... in sidebar clickable
     $(document).on("click", "a.lookup", function() {
       var $this = $(this);
