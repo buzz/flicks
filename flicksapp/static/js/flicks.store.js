@@ -9,7 +9,7 @@
    * REST framework) in blocks (PAGESIZE elements per request).
    *
    */
-  function RemoteDjangoModel() {
+  function RemoteRestModel() {
     // private
     var PAGESIZE = 100;
     var search = null;
@@ -231,6 +231,6 @@
 
   // Slick.Data.RemoteModel
   $.extend(true, window, { Slick: {
-    Data: { RemoteDjangoModel: RemoteDjangoModel }}});
+    Data: { RemoteRestModel: RemoteRestModel }}});
 
 })();

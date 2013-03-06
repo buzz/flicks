@@ -4,8 +4,8 @@
 
   F.setupGrid = function() {
 
-    // django model store
-    F.store = Slick.Data.RemoteDjangoModel();
+    // model store
+    F.store = Slick.Data.RemoteRestModel();
     // react on changed data
     F.store.onDataLoaded.subscribe(function(e, args) {
       for (var i = args.from; i <= args.to; ++i)
