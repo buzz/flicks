@@ -14,7 +14,7 @@
   // load movie
   F.movie.get = function(id, cb) {
     $.ajax({
-      url: '/movie/' + id,
+      url: '/movie/' + id + '/',
       dataType: 'json',
       type: 'GET',
       success: function(movie) {
