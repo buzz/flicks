@@ -35,63 +35,6 @@ def bootstrap(request):
     }
     return render(request, 'base.html', ctx)
 
-# def grid(request):
-#     if request.method == 'POST' and request.is_ajax():
-#         # decode POST json
-#         json_data = simplejson.loads(request.raw_post_data)
-#         offset = json_data['offset']
-#         count = json_data['count']
-#         try:
-#             q = json_data['q']
-#         except KeyError:
-#             q = None
-#         try:
-#             adv_search = json_data['adv_search']
-#         except KeyError:
-#             adv_search = None
-#         try:
-#             sortcol = json_data['sortcol']
-#         except KeyError:
-#             sortcol = 'title'
-#         try:
-#             sortasc = json_data['sortasc']
-#         except KeyError:
-#             sortasc = True
-#         if sortasc:
-#             sortdir = ''
-#         else:
-#             sortdir = '-'
-#         # simple search
-#         if not q is None and len(q) > 0:
-#             movies_total = Movie.objects.simple_search(q)
-#         # adv search
-#         elif not adv_search is None:
-#             movies_total = Movie.objects.adv_search(adv_search)
-#         # no search (all movies)
-#         else:
-#             movies_total = Movie.objects.all()
-#         # sorting
-#         if sortcol == 'directors':
-#             order_by = '%s%s__name' % (sortdir, sortcol)
-#         else:
-#             order_by = '%s%s' % (sortdir, sortcol)
-#         # get results
-#         movies = movies_total.order_by(order_by)\
-#             [offset:offset + count].prefetch_related(*GRID_PREFETCH)
-#         enc = FlicksJSONEncoder()
-#         data = enc.encode({
-#                 'total': movies_total.count(),
-#                 'movies': serialize('python', movies, relations=GRID_PREFETCH,
-#                                     excludes=GRID_EXCLUDES),
-#                 })
-#         return HttpResponse(data, mimetype='application/json')
-#     return HttpResponse(enc.encode({ 'error': 'Malformed request!' }),
-#                         mimetype='application/json', status=400)
-
-# def add(request):
-#     # TODO
-#     pass
-
 def autocomplete(request):
     q = request.POST.get('q', None)
     what = request.POST.get('what', None)
