@@ -100,7 +100,7 @@
     // UI has to react on store events
     F.store.onDataLoading.subscribe(F.ui.enableSpinner);
     F.store.onDataLoaded.subscribe(function(e, args) {
-      if (args.req_info.length == 0)
+      if (_.keys(args.req_info).length == 0)
         F.ui.disableSpinner();
       F.el.grid.show();
       F.el.sidebar.show();

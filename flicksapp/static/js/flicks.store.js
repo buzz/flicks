@@ -12,12 +12,18 @@
   function RemoteRestModel() {
     // private
     var PAGESIZE = 100;
+    // we will wait a certain time before actually loading data. this
+    // prevents that if the user is scrolling quickly all the data
+    // blocks are loaded at once. on the other hand scrolling slowly
+    // should load new data on the fly. so it mustn't be too high!
+    var LOADING_DELAY = 180
+    var timeout = null;
     var search = null;
     var sortcol = null;
     var sortasc = true;
     // keep track of current requests (array with elements being the
     // requested page number)
-    var req_info = [];
+    var req_info = {};
     // data cache (using array because it's faster then object)
     // entries with indexes that are multiples of PAGESIZE indicate
     // cache status (undefined means not cached)
@@ -41,36 +47,14 @@
       data = [];
     }
 
-    // ensures that data within a given range are either cached. if
-    // not the items are loaded in blocks of size PAGESIZE from the
-    // server. 'from' and 'to' are indexes that refer to the 'data'
-    // cache array.
-    function ensureData(from, to) {
-      // preload one extra screen of items before and after actual
-      // range
-      to += to - from;
-      from -= to - from;
-      from = Math.max(0, from);
-
-      var fromPage = Math.floor(from / PAGESIZE);
-      var toPage = Math.floor(to / PAGESIZE);
-
-      // check data cache if pages are already loaded by narrowing
-      // down the slice that has to be loaded
-      while (data[fromPage * PAGESIZE] !== undefined && fromPage < toPage)
-        fromPage++;
-      while (data[toPage * PAGESIZE] !== undefined && fromPage < toPage)
-        toPage--;
-
-      // no need to load data, already cached?
-      if (fromPage > toPage || ((fromPage == toPage) && data[fromPage * PAGESIZE] !== undefined))
-        return;
-
+    // fetch page blocks (most of the time there should be just one
+    // page block to fetch. but sometimes the range can overlap two
+    // pageblocks.
+    function _fetchBlocks(fromPage, toPage) {
       // request arguments
       var args = {
         limit: PAGESIZE
       };
-
       // search arguments
       if (typeof search === "string" && search.length > 0)
         // top/simple search
@@ -103,20 +87,16 @@
         });
         $.extend(args, searchargs);
       }
-
       // sorting
       if (sortcol !== null)
         args.order_by = (sortasc ? '' : '-') + sortcol;
 
-      // fetch page blocks (most of the time there should be just one
-      // page block to fetch. but sometimes the range can overlap two
-      // pageblocks.
       for (var i = fromPage; i <= toPage; ++i) {
         // results offset
         args.offset = i * PAGESIZE;
 
         // ignore if an identical request is already active
-        if (_.indexOf(req_info, args.offset) !== -1)
+        if (args.offset in req_info)
           continue;
 
         onDataLoading.notify({
@@ -135,7 +115,7 @@
           context: { offset: args.offset }
         }).always(function() {
           // remove request info
-          req_info = _.without(req_info, this.offset);
+          delete req_info[this.offset]
         }).done(function (r) {
           onSuccess(r, this.offset);
         }).fail(function (r) {
@@ -148,9 +128,44 @@
         });
 
         // save request info
-        req_info.push(args.offset);
+        req_info[args.offset] = req;
       }
+    }
 
+    // ensures that data within a given range are either cached. if
+    // not the items are loaded in blocks of size PAGESIZE from the
+    // server. 'from' and 'to' are indexes that refer to the 'data'
+    // cache array.
+    function ensureData(from, to) {
+      // preload one extra screen of items before and after actual
+      // range
+      to += to - from;
+      from -= to - from;
+      from = Math.max(0, from);
+
+      var fromPage = Math.floor(from / PAGESIZE);
+      var toPage = Math.floor(to / PAGESIZE);
+
+      // check data cache if pages are already loaded by narrowing
+      // down the slice that has to be loaded
+      while (data[fromPage * PAGESIZE] !== undefined && fromPage < toPage)
+        fromPage++;
+      while (data[toPage * PAGESIZE] !== undefined && fromPage < toPage)
+        toPage--;
+
+      // no need to load data, already cached?
+      if (fromPage > toPage || ((fromPage == toPage) &&
+          data[fromPage * PAGESIZE] !== undefined))
+        return;
+
+      // fetch items (delay loading so it doesn't get triggered if
+      // user just scrolls down the list quickly
+      if (timeout)
+        clearTimeout(timeout);
+      timeout = setTimeout(function() {
+        timeout = null;
+        _fetchBlocks(fromPage, toPage);
+      }, LOADING_DELAY);
     }
 
     function onSuccess(resp, from) {

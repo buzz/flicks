@@ -1,8 +1,3 @@
-- wenn man das grid komplett runterscrollt, wird der ganze store
-  gleichzeitig geladen. possible solutions:
- - timeout einbauen, zB 50ms (code in der git history!)
- - requests abbrechen, wenn ausserhalb des viewports
-
 - movie details
  - delete movie
  - karagarga nummer/flag notwendig??
