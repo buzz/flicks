@@ -370,6 +370,36 @@ a.lookup:hover, a.lookup:active {
   padding-top: 1px;
 }
 
+/* TOOLTIP */
+
+.ui-tooltip {
+  opacity: 0.975;
+}
+
+.ui-tooltip h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.ui-tooltip p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.ui-tooltip ul.akas {
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.ui-tooltip .aka_title {
+  font-weight: bold;
+}
+
+.ui-tooltip ul.akas li {
+  list-style-type: none;
+  margin-bottom: 4px;
+}
+
 /* MISC */
 
 .clear {

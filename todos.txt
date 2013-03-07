@@ -3,7 +3,6 @@
  - karagarga nummer/flag notwendig??
  - details speichern: notes, title, imdb number?
  - film anlegen
- - akas: evtl. jquery tooltip plugin verwenden
  - files importieren
  - tile view
  - play button

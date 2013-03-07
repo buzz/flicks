@@ -3,8 +3,7 @@
 <script type="text/template" id="sidebar-template">
   <form id="movie-form" action="">
     <div class="id"><%= id %></div>
-    <input value="<%- title %>" name="title"
-           title="<%= $.flicks.formatter.concatenate(akas) %>">
+    <input value="<%- title %>" name="title">
     <div class="actions">
       <% if (favourite) { %>
         <a class="action fav fav-remove" href="#" title="Remove from favourites"></a>
@@ -89,6 +88,27 @@
       <div id="tabs-files"><%= files %></div>
     </div>
   </form>
+</script>
+
+<!-- Search form -->
+
+<script type="text/template" id="akas-tooltip-template">
+  <h3>Also known as</h3>
+  <p>
+    <ul class="akas">
+      <% _.each(akas, function(v, k) { %>
+        <li>
+          <% var splitted = v.split('::'); %>
+          <% if (splitted.length > 1) { %>
+            <span class="aka_title"><%= splitted[0] %></span>
+            <span class="aka_description"><%= splitted[1] %></span>
+          <% } else { %>
+            <span class="aka_title"><%= v %></span>
+          <% } %>
+        </li>
+      <% }); %>
+    </ul>
+  </p>
 </script>
 
 <!-- Search form -->

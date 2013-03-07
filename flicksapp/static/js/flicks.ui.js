@@ -133,6 +133,14 @@
     });
     // auto-complete for top search
     F.autocomplete.setupTopSearch();
+    // sidebar title tooltip (for akas)
+    $(document).tooltip({
+      items: '#sidebar input[name=title]',
+      content: function() {
+        return _.template(
+          $("#akas-tooltip-template").html(), $.flicks.movie.current);
+      }
+    });
   }
 
   // advanced search form: setup UI and restore form state
