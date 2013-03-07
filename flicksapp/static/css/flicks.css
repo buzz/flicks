@@ -321,10 +321,11 @@ a.lookup:hover, a.lookup:active {
 }
 
 .slick-cell .icon {
-  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 2px;
   width: 16px;
   height: 16px;
-  float: right;
 }
 
 .slick-cell .seen-yes {
