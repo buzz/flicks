@@ -4,23 +4,22 @@
  - requests abbrechen, wenn ausserhalb des viewports
 
 - movie details
+ - delete movie
  - karagarga nummer/flag notwendig??
- - notes, title, ... speichern
  - details speichern: notes, title, imdb number?
  - film anlegen
- - akas:
-  - also popup bei hover über titel?
- - filme aus verzeichnis importieren?
+ - akas: evtl. jquery tooltip plugin verwenden
  - files importieren
- - delete movie
  - tile view
  - play button
 
-- imdb sync button
-
-- migrate from jquery ui to bootstrap for beauty?
-
 - searching for terms with accent and other non-latin letters doesn't
   work
+
+- imdb sync button
+
+- filme aus verzeichnis importieren?
+
+- migrate from jquery ui to bootstrap for beauty?
 
 - statistics (later later)
