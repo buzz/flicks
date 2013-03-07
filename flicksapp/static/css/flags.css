@@ -4,6 +4,20 @@
   height: 11px;
   background-image: url(../images/flags/missing.png);
 }
+/* special cases */
+.flag.ch {
+  width: 11px;
+  height: 11px;
+}
+.flag.me {
+  width: 16px;
+  height: 12px;
+}
+.flag.np {
+  width: 9px;
+  height: 11px;
+}
+/* countries */
 .flag.er {
   background-image: url(../images/flags/er.png);
 }
