@@ -53,6 +53,7 @@
     var inputs = {
       title:  $("#adv-search #as_title"),
       country: $("#adv-search #as_countries"),
+      language: $("#adv-search #as_languages"),
       genre: $("#adv-search #as_genres"),
       keyword: $("#adv-search #as_keywords"),
       cast: $("#adv-search #as_cast"),

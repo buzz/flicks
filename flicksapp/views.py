@@ -7,7 +7,7 @@ from django.db.models import Min, Max, Count
 
 from rest_framework import generics
 
-from flicksapp.models import Movie, Person, Country, Genre, Keyword
+from flicksapp.models import Movie, Person, Country, Language, Genre, Keyword
 from flicksapp.utils import FlicksJSONEncoder
 import flicksapp.constants as c
 
@@ -43,6 +43,7 @@ def autocomplete(request):
                             mimetype='application/json', status=400)
     enc = FlicksJSONEncoder()
     searchterm = ' '.join(['+%s*' % t for t in q.split()])
+    data = {}
     if what == 'title':
         titles = Movie.objects.filter(title__search=searchterm)
         akas = Movie.objects.filter(akas__search=searchterm)
@@ -52,6 +53,10 @@ def autocomplete(request):
         q = Country.objects.annotate(movies_count=Count('movies'))\
             .filter(name__search=searchterm).order_by('-movies_count')
         data = enc.encode([c.name for c in q[:AC_LIMIT]])
+    elif what == 'language':
+        q = Language.objects.annotate(movies_count=Count('movies'))\
+            .filter(name__search=searchterm).order_by('-movies_count')
+        data = enc.encode([l.name for l in q[:AC_LIMIT]])
     elif what == 'genre':
         q = Genre.objects.annotate(movies_count=Count('movies'))\
             .filter(name__search=searchterm).order_by('-movies_count')
