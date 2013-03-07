@@ -3,7 +3,8 @@
 <script type="text/template" id="sidebar-template">
   <form id="movie-form" action="">
     <div class="id"><%= id %></div>
-    <input value="<%- title %>" name="title">
+    <input value="<%- title %>" name="title"
+           title="<%= $.flicks.formatter.concatenate(akas) %>">
     <div class="actions">
       <% if (favourite) { %>
         <a class="action fav fav-remove" href="#" title="Remove from favourites"></a>
@@ -34,33 +35,23 @@
     <div class="clear-left"></div>
     <label>Countries:</label>
     <div class="val countries">
-      <% _.each(_.toArray(countries), function(c, idx, arr) { %>
-        <a href="#" class="lookup countries"><%= c.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
-      <% }); %>
+      <%= $.flicks.formatter.concatenateA(countries, 'lookup countries') %>
     </div>
     <label>Directors:</label>
     <div class="val directors">
-      <% _.each(_.toArray(directors), function(p, idx, arr) { %>
-        <a href="#" class="lookup directors"><%= p.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
-      <% }); %>
+      <%= $.flicks.formatter.concatenateA(directors, 'lookup directors') %>
     </div>
     <label>Producers:</label>
     <div class="val producers">
-      <% _.each(_.toArray(producers), function(p, idx, arr) { %>
-        <a href="#" class="lookup producers"><%= p.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
-      <% }); %>
+      <%= $.flicks.formatter.concatenateA(producers, 'lookup producers') %>
     </div>
     <label>Writers:</label>
     <div class="val writers">
-      <% _.each(_.toArray(writers), function(p, idx, arr) { %>
-        <a href="#" class="lookup writers"><%= p.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
-      <% }); %>
+      <%= $.flicks.formatter.concatenateA(writers, 'lookup writers') %>
     </div>
     <label>Genres:</label>
     <div class="val genres">
-      <% _.each(_.toArray(genres), function(g, idx, arr) { %>
-        <a href="#" class="lookup genres"><%= g.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
-      <% }); %>
+      <%= $.flicks.formatter.concatenateA(genres, 'lookup genres') %>
     </div>
     <% if (mpaa) { %>
       <label class="mpaa">MPAA:</label>
@@ -85,14 +76,10 @@
         <% } %>
       </div>
       <div id="tabs-cast">
-        <% _.each(_.toArray(cast), function(p, idx, arr) { %>
-          <a href="#" class="lookup cast"><%= p.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
-        <% }); %>
+        <%= $.flicks.formatter.concatenateA(cast, 'lookup cast') %>
       </div>
       <div id="tabs-keywords">
-        <% _.each(_.toArray(keywords), function(k, idx, arr) { %>
-          <a href="#" class="lookup keywords"><%= k.name %></a><% print(idx == arr.length - 1 ? '' : ', ');  %>
-        <% }); %>
+        <%= $.flicks.formatter.concatenateA(keywords, 'lookup keywords') %>
       </div>
       <div id="tabs-notes"><%= notes %></div>
       <div id="tabs-files"><%= files %></div>

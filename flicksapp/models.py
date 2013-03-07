@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 
 from imdb import IMDb
 
+from flicksapp.fields import ListField
 from flicksapp.validators import validate_imdb_id
 
 
@@ -82,7 +83,7 @@ class Movie(models.Model):
         'IMDb ID', null=True, blank=True, validators=[validate_imdb_id],
         db_index=True)
     title = models.CharField('Title', max_length=200)
-    akas = models.TextField('Also known as')
+    akas = ListField('Also known as')
     year = models.PositiveIntegerField('Year', null=True, blank=True,
                                        db_index=True)
     rating = models.DecimalField('Rating', max_digits=3, decimal_places=1,

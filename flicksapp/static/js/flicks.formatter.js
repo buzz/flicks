@@ -11,7 +11,7 @@
       else
         _max = Math.min(max, value.length);
       for (var i = 0; i < _max; ++i) {
-        r += value[i].name;
+        r += value[i];
         if (i >= 0 && i < _max - 1)
           r += ', ';
       }
@@ -30,7 +30,7 @@
       if (cls === undefined)
         cls = '';
       for (var i = 0; i < _max; ++i) {
-        r += '<a href="#" class="' + cls + '">' + value[i].name + '</a>';
+        r += '<a href="#" class="' + cls + '">' + value[i] + '</a>';
         if (i >= 0 && i < _max - 1)
           r += ', ';
       }
@@ -73,8 +73,8 @@
       var html = "";
       if (countries !== undefined) {
         $.each(countries, function(i) {
-          html += '<div title="' + this.name + '" class="flag '
-            + $.flicks.str2iso(this.name) + '"></div>';
+          html += '<div title="' + this + '" class="flag '
+            + $.flicks.str2iso(this) + '"></div>';
         });
       }
       return html;

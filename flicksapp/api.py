@@ -67,7 +67,38 @@ class CountryResource(ModelResource):
             'name': 'search',
         }
 
-class MovieDetailResource(ModelResource):
+class BaseMovieResource(ModelResource):
+    """
+    Basic dehydrate functions.
+    """
+    def dehydrate_cast(self, bundle):
+        return [p.data['name'] for p in bundle.data['cast']]
+
+    def dehydrate_directors(self, bundle):
+        return [p.data['name'] for p in bundle.data['directors']]
+
+    def dehydrate_producers(self, bundle):
+        return [p.data['name'] for p in bundle.data['producers']]
+
+    def dehydrate_writers(self, bundle):
+        return [p.data['name'] for p in bundle.data['writers']]
+
+    def dehydrate_genres(self, bundle):
+        return [p.data['name'] for p in bundle.data['genres']]
+
+    def dehydrate_keywords(self, bundle):
+        return [p.data['name'] for p in bundle.data['keywords']]
+
+    def dehydrate_files(self, bundle):
+        return [p.data['name'] for p in bundle.data['files']]
+
+    def dehydrate_countries(self, bundle):
+        return [p.data['name'] for p in bundle.data['countries']]
+
+    def dehydrate_languages(self, bundle):
+        return [p.data['name'] for p in bundle.data['languages']]
+
+class MovieDetailResource(BaseMovieResource):
     """
     Lists all relevant properties.
     """
@@ -80,12 +111,19 @@ class MovieDetailResource(ModelResource):
     files = fields.ToManyField(FileResource, 'files', full=True)
     languages = fields.ToManyField(LanguageResource, 'languages', full=True)
     countries = fields.ToManyField(CountryResource, 'countries', full=True)
+    # this makes sure aka is sent as json array
+    akas = fields.ListField(attribute='akas')
+
     class Meta:
+        queryset = Movie.objects.all()\
+            .prefetch_related('cast', 'directors', 'producers', 'writers',
+                              'genres', 'keywords', 'files', 'languages',
+                              'countries')
         queryset = Movie.objects.all()
         resource_name = 'movie'
         include_resource_uri = False
 
-class MovieListResource(ModelResource):
+class MovieListResource(BaseMovieResource):
     """
     Lists only properties necessary for the grid columns.
 
