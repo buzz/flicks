@@ -35,6 +35,7 @@
   F.search.empty_search = {
     title: '',
     countries: '',
+    languages: '',
     genres: '',
     keywords: '',
     cast: '',

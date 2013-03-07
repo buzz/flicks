@@ -37,6 +37,10 @@
     <div class="val countries">
       <%= $.flicks.formatter.concatenateA(countries, 'lookup countries') %>
     </div>
+    <label>Languages:</label>
+    <div class="val languages">
+      <%= $.flicks.formatter.concatenateA(languages, 'lookup languages') %>
+    </div>
     <label>Directors:</label>
     <div class="val directors">
       <%= $.flicks.formatter.concatenateA(directors, 'lookup directors') %>
@@ -100,6 +104,10 @@
 
     <label for="as_countries">Country</label>
     <input type="text" name="countries" id="as_countries" value="<%- countries %>">
+    <div class="sep"></div>
+
+    <label for="as_countries">Language</label>
+    <input type="text" name="languages" id="as_languages" value="<%- languages %>">
     <div class="sep"></div>
 
     <label for="as_genres">Genre</label>

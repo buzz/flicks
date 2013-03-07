@@ -90,8 +90,9 @@
             else if (_.indexOf(['seen', 'favourite'], k) !== -1)
               searchargs[k] = v;
             // related field
-            else if (_.indexOf(['countries', 'genres', 'keywords', 'cast',
-                                'directors', 'producers', 'writers'], k) !== -1)
+            else if (_.indexOf(['countries', 'languages', 'genres', 'keywords',
+                                'cast', 'directors', 'producers', 'writers'], k)
+                     !== -1)
               searchargs[k + '__name__search'] = v;
           }
           // range field

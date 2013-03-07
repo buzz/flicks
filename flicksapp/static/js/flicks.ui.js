@@ -182,8 +182,8 @@
     var fields = {};
     // collect text fields
     $.each(
-      ["title", "countries", "genres", "keywords", "cast", "directors",
-       "writers", "mpaa"],
+      ["title", "countries", "languages", "genres", "keywords", "cast",
+       "directors", "writers", "mpaa"],
       function(i, f) {
         var v = $f.find("#as_" + f).val();
         if (v !== "")

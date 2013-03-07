@@ -155,6 +155,7 @@ class MovieListResource(BaseMovieResource):
             'seen': 'exact',
             'favourite': 'exact',
             'countries': ALL_WITH_RELATIONS,
+            'languages': ALL_WITH_RELATIONS,
             'genres': ALL_WITH_RELATIONS,
             'keywords': ALL_WITH_RELATIONS,
             'cast': ALL_WITH_RELATIONS,
@@ -175,7 +176,7 @@ class MovieListResource(BaseMovieResource):
         # fields in resource
         queries = ('cast__name__search', 'producers__name__search',
                    'writers__name__search', 'keywords__name__search',
-                   'mpaa__search')
+                   'mpaa__search', 'languages__name__search')
         for q in queries:
             if q in filters:
                 kwargs = { q: filters[q] }
