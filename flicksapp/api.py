@@ -115,10 +115,6 @@ class MovieDetailResource(BaseMovieResource):
     akas = fields.ListField(attribute='akas')
 
     class Meta:
-        queryset = Movie.objects.all()\
-            .prefetch_related('cast', 'directors', 'producers', 'writers',
-                              'genres', 'keywords', 'files', 'languages',
-                              'countries')
         queryset = Movie.objects.all()
         resource_name = 'movie'
         include_resource_uri = False
@@ -141,7 +137,7 @@ class MovieListResource(BaseMovieResource):
     countries = fields.ToManyField(CountryResource, 'countries', full=True)
     class Meta:
         queryset = Movie.objects.only(*c.MOVIE_LIST_VIEW_FIELDS)\
-            .prefetch_related('countries', 'genres', 'directors')\
+            .prefetch_related('countries', 'languages', 'genres', 'directors')\
             .distinct()
         fields = c.MOVIE_LIST_VIEW_FIELDS
         resource_name = 'movies'
