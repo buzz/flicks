@@ -56,19 +56,6 @@
         cls + '"></div>';
     },
 
-    imdb: function(value, dataContext, defaultValue) {
-      if (value !== undefined) {
-        if (defaultValue === undefined) {
-          defaultValue = "N/A";
-        }
-        var text = dataContext.rating || defaultValue;
-        return '<a href="' + F.constants.IMDB_BASE_URL + value
-          + '" title="Open IMDb page"' + ' target="_blank" class="imdb">'
-          + text + '</a>';
-      }
-      return '';
-    },
-
     flagList: function(countries) {
       var html = "";
       if (countries !== undefined) {

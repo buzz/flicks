@@ -53,7 +53,6 @@
         sortable:  true,
         maxWidth:  60,
         minWidth:  60,
-        cssClass:  'align-right',
         formatter: function(row, cell, value, columnDef, dataContext) {
           return F.formatter.number_seen_fav(dataContext, value);
         }
@@ -63,13 +62,24 @@
         name:      'Title',
         field:     'title',
         sortable:  true,
-        width:     300
+        width:     250
+      },
+      {
+        id:        'genres',
+        name:      'Genres',
+        field:     'genres',
+        width:     190,
+        sortable:  false,
+        formatter: function(row, cell, value, columnDef, dataContext) {
+          return F.formatter.concatenate(value);
+        }
       },
       {
         id:        'director',
         name:      'Director',
         field:     'directors',
         sortable:  false,
+        width:     140,
         formatter: function(row, cell, value, columnDef, dataContext) {
           return F.formatter.concatenate(value);
         }
@@ -85,46 +95,13 @@
       {
         id:        'rating',
         name:      'Rating',
-        field:     'imdb_id',
-        sortField: 'rating',
+        field:     'rating',
         maxWidth:  50,
         minWidth:  50,
         sortable:  true,
         cssClass:  'align-center',
         formatter: function(row, cell, value, columnDef, dataContext) {
-          return F.formatter.imdb(value, dataContext);
-        }
-      },
-      {
-        id:        'language',
-        name:      'Language',
-        field:     'languages',
-        sortable:  false,
-        minWidth:  75,
-        maxWidth:  75,
-        formatter: function(row, cell, value, columnDef, dataContext) {
-          return F.formatter.flagList(value);
-        }
-      },
-      {
-        id:        'country',
-        name:      'Country',
-        field:     'countries',
-        sortable:  false,
-        minWidth:  69,
-        maxWidth:  69,
-        formatter: function(row, cell, value, columnDef, dataContext) {
-          return F.formatter.flagList(value);
-        }
-      },
-      {
-        id:        'genres',
-        name:      'Genres',
-        field:     'genres',
-        width:     200,
-        sortable:  false,
-        formatter: function(row, cell, value, columnDef, dataContext) {
-          return F.formatter.concatenate(value);
+          return value;
         }
       },
       {
@@ -135,6 +112,30 @@
         maxWidth:  60,
         sortable:  true,
         cssClass:  'align-right'
+      },
+      {
+        id:        'country',
+        name:      'Country',
+        field:     'countries',
+        sortable:  false,
+        minWidth:  69,
+        maxWidth:  69,
+        cssClass:  'align-center',
+        formatter: function(row, cell, value, columnDef, dataContext) {
+          return F.formatter.flagList(value);
+        }
+      },
+      {
+        id:        'language',
+        name:      'Language',
+        field:     'languages',
+        sortable:  false,
+        minWidth:  75,
+        maxWidth:  75,
+        cssClass:  'align-center',
+        formatter: function(row, cell, value, columnDef, dataContext) {
+          return F.formatter.flagList(value);
+        }
       },
     ];
     var options = {

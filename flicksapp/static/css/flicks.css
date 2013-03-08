@@ -236,6 +236,10 @@ a.lookup:hover, a.lookup:active {
   background-image: url(../images/silk_icons/eye_delete.png);
 }
 
+#sidebar .action.imdb_refresh {
+  background-image: url(../images/silk_icons/database_refresh.png);
+}
+
 #sidebar .action.delete {
   background-image: url(../images/silk_icons/delete.png);
 }
@@ -299,6 +303,14 @@ a.lookup:hover, a.lookup:active {
   display: none;
 }
 
+.slick-row .align-center {
+  text-align: center;
+}
+
+.slick-row .align-right {
+  text-align: right;
+}
+
 .slick-row.odd .slick-cell {
   background-color: #f2f7f4;
 }
@@ -339,7 +351,7 @@ a.lookup:hover, a.lookup:active {
 
 .slick-cell .flag {
   margin-top: 1px;
-  float: left;
+  display: inline-block;
 }
 
 .slick-sort-indicator-desc {
