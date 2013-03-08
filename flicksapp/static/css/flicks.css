@@ -221,23 +221,23 @@ a.lookup:hover, a.lookup:active {
 }
 
 #sidebar .action.fav-add {
-  background-image: url(../images/heart_add.png);
+  background-image: url(../images/silk_icons/heart_add.png);
 }
 
 #sidebar .action.fav-remove {
-  background-image: url(../images/heart_delete.png);
+  background-image: url(../images/silk_icons/heart_delete.png);
 }
 
 #sidebar .action.mark-seen {
-  background-image: url(../images/eye.png);
+  background-image: url(../images/silk_icons/eye.png);
 }
 
 #sidebar .action.unmark-seen {
-  background-image: url(../images/eye_delete.png);
+  background-image: url(../images/silk_icons/eye_delete.png);
 }
 
 #sidebar .action.delete {
-  background-image: url(../images/delete.png);
+  background-image: url(../images/silk_icons/delete.png);
 }
 
 #sidebar .search-icon, #sidebar .imdb_id {
@@ -330,11 +330,11 @@ a.lookup:hover, a.lookup:active {
 }
 
 .slick-cell .seen-yes {
-  background-image: url(../images/eye.png);
+  background-image: url(../images/silk_icons/eye.png);
 }
 
 .slick-cell .fav {
-  background-image: url(../images/heart.png);
+  background-image: url(../images/silk_icons/heart.png);
 }
 
 .slick-cell .flag {
@@ -353,11 +353,10 @@ a.lookup:hover, a.lookup:active {
 /* MODAL */
 
 #modal.error {
-  background-image: url(../images/delete.png);
+  background-image: url(../images/silk_icons/delete.png);
 }
 
 #modal.warning {
-  background-image: url(../images/warning.png);
 }
 
 #modal {
