@@ -56,7 +56,6 @@ class Migration(SchemaMigration):
             'akas': ('django.db.models.fields.TextField', [], {}),
             'cast': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'acted_in'", 'symmetrical': 'False', 'to': "orm['flicksapp.Person']"}),
             'countries': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'movies'", 'symmetrical': 'False', 'to': "orm['flicksapp.Country']"}),
-            'cover_filename': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
             'directors': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'directed'", 'symmetrical': 'False', 'to': "orm['flicksapp.Person']"}),
             'favourite': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'files': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['flicksapp.File']", 'symmetrical': 'False'}),

@@ -54,7 +54,7 @@
   // delete movie
   F.movie.delete = function(movie, cb) {
     $.ajax({
-      url: '/movies/' + movie.id,
+      url: '/movies/' + movie.id + '/',
       type: 'DELETE'
     }).done(function() {
       cb(movie);
@@ -85,6 +85,24 @@
     $.post('/mark-seen/', data, cb).error(function(r) {
       F.modals.error(
         '<strong>Could not set seen flag for movie!</strong><br><br>'
+          + 'Error text: ' + r.statusText);
+    });
+  };
+
+  // imdb search
+  F.movie.imdbSearch = function(q, cb) {
+    var data = { q: q };
+    $.ajax({
+      url: '/imdb-search/',
+      data: data,
+      type: 'GET',
+    })
+    .done(function(r) {
+      cb(r);
+    })
+    .fail(function(r) {
+      F.modals.error(
+        '<strong>Could not search IMDb!</strong><br><br>'
           + 'Error text: ' + r.statusText);
     });
   };

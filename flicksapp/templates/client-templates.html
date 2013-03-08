@@ -17,11 +17,12 @@
       <% } %>
       <a class="action find-cover" href="#" title="Find a cover"></a>
       <a class="action delete" href="#" title="Delete film"></a>
-      <a class="search-icon kg-link" href="https://karagarga.net/browse.php?search_type=title&search=<%- title %>" target="_blank"><img src="/static/images/karagarga.png" title="Karagarga"></a>
       <% if (imdb_id) { %>
-        <a class="search-icon imdb-link" href="http://www.imdb.com/title/tt<%- imdb_id %>" target="_blank"><img src="/static/images/imdb.png" title="IMDb"></a>
+        <span class="imdb_id" title="IMDb ID <%- imdb_id %>"><%= imdb_id %></span>
+        <a class="search-icon imdb-link" href="http://www.imdb.com/title/tt<%- imdb_id %>" target="_blank"><img src="/static/images/imdb.png" title="IMDb ID <%- imdb_id %>"></a>
         <a class="search-icon os-link" href="http://www.opensubtitles.org/en/search/sublanguageid-eng,ger/imdbid-<%- imdb_id %>" target="_blank"><img src="/static/images/opensubtitles.png" title="OpenSubtitles"></a>
       <% } %>
+      <a class="search-icon kg-link" href="https://karagarga.net/browse.php?search_type=title&search=<%- title %>" target="_blank"><img src="/static/images/karagarga.png" title="Karagarga"></a>
       <div class="clear"></div>
     </div>
     <div class="cover"><img title="Click to enlarge" alt="<%- title %>" src="/static/images/covers/movies_<%- id %>.jpg"></div>
@@ -200,4 +201,29 @@
     <label></label>
     <input type="submit" value="Search">
   </form>
+</script>
+
+<!-- Title search -->
+
+<script type="text/template" id="title-search-results-template">
+  <% if (results.length > 0) { %>
+    <ul>
+    <% _.each(results, function(m) { %>
+      <li>
+        <a class="result_link" href="#">
+          <span class="title"><%- m.title %></span>
+          <span class="year">(<%- m.year %>)</span>
+          <span class="imdb_id"><%- m.imdb_id %></span>
+        </a>
+        <a class="imdb-link" href="http://www.imdb.com/title/tt<%- m.imdb_id %>"
+           target="_blank">
+          <img src="/static/images/imdb.png"
+               title="Lookup on IMDb">
+        </a>
+      </li>
+    <% }); %>
+    </ul>
+  <% } else { %>
+    Ooops! Nothing found...
+  <% } %>
 </script>

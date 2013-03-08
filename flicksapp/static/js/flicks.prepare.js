@@ -30,6 +30,7 @@
       'adv-search': $("#adv-search"),
       modal: $("#modal"),
       'dialog-add-movie': $("#dialog-add-movie"),
+      'dialog-delete-confirm': $("#dialog-delete-confirm"),
     };
 
     // set django csrf token

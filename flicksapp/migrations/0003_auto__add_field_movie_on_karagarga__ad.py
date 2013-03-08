@@ -8,9 +8,6 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'Movie.cover_filename'
-        db.delete_column('flicksapp_movie', 'cover_filename')
-
         # Adding field 'Movie.on_karagarga'
         db.add_column('flicksapp_movie', 'on_karagarga',
                       self.gf('django.db.models.fields.BooleanField')(default=False),
@@ -23,11 +20,6 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Adding field 'Movie.cover_filename'
-        db.add_column('flicksapp_movie', 'cover_filename',
-                      self.gf('django.db.models.fields.CharField')(default='', max_length=15, blank=True),
-                      keep_default=False)
-
         # Deleting field 'Movie.on_karagarga'
         db.delete_column('flicksapp_movie', 'on_karagarga')
 

@@ -109,19 +109,33 @@
     })
     // delete
     .on("click", "a.delete", function() {
-      F.movie.delete(F.movie.current, function(movie) {
-        F.store.clear();
-        var i = 0;
-        while (i < F.grid.getDataLength())
-          F.grid.invalidateRow(i++);
-        F.gridChange();
-      });
+      F.el['dialog-delete-confirm'].dialog('open');
       return false;
-    })
+    });
+
+    ////////// Add movie dialog
+
+    $(document)
+      .on('click', '#dialog-add-movie a#add_movie_title_search',
+        function() {
+          F.addMovie.doTitleSearch();
+          return false;
+        })
+      .on('submit', '#add_movie_title_form',
+        function() {
+          F.addMovie.doTitleSearch();
+          return false;
+        })
+      .on('click', '#dialog-add-movie .result_link',
+        function() {
+          var imdb_id = $(this).children('.imdb_id').text();
+          $('#dialog-add-movie input[name=imdb_id]').val(imdb_id);
+          return false;
+        });
 
     ////////// Big overlay cover
 
-    .on('click', '.cover img', F.ui.showBigCover);
+    F.el.sidebar.on('click', '.cover img', F.ui.showBigCover);
     $(document).on('click', '#big-cover, #overlay-bg', function() {
       $('#big-cover, #overlay-bg').fadeOut();
     });

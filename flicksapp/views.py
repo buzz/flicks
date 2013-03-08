@@ -1,11 +1,10 @@
 from django.utils import simplejson
-
 from django.core.serializers import serialize
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Min, Max, Count
-
 from rest_framework import generics
+from imdb import IMDb
 
 from flicksapp.models import Movie, Person, Country, Language, Genre, Keyword
 from flicksapp.utils import FlicksJSONEncoder
@@ -114,3 +113,20 @@ def mark_seen(request):
     movie.save()
     return HttpResponse(enc.encode({ 'success': True }),
                         mimetype='application/json')
+
+def imdb_search(request):
+    """Search IMDb."""
+    enc = FlicksJSONEncoder()
+    data = {
+        'results': [],
+    }
+    q = request.GET.get('q', None)
+    if q:
+        i = IMDb()
+        results = i.search_movie(q)
+        data['results'] = [{
+                'imdb_id': int(i.get_imdbID(r)),
+                'title': r['title'],
+                'year': r['year'],
+            } for r in results]
+    return HttpResponse(enc.encode(data), mimetype='application/json')

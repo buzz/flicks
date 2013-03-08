@@ -244,9 +244,13 @@ a.lookup:hover, a.lookup:active {
   background-image: url(../images/image_edit.png);
 }
 
-#sidebar .search-icon {
+#sidebar .search-icon, #sidebar .imdb_id {
   float: right;
   margin-left: 10px;
+}
+
+#sidebar .imdb_id {
+  margin-top: 1px;
 }
 
 #sidebar .cover {
@@ -369,6 +373,51 @@ a.lookup:hover, a.lookup:active {
   margin-right: 12px;
   padding-left: 24px;
   padding-top: 1px;
+}
+
+/* ADD MOVIE DIALOG */
+
+#dialog-add-movie label {
+  width: 100px;
+  display: inline-block;
+}
+
+#dialog-add-movie input[type=text] {
+  width: 136px;
+  display: inline-block;
+}
+
+#dialog-add-movie .spinner {
+  width: 48px;
+  height: 48px;
+  background-image: url(../images/spinner.gif);
+  margin: 12px auto 0;
+  display: none;
+}
+
+#dialog-add-movie .results ul {
+  padding-left: 0;
+}
+
+#dialog-add-movie .result_link {
+  text-decoration: none;
+}
+
+#dialog-add-movie .result_link:hover {
+  text-decoration: underline;
+}
+
+#dialog-add-movie .results ul li {
+  list-style-type: none;
+  margin-bottom: 4px;
+}
+
+#dialog-add-movie .results .title {
+  font-weight: bold;
+}
+
+#dialog-add-movie .results .imdb_id {
+  color: grey;
 }
 
 /* TOOLTIP */

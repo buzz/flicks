@@ -1,5 +1,6 @@
 - movie details
  - film anlegen
+  - sollte warnen falls film schon in datenbank!
  - details speichern: notes, title, imdb number?
  - tile view
  - files importieren
@@ -23,6 +24,8 @@
  - create a static html with title and cover next to each other. there
    seem to be some movies that have wrong imdb entries. we can see
    discover them by their wrong title
+
+ - purge orphan objects (persons, countries, ...)
 
 - imdb sync button
 

@@ -141,6 +141,33 @@
           $("#akas-tooltip-template").html(), $.flicks.movie.current);
       }
     });
+    // add movie dialog
+    $('#dialog-add-movie a#add_movie_title_search').button({
+      icons: {
+        primary: 'ui-icon-search'
+      },
+      text: false
+    });
+    // init movie delete confirmation dialog
+    F.el['dialog-delete-confirm'].dialog({
+      autoOpen: false,
+      modal: true,
+      buttons: {
+        'Delete!': function() {
+          $(this).dialog('close');
+          F.movie.delete(F.movie.current, function(movie) {
+            F.store.clear();
+            var i = 0;
+            while (i < F.grid.getDataLength())
+              F.grid.invalidateRow(i++);
+            F.gridChange();
+          });
+        },
+        Cancel: function() {
+          $(this).dialog('close');
+        }
+      }
+    });
   }
 
   // advanced search form: setup UI and restore form state

@@ -31,11 +31,19 @@
   <p class="content"></p>
 </div>
 <div id="dialog-add-movie" title="Add movie">
-  <form>
+  <form id="add_movie_title_form">
     <label for="add_movie_title">Title search</label>
-    <input type="text" name="title" id="add_movie_title" class="text ui-widget-content ui-corner-all" /><br />
+    <input type="text" name="title" id="add_movie_title" class="text ui-widget-content ui-corner-all" />
+    <a class="button" id="add_movie_title_search" href="#">Go</a>
+    <div class="spinner"></div>
+    <p class="results"></p>
+  </form>
+  <form id="add_movie_by_imdb_id_form">
     <p>or</p>
     <label for="add_movie_imdb_id">IMDb #</label>
     <input type="text" name="imdb_id" id="add_movie_imdb_id" class="text ui-widget-content ui-corner-all" />
   </form>
+</div>
+<div id="dialog-delete-confirm" title="Really delete?">
+  Are you sure you want to delete that movie?
 </div>
