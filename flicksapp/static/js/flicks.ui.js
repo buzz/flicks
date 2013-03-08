@@ -243,8 +243,15 @@
     F.el.sidebar.children('.movie-info').html(template);
     $("#detail-tabs").tabs();
     F.ui.relayout();
-    // image gets loaded -> this can change height of sidebar !!
-    F.el.sidebar.find(".image img").load(F.ui.relayout);
+    F.el.sidebar.find(".cover img")
+      .load(function() {
+        $(this).show();
+        F.ui.relayout();
+      })
+      .error(function() {
+        $(this).hide();
+        F.ui.relayout();
+      });
   };
 
   // Cover

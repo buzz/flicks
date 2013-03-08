@@ -24,10 +24,15 @@
             directors: [],
           };
           F.movie.add(movie, function() {
-            F.el['dialog-add-movie'].dialog('close');
+            // let new movie (with highest id) appear at top of the
+            // list
+            F.store.setSort('id', false);
             F.store.clear();
-            F.grid.invalidate();
+            var i = 0;
+            while (i < F.grid.getDataLength())
+              F.grid.invalidateRow(i++);
             F.gridChange();
+            F.el['dialog-add-movie'].dialog('close');
           });
         },
         Cancel: function() {

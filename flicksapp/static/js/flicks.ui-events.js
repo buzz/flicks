@@ -110,7 +110,6 @@
     // delete
     .on("click", "a.delete", function() {
       F.movie.delete(F.movie.current, function(movie) {
-        var current_row = F.grid.getActiveCell().row;
         F.store.clear();
         var i = 0;
         while (i < F.grid.getDataLength())

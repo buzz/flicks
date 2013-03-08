@@ -12,7 +12,9 @@
 - bug: search for 'before': 'before sunset' should show up but
   doesn't!
 
-- command:
+- state: save current movie, sorting, ... more?
+
+- COMMANDS:
 
  - show possible duplicate movies
 
