@@ -30,14 +30,16 @@
     },
 
     // recreate state
-    // TODO:  sorting, last selected movie
     recreateAppState: function() {
-      var q = F.state.get("q");
+      // search
+      var q = F.state.get('q');
       if (q)
         F.store.setSearch(q);
-      var sorting = F.state.get("sorting");
+      // sorting
+      var sorting = F.state.get('sorting');
       if (sorting)
         F.store.setSort(sorting.field, sorting.asc);
+        F.grid.setSortColumn(sorting.field, sorting.asc);
     },
 
     _persist: function() {
@@ -47,11 +49,11 @@
     // defaults
     _state: {
       sidebar_collapsed: false,
-      q: F.search.empty_search
-      // sorting
-      // search
-      // selected movie
-      // grid col widths
+      q: F.search.empty_search,
+      sorting: {
+        field: 'title',
+        asc: true
+      }
     },
 
   };
