@@ -89,6 +89,7 @@
         name:      'Year',
         field:     'year',
         sortable:  true,
+        cssClass:  'align-center',
         maxWidth:  60,
         minWidth:  60,
       },
