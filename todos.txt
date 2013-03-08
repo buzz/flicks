@@ -10,6 +10,8 @@
 - searching for terms with accent and other non-latin letters doesn't
   work
 
+- command: search for dupes
+
 - imdb sync button
 
 - filme aus verzeichnis importieren?
