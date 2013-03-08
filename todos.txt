@@ -9,7 +9,10 @@
 - searching for terms with accent and other non-latin letters doesn't
   work
 
-- command
+- bug: search for 'before': 'before sunset' should show up but
+  doesn't!
+
+- command:
 
  - show possible duplicate movies
 

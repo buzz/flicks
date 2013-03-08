@@ -30,9 +30,6 @@
         F.grid.setActiveCell();
         F.grid.setActiveCell(i, 0); // bottom row that is fully visible
       }
-      // update grid sort column glyph
-      var sortinfo = F.store.getSort();
-      F.grid.setSortColumn(sortinfo.sortcol, sortinfo.sortasc);
     });
     F.store.onError.subscribe(function(e, args) {
       F.modals.error("<strong>Could not load movies!</strong><br><br>Error text: "
