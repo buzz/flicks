@@ -1,10 +1,9 @@
 - movie details
- - delete movie
- - karagarga nummer/flag notwendig??
- - details speichern: notes, title, imdb number?
  - film anlegen
- - files importieren
+ - details speichern: notes, title, imdb number?
  - tile view
+ - files importieren
+ - karagarga nummer/flag notwendig??
  - play button
 
 - searching for terms with accent and other non-latin letters doesn't
