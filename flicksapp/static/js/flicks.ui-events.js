@@ -71,7 +71,7 @@
       F.search.do(q);
       return false;
     });
-    // movie action buttons
+    // fav add
     F.el.sidebar.on("click", "a.fav-add", function() {
       var id = F.movie.current.id;
       F.movie.fav(id, false, function() {
@@ -80,6 +80,7 @@
       });
       return false;
     })
+    // fav remove
     .on("click", "a.fav-remove", function() {
       var id = F.movie.current.id;
       F.movie.fav(id, true, function() {
@@ -88,6 +89,7 @@
       });
       return false;
     })
+    // mark seen
     .on("click", "a.mark-seen", function() {
       var id = F.movie.current.id;
       F.movie.markSeen(id, false, function() {
@@ -96,6 +98,7 @@
       });
       return false;
     })
+    // unmark seen
     .on("click", "a.unmark-seen", function() {
       var id = F.movie.current.id;
       F.movie.markSeen(id, true, function() {
@@ -104,20 +107,22 @@
       });
       return false;
     })
+    // delete
     .on("click", "a.delete", function() {
       F.movie.delete(F.movie.current, function(movie) {
+        var current_row = F.grid.getActiveCell().row;
         F.store.clear();
-        F.grid.invalidate();
+        var i = 0;
+        while (i < F.grid.getDataLength())
+          F.grid.invalidateRow(i++);
         F.gridChange();
-        F.modals.info(
-          '<strong>Movie deleted: "' + movie.title + '" (' + movie.id + ')!');
       });
       return false;
     })
-    .on('click', '.cover img', F.ui.showBigCover);
 
     ////////// Big overlay cover
 
+    .on('click', '.cover img', F.ui.showBigCover);
     $(document).on('click', '#big-cover, #overlay-bg', function() {
       $('#big-cover, #overlay-bg').fadeOut();
     });

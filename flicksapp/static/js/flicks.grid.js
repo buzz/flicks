@@ -12,9 +12,24 @@
         F.grid.invalidateRow(i);
       F.grid.updateRowCount();
       F.grid.render();
-      // select first row
+      // select row
+      var vp = F.grid.getViewport();
       if (F.grid.getActiveCell() === null)
-        F.grid.setActiveCell(0, 0);
+        F.grid.setActiveCell(Math.max(0, vp.top), 0);
+      else {
+        // after loading we reselect the current row (it can change
+        // when deleting/adding a movie). then we have to make sure we
+        // only select a movie within the current viewport or the grid
+        // will jump when the user scrolls while the grid loads data.
+        var i = F.grid.getActiveCell().row;
+        if (i < vp.top)
+          i = vp.top + 1; // top row that is fully visible
+        if (i > vp.bottom)
+          i = vp.bottom - 2;
+        // select nothing first, so a reselect is always forced
+        F.grid.setActiveCell();
+        F.grid.setActiveCell(i, 0); // bottom row that is fully visible
+      }
       // update grid sort column glyph
       var sortinfo = F.store.getSort();
       F.grid.setSortColumn(sortinfo.sortcol, sortinfo.sortasc);
@@ -150,7 +165,9 @@
     });
     F.grid.onSelectedRowsChanged.subscribe(function(e, args) {
       if (args.rows.length == 1) {
-        F.movie.get(F.store.getItem(args.rows[0]).id, F.ui.renderSidebar);
+        var movie = F.store.getItem(args.rows[0]);
+        if (movie)
+          F.movie.get(movie.id, F.ui.renderSidebar);
       }
     });
     F.grid.onViewportChanged.subscribe(function(e, args) {

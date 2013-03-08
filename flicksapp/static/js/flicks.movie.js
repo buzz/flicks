@@ -55,15 +55,13 @@
   F.movie.delete = function(movie, cb) {
     $.ajax({
       url: '/movies/' + movie.id,
-      type: 'DELETE',
-      success: function() {
-        cb(movie);
-      },
-      error: function (r) {
-        F.modals.error(
-          '<strong>Could not delete movie with id ' + id +
-            '!</strong><br><br>Error text: ' + r.statusText);
-      }
+      type: 'DELETE'
+    }).done(function() {
+      cb(movie);
+    }).fail(function (r) {
+      F.modals.error(
+        '<strong>Could not delete movie with id ' + movie.id +
+          '!</strong><br><br>Error text: ' + r.statusText);
     });
   }
 
