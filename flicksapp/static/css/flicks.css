@@ -240,10 +240,6 @@ a.lookup:hover, a.lookup:active {
   background-image: url(../images/delete.png);
 }
 
-#sidebar .action.find-cover {
-  background-image: url(../images/image_edit.png);
-}
-
 #sidebar .search-icon, #sidebar .imdb_id {
   float: right;
   margin-left: 10px;
