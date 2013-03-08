@@ -247,6 +247,17 @@
     F.el.sidebar.find(".image img").load(F.ui.relayout);
   };
 
+  // Cover
+
+  F.ui.showBigCover = function() {
+    $el = $('#big-cover');
+    $el.html(
+      _.template($('#big-cover-template').html(), F.movie.current))
+      .css('margin-left', - Math.floor($el.width() / 2))
+      .css('margin-top', - Math.floor($el.height() / 2));
+    $('#big-cover, #overlay-bg').fadeIn();
+  };
+
   // CURRENT MOVIE
 
   // if the user updates the current movie we have to rerender sidebar

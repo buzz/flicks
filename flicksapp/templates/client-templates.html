@@ -24,7 +24,7 @@
       <% } %>
       <div class="clear"></div>
     </div>
-    <div class="image"><img alt="Cover" src="/static/images/covers/movies_<%- id %>.jpg"></div>
+    <div class="cover"><img title="Click to enlarge" alt="<%- title %>" src="/static/images/covers/movies_<%- id %>.jpg"></div>
     <label class="half-width">Year:</label><label class="half-width">Rating:</label>
     <div class="clear-left"></div>
     <div class="val year half-width">
@@ -90,7 +90,7 @@
   </form>
 </script>
 
-<!-- Search form -->
+<!-- Title AKAS tooltip -->
 
 <script type="text/template" id="akas-tooltip-template">
   <h3>Also known as</h3>
@@ -109,6 +109,12 @@
       <% }); %>
     </ul>
   </p>
+</script>
+
+<!-- Big cover -->
+
+<script type="text/template" id="big-cover-template">
+  <img class="big-cover" src="/static/images/covers/movies_<%- id %>.jpg" alt="<%- title %>" />
 </script>
 
 <!-- Search form -->

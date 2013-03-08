@@ -71,49 +71,56 @@
       F.search.do(q);
       return false;
     });
-  // movie action buttons
-  F.el.sidebar.on("click", "a.fav-add", function() {
-    var id = F.movie.current.id;
-    F.movie.fav(id, false, function() {
-      F.store.getItemById(id).favourite = F.movie.current.favourite = true;
-      F.ui.currentMovieChanged();
+    // movie action buttons
+    F.el.sidebar.on("click", "a.fav-add", function() {
+      var id = F.movie.current.id;
+      F.movie.fav(id, false, function() {
+        F.store.getItemById(id).favourite = F.movie.current.favourite = true;
+        F.ui.currentMovieChanged();
+      });
+      return false;
+    })
+    .on("click", "a.fav-remove", function() {
+      var id = F.movie.current.id;
+      F.movie.fav(id, true, function() {
+        F.store.getItemById(id).favourite = F.movie.current.favourite = false;
+        F.ui.currentMovieChanged();
+      });
+      return false;
+    })
+    .on("click", "a.mark-seen", function() {
+      var id = F.movie.current.id;
+      F.movie.markSeen(id, false, function() {
+        F.store.getItemById(id).seen = F.movie.current.seen = true;
+        F.ui.currentMovieChanged();
+      });
+      return false;
+    })
+    .on("click", "a.unmark-seen", function() {
+      var id = F.movie.current.id;
+      F.movie.markSeen(id, true, function() {
+        F.store.getItemById(id).seen = F.movie.current.seen = false;
+        F.ui.currentMovieChanged();
+      });
+      return false;
+    })
+    .on("click", "a.delete", function() {
+      F.movie.delete(F.movie.current, function(movie) {
+        F.store.clear();
+        F.grid.invalidate();
+        F.gridChange();
+        F.modals.info(
+          '<strong>Movie deleted: "' + movie.title + '" (' + movie.id + ')!');
+      });
+      return false;
+    })
+    .on('click', '.cover img', F.ui.showBigCover);
+
+    ////////// Big overlay cover
+
+    $(document).on('click', '#big-cover, #overlay-bg', function() {
+      $('#big-cover, #overlay-bg').fadeOut();
     });
-    return false;
-  })
-  .on("click", "a.fav-remove", function() {
-    var id = F.movie.current.id;
-    F.movie.fav(id, true, function() {
-      F.store.getItemById(id).favourite = F.movie.current.favourite = false;
-      F.ui.currentMovieChanged();
-    });
-    return false;
-  })
-  .on("click", "a.mark-seen", function() {
-    var id = F.movie.current.id;
-    F.movie.markSeen(id, false, function() {
-      F.store.getItemById(id).seen = F.movie.current.seen = true;
-      F.ui.currentMovieChanged();
-    });
-    return false;
-  })
-  .on("click", "a.unmark-seen", function() {
-    var id = F.movie.current.id;
-    F.movie.markSeen(id, true, function() {
-      F.store.getItemById(id).seen = F.movie.current.seen = false;
-      F.ui.currentMovieChanged();
-    });
-    return false;
-  })
-  .on("click", "a.delete", function() {
-    F.movie.delete(F.movie.current, function(movie) {
-      F.store.clear();
-      F.grid.invalidate();
-      F.gridChange();
-      F.modals.info(
-        '<strong>Movie deleted: "' + movie.title + '" (' + movie.id + ')!');
-    });
-    return false;
-  });
 
   }
 
