@@ -9,7 +9,15 @@
 - searching for terms with accent and other non-latin letters doesn't
   work
 
-- command: search for dupes
+- command
+
+ - show possible duplicate movies
+
+ - create a list of movies without cover
+
+ - create a static html with title and cover next to each other. there
+   seem to be some movies that have wrong imdb entries. we can see
+   discover them by their wrong title
 
 - imdb sync button
 
