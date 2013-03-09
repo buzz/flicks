@@ -51,7 +51,7 @@
               }
               // movie already exists
               else {
-                F.modals.error(
+                F.modals.warning(
                   '<strong>Movie with this IMDb ID already exists. (ID=' + r.id
                     + ')');
               }

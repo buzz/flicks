@@ -240,8 +240,12 @@ a.lookup:hover, a.lookup:active {
   background-image: url(../images/silk_icons/database_refresh.png);
 }
 
+#sidebar .action.change_imdb_id {
+  background-image: url(../images/silk_icons/film_edit.png);
+}
+
 #sidebar .action.delete {
-  background-image: url(../images/silk_icons/delete.png);
+  background-image: url(../images/silk_icons/film_delete.png);
 }
 
 #sidebar .search-icon, #sidebar .imdb_id {
@@ -350,7 +354,7 @@ a.lookup:hover, a.lookup:active {
 }
 
 .slick-cell .flag {
-  margin-top: 1px;
+  margin: 2px 1px 0 0;
   display: inline-block;
 }
 
@@ -369,6 +373,7 @@ a.lookup:hover, a.lookup:active {
 }
 
 #modal.warning {
+  background-image: url(../images/silk_icons/error.png);
 }
 
 #modal {

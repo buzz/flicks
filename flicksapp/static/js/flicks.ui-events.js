@@ -119,6 +119,11 @@
       });
       return false;
     })
+    // change IMDb ID
+    .on("click", "a.change_imdb_id", function() {
+      F.el['dialog-change-imdb-id'].dialog('open');
+      return false;
+    })
     // delete
     .on("click", "a.delete", function() {
       F.el['dialog-delete-confirm'].dialog('open');
@@ -149,6 +154,17 @@
           // Trigger Create click
           var buttons = $('#dialog-add-movie').dialog('option', 'buttons');
           buttons['Create']();
+          return false;
+        });
+
+    ////////// Change IMDb ID dialog
+
+    $(document)
+      .on('submit', '#change_imdb_id_form',
+        function() {
+          // Trigger Create click
+          var buttons = $('#dialog-change-imdb-id').dialog('option', 'buttons');
+          buttons['Change']();
           return false;
         });
 

@@ -30,6 +30,7 @@
       'adv-search': $("#adv-search"),
       modal: $("#modal"),
       'dialog-add-movie': $("#dialog-add-movie"),
+      'dialog-change-imdb-id': $("#dialog-change-imdb-id"),
       'dialog-delete-confirm': $("#dialog-delete-confirm"),
     };
 

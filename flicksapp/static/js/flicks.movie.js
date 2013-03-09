@@ -75,6 +75,25 @@
     });
   }
 
+  // change imdb id
+  F.movie.changeImdbId = function(id, imdb_id, cb) {
+    var data = JSON.stringify({ imdb_id: imdb_id });
+    $.ajax({
+      url: '/movies/' + id + '/',
+      data: data,
+      dataType: 'json',
+      type: 'PATCH',
+      processData: false,
+      contentType: 'application/json',
+      success: cb,
+      error: function (r) {
+        F.modals.error(
+          '<strong>Could not change movie IMDb ID' +
+            '!</strong><br><br>Error text: ' + r.statusText);
+      }
+    });
+  }
+
   // delete movie
   F.movie.delete = function(movie, cb) {
     $.ajax({

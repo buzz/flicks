@@ -170,6 +170,40 @@
         }
       }
     });
+    // change imdb id dialog
+    F.el['dialog-change-imdb-id'].dialog({
+      autoOpen: false,
+      modal: true,
+      open: function() {
+        $(this).find('#change_imdb_id_imdb_id').val(F.movie.current.imdb_id);
+      },
+      buttons: {
+        'Change': function() {
+          var new_imdb_id = parseInt($('#change_imdb_id_imdb_id').val());
+          if (new_imdb_id !== F.movie.current.imdb_id) {
+            F.movie.exists(new_imdb_id, function(r) {
+              // does not exist
+              if (!r) {
+                F.movie.changeImdbId(F.movie.current.id, new_imdb_id, function (ret) {
+                  F.movie.current.imdb_id = new_imdb_id;
+                  F.ui.renderSidebar(F.movie.current);
+                  F.el['dialog-change-imdb-id'].dialog('close');
+                });
+              }
+              // movie already exists
+              else {
+                F.modals.warning(
+                  '<strong>Movie with this IMDb ID already exists. (ID=' + r.id
+                    + ')');
+              }
+            });
+          }
+        },
+        Cancel: function() {
+          $(this).dialog('close');
+        }
+      }
+    });
   }
 
   // advanced search form: setup UI and restore form state
