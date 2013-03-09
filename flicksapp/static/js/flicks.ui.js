@@ -295,8 +295,8 @@
 
   // CURRENT MOVIE
 
-  // if the user updates the current movie we have to rerender sidebar
-  // and the grid row
+  // if the user updates the current movie we have to rerender the
+  // sidebar and the grid row
   F.ui.currentMovieChanged = function() {
     F.grid.invalidateRow(F.grid.getSelectedRows()[0]);
     F.grid.render();

@@ -236,7 +236,7 @@ a.lookup:hover, a.lookup:active {
   background-image: url(../images/silk_icons/eye_delete.png);
 }
 
-#sidebar .action.imdb_refresh {
+#sidebar .action.imdb_import {
   background-image: url(../images/silk_icons/database_refresh.png);
 }
 

@@ -124,9 +124,27 @@ def imdb_search(request):
     if q:
         i = IMDb()
         results = i.search_movie(q)
-        data['results'] = [{
+        for r in results:
+            movie = {
                 'imdb_id': int(i.get_imdbID(r)),
                 'title': r['title'],
-                'year': r['year'],
-            } for r in results]
+            }
+            # year is sometimes not present
+            try:
+                movie['year'] = r['year']
+            except KeyError:
+                movie['year'] = '????'
+            data['results'].append(movie)
     return HttpResponse(enc.encode(data), mimetype='application/json')
+
+def imdb_import(request, movie_id):
+    """Import movie data from IMDb."""
+    enc = FlicksJSONEncoder()
+    try:
+        movie = Movie.objects.get(id=movie_id)
+    except Movie.DoesNotExist():
+        return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
+                            mimetype='application/json', status=404)
+    movie.sync_with_imdb()
+    return HttpResponse(enc.encode({ 'success': True }),
+                        mimetype='application/json')

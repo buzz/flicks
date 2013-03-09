@@ -107,6 +107,18 @@
       });
       return false;
     })
+    // import from IMDb
+    .on("click", "a.imdb_import", function() {
+      var id = F.movie.current.id;
+      F.movie.imdbImport(id, function() {
+        F.store.clear();
+        var i = 0;
+        while (i < F.grid.getDataLength())
+          F.grid.invalidateRow(i++);
+        F.gridChange();
+      });
+      return false;
+    })
     // delete
     .on("click", "a.delete", function() {
       F.el['dialog-delete-confirm'].dialog('open');

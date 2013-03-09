@@ -97,12 +97,25 @@
       data: data,
       type: 'GET',
     })
-    .done(function(r) {
-      cb(r);
-    })
+    .done(cb)
     .fail(function(r) {
       F.modals.error(
         '<strong>Could not search IMDb!</strong><br><br>'
+          + 'Error text: ' + r.statusText);
+    });
+  };
+
+  // imdb import
+  F.movie.imdbImport = function(id, cb) {
+    F.ui.enableSpinner();
+    $.ajax({
+      url: '/imdb-import/' + id + '/',
+      type: 'GET',
+    })
+    .done(cb)
+    .fail(function(r) {
+      F.modals.error(
+        '<strong>Could import data from IMDb!</strong><br><br>'
           + 'Error text: ' + r.statusText);
     });
   };
