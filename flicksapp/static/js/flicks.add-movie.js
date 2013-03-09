@@ -15,7 +15,7 @@
     var i = 0;
     while (i < F.grid.getDataLength())
       F.grid.invalidateRow(i++);
-    F.setGridRowCountChangedFlag();
+    F.setReloadSidebarAfterGridLoad();
     F.search.clear();
     F.grid.setActiveCell(0, 0);
   };

@@ -6,9 +6,9 @@
 
     // a flag we use for indicating we have to reload the sidebar
     // after next data loading
-    F._rowCountChangedFlag = false;
-    F.setGridRowCountChangedFlag = function() {
-      F._rowCountChangedFlag = true;
+    F._reloadSidebarAfterGridLoad = false;
+    F.setReloadSidebarAfterGridLoad = function() {
+      F._reloadSidebarAfterGridLoad = true;
     };
 
     // model store
@@ -24,10 +24,12 @@
       if (F.grid.getActiveCell() === null)
         F.grid.setActiveCell(Math.max(0, vp.top), 0);
       // reload sidebar if movie was added/removed
-      else if (F._rowCountChangedFlag) {
-        F._rowCountChangedFlag = false;
+      else if (F._reloadSidebarAfterGridLoad) {
         var movie = F.store.getItem(F.grid.getActiveCell().row);
-        F.movie.get(movie.id, F.ui.renderSidebar);
+        if (movie) {
+          F._reloadSidebarAfterGridLoad = false;
+          F.movie.get(movie.id, F.ui.renderSidebar);
+        }
       }
     });
     F.store.onError.subscribe(function(e, args) {

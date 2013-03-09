@@ -161,7 +161,7 @@
             var i = 0;
             while (i < F.grid.getDataLength())
               F.grid.invalidateRow(i++);
-            F.setGridRowCountChangedFlag();
+            F.setReloadSidebarAfterGridLoad();
             F.gridChange();
           });
         },
@@ -184,11 +184,17 @@
             F.movie.exists(new_imdb_id, function(r) {
               // does not exist
               if (!r) {
-                F.movie.changeImdbId(F.movie.current.id, new_imdb_id, function (ret) {
-                  F.movie.current.imdb_id = new_imdb_id;
-                  F.ui.renderSidebar(F.movie.current);
-                  F.el['dialog-change-imdb-id'].dialog('close');
-                });
+                F.el['dialog-change-imdb-id'].dialog('close');
+                F.ui.enableSpinner();
+                F.movie.changeImdbId(
+                  F.movie.current.id, new_imdb_id, function (ret) {
+                    F.store.clear();
+                    var i = 0;
+                    while (i < F.grid.getDataLength())
+                      F.grid.invalidateRow(i++);
+                    F.setReloadSidebarAfterGridLoad();
+                    F.gridChange();
+                  });
               }
               // movie already exists
               else {
@@ -327,11 +333,12 @@
   // Cover
 
   F.ui.showBigCover = function() {
-    $el = $('#big-cover');
-    $el.html(
-      _.template($('#big-cover-template').html(), F.movie.current))
-      .css('margin-left', - Math.floor($el.width() / 2))
-      .css('margin-top', - Math.floor($el.height() / 2));
+    var $el = $('#big-cover');
+    $el.html(_.template($('#big-cover-template').html(), F.movie.current));
+    $('#big-cover img').load(function () {
+      $el.css('margin-left', - Math.floor($el.width() / 2))
+        .css('margin-top', - Math.floor($el.height() / 2));
+    });
     $('#big-cover, #overlay-bg').fadeIn();
   };
 

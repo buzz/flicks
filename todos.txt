@@ -27,8 +27,6 @@
 
 - fav/mark seen evtl via REST API?
 
-- imdb sync button
-
 - filme aus verzeichnis importieren?
 
 - migrate from jquery ui to bootstrap for beauty?

@@ -138,13 +138,36 @@ def imdb_search(request):
     return HttpResponse(enc.encode(data), mimetype='application/json')
 
 def imdb_import(request, movie_id):
-    """Import movie data from IMDb."""
+    """
+    Import movie data from IMDb. Optionally takes a GET argument
+    'imdb_id' to change movies IMDb ID.
+    """
     enc = FlicksJSONEncoder()
     try:
         movie = Movie.objects.get(id=movie_id)
     except Movie.DoesNotExist():
         return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
                             mimetype='application/json', status=404)
+    try:
+        imdb_id = request.GET.get('imdb_id', None)
+    except ValueError, TypeError:
+        pass
+    if (imdb_id):
+        movie.imdb_id = imdb_id
+    movie.sync_with_imdb()
+    return HttpResponse(enc.encode({ 'success': True }),
+                        mimetype='application/json')
+
+def imdb_change(request, id, imdb_id):
+    """Change IMDb ID and updates movie."""
+    enc = FlicksJSONEncoder()
+    try:
+        movie = Movie.objects.get(id=movie_id)
+    except Movie.DoesNotExist():
+        return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
+                            mimetype='application/json', status=404)
+    movie.imdb_id = imdb_id
+    movie.save()
     movie.sync_with_imdb()
     return HttpResponse(enc.encode({ 'success': True }),
                         mimetype='application/json')

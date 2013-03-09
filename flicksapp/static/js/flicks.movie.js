@@ -77,14 +77,12 @@
 
   // change imdb id
   F.movie.changeImdbId = function(id, imdb_id, cb) {
-    var data = JSON.stringify({ imdb_id: imdb_id });
+    var data = { imdb_id: imdb_id };
     $.ajax({
-      url: '/movies/' + id + '/',
+      url: '/imdb-import/' + id + '/',
       data: data,
       dataType: 'json',
-      type: 'PATCH',
-      processData: false,
-      contentType: 'application/json',
+      type: 'GET',
       success: cb,
       error: function (r) {
         F.modals.error(
