@@ -270,7 +270,14 @@
     // render sidebar template
     var template = _.template($("#sidebar-template").html(), movie);
     F.el.sidebar.children('.movie-info').html(template);
-    $("#detail-tabs").tabs();
+    $("#detail-tabs").tabs({
+      active: F.state.get('sidebar_tab_active'),
+      activate: function (e, ui) {
+        // save opened tab
+        var num = $('#detail-tabs ul.ui-tabs-nav > li').index(ui.newTab);
+        F.state.set('sidebar_tab_active', num);
+      }
+    });
     F.ui.relayout();
     F.el.sidebar.find(".cover img")
       .load(function() {

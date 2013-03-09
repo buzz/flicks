@@ -49,6 +49,7 @@
     // defaults
     _state: {
       sidebar_collapsed: false,
+      sidebar_tab_active: 0,
       q: F.search.empty_search,
       sorting: {
         field: 'title',
