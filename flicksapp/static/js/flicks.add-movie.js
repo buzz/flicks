@@ -31,17 +31,30 @@
           var $dialog = F.el['dialog-add-movie'],
             imdb_id = $dialog.find('#add_movie_imdb_id').val();
           if (imdb_id.length > 0) {
-            // Add via IMDb ID
-            var movie = {
-              imdb_id: imdb_id,
-              genres: [],
-              countries: [],
-              languages: [],
-              directors: [],
-            };
-            F.movie.add(movie, function() {
-              focusNewMovie();
-              F.el['dialog-add-movie'].dialog('close');
+            // check if movie with this IMDb ID already exists in
+            // database
+            F.movie.exists(imdb_id, function(r) {
+              // does not exist
+              if (!r) {
+                // add via IMDb ID
+                var movie = {
+                  imdb_id: imdb_id,
+                  genres: [],
+                  countries: [],
+                  languages: [],
+                  directors: [],
+                };
+                F.movie.add(movie, function() {
+                  focusNewMovie();
+                  F.el['dialog-add-movie'].dialog('close');
+                });
+              }
+              // movie already exists
+              else {
+                F.modals.error(
+                  '<strong>Movie with this IMDb ID already exists. (ID=' + r.id
+                    + ')');
+              }
             });
           }
         },

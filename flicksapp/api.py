@@ -146,6 +146,7 @@ class MovieListResource(BaseMovieResource):
         ordering = ('id', 'title', 'year', 'rating', 'runtime')
         filtering = {
             'id': 'exact',
+            'imdb_id': 'exact',
             'title': 'search',
             'mpaa': 'search',
             'seen': 'exact',

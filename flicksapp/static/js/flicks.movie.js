@@ -51,6 +51,30 @@
     });
   }
 
+  // check movie existence
+  F.movie.exists = function(imdb_id, cb) {
+    var args = {
+      limit: 1,
+      offset: 0,
+      imdb_id: imdb_id,
+    }
+    $.ajax({
+      url: "/movies/",
+      dataType: "json",
+      type: "GET",
+      data: args,
+    }).done(function (r) {
+      if (r.meta.total_count > 0)
+        cb(r.objects[0]);
+      else
+        cb(false);
+    }).fail(function (r) {
+      F.modals.error(
+        '<strong>Could not check for movie existence' +
+          '!</strong><br><br>Error text: ' + r.statusText);
+    });
+  }
+
   // delete movie
   F.movie.delete = function(movie, cb) {
     $.ajax({

@@ -1,6 +1,4 @@
 - movie details
- - film anlegen
-  - sollte warnen falls film schon in datenbank!
  - details speichern: notes, title, imdb number?
  - tile view
  - files importieren
@@ -26,6 +24,8 @@
    discover them by their wrong title
 
  - purge orphan objects (persons, countries, ...)
+
+- fav/mark seen evtl via REST API?
 
 - imdb sync button
 

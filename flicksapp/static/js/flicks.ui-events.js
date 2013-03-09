@@ -143,6 +143,13 @@
           var imdb_id = $(this).children('.imdb_id').text();
           $('#dialog-add-movie input[name=imdb_id]').val(imdb_id);
           return false;
+        })
+      .on('submit', '#add_movie_by_imdb_id_form',
+        function() {
+          // Trigger Create click
+          var buttons = $('#dialog-add-movie').dialog('option', 'buttons');
+          buttons['Create']();
+          return false;
         });
 
     ////////// Big overlay cover
