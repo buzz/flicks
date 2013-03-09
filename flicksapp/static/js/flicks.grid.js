@@ -4,6 +4,13 @@
 
   F.setupGrid = function() {
 
+    // a flag we use for indicating we have to reload the sidebar
+    // after next data loading
+    F._rowCountChangedFlag = false;
+    F.setGridRowCountChangedFlag = function() {
+      F._rowCountChangedFlag = true;
+    };
+
     // model store
     F.store = Slick.Data.RemoteRestModel();
     // react on changed data
@@ -16,19 +23,11 @@
       var vp = F.grid.getViewport();
       if (F.grid.getActiveCell() === null)
         F.grid.setActiveCell(Math.max(0, vp.top), 0);
-      else {
-        // after loading we reselect the current row (it can change
-        // when deleting/adding a movie). then we have to make sure we
-        // only select a movie within the current viewport or the grid
-        // will jump when the user scrolls while the grid loads data.
-        var i = F.grid.getActiveCell().row;
-        if (i < vp.top)
-          i = vp.top + 1; // top row that is fully visible
-        if (i > vp.bottom)
-          i = vp.bottom - 2;
-        // select nothing first, so a reselect is always forced
-        F.grid.setActiveCell();
-        F.grid.setActiveCell(i, 0); // bottom row that is fully visible
+      // reload sidebar if movie was added/removed
+      else if (F._rowCountChangedFlag) {
+        F._rowCountChangedFlag = false;
+        var movie = F.store.getItem(F.grid.getActiveCell().row);
+        F.movie.get(movie.id, F.ui.renderSidebar);
       }
     });
     F.store.onError.subscribe(function(e, args) {

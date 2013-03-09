@@ -161,6 +161,7 @@
             var i = 0;
             while (i < F.grid.getDataLength())
               F.grid.invalidateRow(i++);
+            F.setGridRowCountChangedFlag();
             F.gridChange();
           });
         },

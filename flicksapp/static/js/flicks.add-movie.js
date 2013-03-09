@@ -15,6 +15,7 @@
     var i = 0;
     while (i < F.grid.getDataLength())
       F.grid.invalidateRow(i++);
+    F.setGridRowCountChangedFlag();
     F.gridChange();
     F.grid.setActiveCell(0, 0);
   };
