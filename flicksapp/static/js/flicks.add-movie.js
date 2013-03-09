@@ -16,7 +16,7 @@
     while (i < F.grid.getDataLength())
       F.grid.invalidateRow(i++);
     F.setGridRowCountChangedFlag();
-    F.gridChange();
+    F.search.clear();
     F.grid.setActiveCell(0, 0);
   };
 
