@@ -6,3 +6,6 @@ DEADJOE
 \#*#
 .#*
 *.pyc
+**/node_modules
+flicksfrontend/app/style/.sass-cache
+flicksfrontend/app/style/compiled
