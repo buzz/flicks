@@ -1,0 +1,31 @@
+@import 'compass/css3/transition'
+@import 'compass/css3/user-interface'
+
+@import 'common'
+
+#toolbar
+
+	.navbar
+		margin-bottom: 0
+
+		.navbar-brand
+			+transition(color 0.5s)
+			+user-select(none)
+			cursor: default
+			padding-top: 8px
+			padding-bottom: 6px
+
+			&:hover
+				color: black
+
+		.indicator
+
+			.spinner
+				display: none
+				margin: 0 10px
+
+				i.fa-spinner
+					line-height: 40px
+
+		button.clear-search
+			margin: 9px 10px 0

@@ -1,0 +1,33 @@
+@import 'common'
+
+@mixin flicks-icon
+	width: 16px
+	height: 16px
+	display: inline-block
+	vertical-align: text-top
+	margin-top: -1px
+	background-position: 0 0
+
+.flicks-icon-imdb
+	@include flicks-icon
+	background-image: image-url("imdb.png")
+
+.flicks-icon-karagarga
+	@include flicks-icon
+	background-image: image-url("karagarga.png")
+
+.flicks-icon-opensubtitles
+	@include flicks-icon
+	background-image: image-url("opensubtitles.png")
+
+
+i
+
+	&.seen
+		color: $color-seen
+
+	&.not-seen
+		color: lighten($color-seen, 50%)
+
+	&.fav
+		color: $color-fav

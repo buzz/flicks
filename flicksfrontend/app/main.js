@@ -6,7 +6,7 @@ require.config({
 		'jquery.event.drop':       '../lib/jquery/jquery.event.drop-2.2',
 		'lodash':                  '../lib/underscore/lodash-2.2.1',
 		'underscore.string':       '../lib/underscore/underscore.string-2.3.2',
-		'bootstrap':               '../lib/bootstrap/js/bootstrap',
+		'bootstrap':               '../lib/bootstrap-3.0.1/js/bootstrap',
 		'backbone':                '../lib/backbone/backbone-1.1.0',
 		'marionette':              '../lib/backbone/backbone.marionette-1.2.0',
 		'backbone.wreqr':          '../lib/backbone/backbone.wreqr',

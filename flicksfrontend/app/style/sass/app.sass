@@ -1,0 +1,56 @@
+@import 'common'
+
+html
+	height: 100%
+
+	body
+		height: 100%
+		overflow: hidden
+
+		#main-layout
+			height: 100%
+			display: flex
+			flex-flow: column
+			padding: 0
+
+			#spinner
+				position: absolute
+				z-index: 2000
+				pointer-events: none
+				top: 50%
+				left: 50%
+
+			#toolbar
+				+layout-box-shadow
+				z-index: 1000
+
+			#content
+				display: flex
+				flex-flow: row
+				z-index: 0
+				flex: 1
+
+				#sidebar
+					+layout-box-shadow
+					+default-gradient-inside()
+					order: 1
+					width: 23%
+					min-width: 355px
+					min-height: 100%
+					position: relative
+					border-right: 1px solid #d4d4d4
+					overflow: hidden
+					z-index: 500
+
+					&.collapsed
+						width: 0
+						min-width: 0
+						border-right: none
+
+				#movies
+					order: 2
+					flex: 1
+					position: relative
+					min-height: 100%
+					background-color: #ebebeb
+					z-index: -100

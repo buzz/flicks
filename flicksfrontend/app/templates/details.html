@@ -1,0 +1,66 @@
+<div class="top">
+	<div class="title enable-tooltip" title="<%- title %>">
+		<%- title %>
+	</div>
+	<div class="year">
+		 <%- year %>
+	</div>
+	<div class="dismiss">
+		<button class="btn btn-default btn-xs"><i class="fa fa-times"></i></button>
+	</div>
+</div>
+
+<div class="menu">
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#tab-info" data-toggle="tab">Info</a></li>
+		<li><a href="#tab-plot" data-toggle="tab">Plot</a></li>
+		<li><a href="#tab-cast" data-toggle="tab">Cast</a></li>
+		<li><a href="#tab-keywords" data-toggle="tab">Keywords</a></li>
+		<li><a href="#tab-notes" data-toggle="tab">Notes</a></li>
+		<li><a href="#tab-files" data-toggle="tab">Files</a></li>
+	</ul>
+</div>
+
+<div class="content">
+	<div class="tab-content">
+
+		<div class="tab-pane active" id="tab-info">
+			<p><%- genres %></p>
+		</div>
+
+		<div class="tab-pane" id="tab-plot">
+			<% var plot_splitted = plot.split('::'); %>
+			<% if (plot_splitted.length > 1) { %>
+				<p><%= plot_splitted[0] %></p>
+				<p class="author"><%= plot_splitted[1] %></p>
+			<% } else { %>
+				<%= plot %>
+			<% } %>
+		</div>
+
+		<div class="tab-pane" id="tab-cast">
+			cast
+		</div>
+
+		<div class="tab-pane" id="tab-keywords">
+			keywords
+		</div>
+
+		<div class="tab-pane" id="tab-notes">
+			notes
+		</div>
+
+		<div class="tab-pane" id="tab-files">
+		</div>
+
+	</div>
+</div>
+
+<div class="cover-image">
+	<a href="#">
+		<img title="Click to enlarge"
+				 class="enable-tooltip-top"
+				 alt="<%- title %>"
+				 src="covers/movies_<%- id %>.jpg">
+	</a>
+</div>

@@ -1,0 +1,32 @@
+@import 'common'
+
+.btn-default
+	+default-gradient-darker()
+
+.navbar
+	+default-gradient()
+
+
+.nav-tabs
+	margin-bottom: 0
+
+	> li
+
+		&.active
+
+			> a
+				color: black
+
+				&:hover
+					color: black
+
+		> a
+			padding: 4px 6px 3px
+			margin: 1px 1px 0
+			line-height: 12px
+			color: $color-silver
+
+			&:hover
+				background-color: transparent
+				border-bottom-color: transparent
+				color: black

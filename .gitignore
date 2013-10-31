@@ -7,5 +7,5 @@ DEADJOE
 .#*
 *.pyc
 **/node_modules
-flicksfrontend/app/style/.sass-cache
-flicksfrontend/app/style/compiled
+.sass-cache
+flicksfrontend/app/style/_compiled

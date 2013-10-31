@@ -331,13 +331,22 @@ module.exports = function(grunt) {
 					}
 				}
 			},
-			proxies: [{
-				context: '/movies',
-				host: 'localhost',
-				port: 8000,
-				https: false,
-				changeOrigin: true
-			}]
+			proxies: [
+				{
+					context: '/movies',
+					host: 'localhost',
+					port: 8000,
+					https: false,
+					changeOrigin: true
+				},
+				{
+					context: '/movie',
+					host: 'localhost',
+					port: 8000,
+					https: false,
+					changeOrigin: true
+				}
+			]
 		},
 
 		bgShell: {

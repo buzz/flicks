@@ -1,18 +1,27 @@
 define([
-  'marionette',
-  'controller'
+	'marionette'
 ], function(
-	Marionette,
-	Controller
+	Marionette
 ) {
-  var Router = Marionette.AppRouter.extend({
-    appRoutes: {
-      '' : 'index'
-    }
-  });
 
-  return new Router({
-    controller: Controller
-  });
+	var Router = Marionette.AppRouter.extend({
+		appRoutes: {
+			'':          'deselectMovie',
+			'movie/:id': 'selectMovie'
+		},
+		controller: {
+
+			deselectMovie: function() {
+				App.state.set('selected_movie_id', null);
+			},
+
+			selectMovie: function(id) {
+				App.state.set('selected_movie_id', id);
+			}
+
+		}
+	});
+
+	return Router;
 
 });

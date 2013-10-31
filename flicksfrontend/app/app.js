@@ -1,15 +1,23 @@
 define([
 	'marionette',
 	'router',
-	'movies_dataview',
+	'state',
+	'movie',
+	'collection',
+	'views/layout',
 	'views/toolbar',
-	'views/movie_grid'
+	'grid/view',
+	'views/details'
 ], function(
 	Marionette,
 	Router,
+	AppState,
+	Movie,
 	MovieCollection,
+	AppLayout,
 	ToolbarView,
-	MovieGridView
+	GridView,
+	DetailsView
 ) {
 
 	/* 
@@ -50,46 +58,65 @@ define([
 		}
 	};
 
+	/*
+	 * Create app
+	 */
 	App = new Marionette.Application();
 	App.root = '/';
 	App.addRegions({ main: 'body' });
+
+	// Defaults
+	App.tooltipDefaults = {
+		container: 'body',
+		placement: 'bottom'
+	};
+	App.links = {
+		imdb_id:    'http://www.imdb.com/title/tt%07d/',
+		imdb_title: 'http://www.imdb.com/find?q=%s',
+		karagarga:  'https://karagarga.net/browse.php?search_type=title&search=%s',
+		os_title:   'http://www.opensubtitles.org/en/search/sublanguageid-eng,ger/moviename-%s',
+		os_imdbid:  'http://www.opensubtitles.org/en/search/sublanguageid-eng,ger/imdbid-%07d'
+	};
+
 	App.addInitializer(function() {
-		var AppLayout = Marionette.Layout.extend({
-			id: 'main-layout',
-			className: 'container-fluid',
-			template: 'layout',
-			regions: {
-				toolbar: '#toolbar',
-				movies:  '#movies',
-				sidebar: '#sidebar'
-			}
-		});
 
 		App.movie_collection = new MovieCollection();
+
+		App.router = new Router();
+		App.state = new AppState();
 
 		App.layout = new AppLayout();
 		App.main.show(App.layout);
 
-		var toolbar = new ToolbarView();
+		var toolbar = new ToolbarView({ model: App.state });
 		App.layout.toolbar.show(toolbar);
 
-		var movie_grid = new MovieGridView({
-			collection: App.movie_collection,
-			id: 'movie-grid'
+		var grid = new GridView({ collection: App.movie_collection });
+		App.layout.movies.show(grid);
+
+		// helper functions
+		App.selectMovie = function(id) {
+			// fetch full movie info
+			var movie = new Movie({ id: id });
+			movie.fetch({
+				success: function(movie) {
+					var details = new DetailsView({ model: movie });
+					App.layout.sidebar.show(details);
+				}
+			});
+		};
+
+		// on DOM ready
+		$(function () {
+			// Slickgrid needs container height
+			grid.createGrid();
+			// App router
+			Backbone.history.start({
+				pushState: false,
+				hashChange: true
+			});
 		});
-		App.layout.movies.show(movie_grid);
 
-		// Slickgrid reads container height. So wait for DOM...
-		$(function () { movie_grid.createGrid(); });
-
-		// All links with the role attribute set to nav-main will navigate through
-		// the application's router.
-		// $('a[role=nav-main]').click(function(e) {
-		// e.preventDefault();
-		// App.Router.navigate($(this).attr('href'), {
-		// trigger: true
-		// });
-		// });
 	});
 
 	// Central resize event
