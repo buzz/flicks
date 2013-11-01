@@ -7,7 +7,7 @@ define([
 	'views/layout',
 	'views/toolbar',
 	'grid/view',
-	'views/details'
+	'views/tiles'
 ], function(
 	Marionette,
 	Router,
@@ -17,8 +17,22 @@ define([
 	AppLayout,
 	ToolbarView,
 	GridView,
-	DetailsView
+	TilesView
 ) {
+
+	// Defaults
+	var tooltipDefaults = {
+		container: 'body',
+		placement: 'bottom'
+	};
+
+	var links = {
+		imdb_id:    'http://www.imdb.com/title/tt%07d/',
+		imdb_title: 'http://www.imdb.com/find?q=%s',
+		karagarga:  'https://karagarga.net/browse.php?search_type=title&search=%s',
+		os_title:   'http://www.opensubtitles.org/en/search/sublanguageid-eng,ger/moviename-%s',
+		os_imdbid:  'http://www.opensubtitles.org/en/search/sublanguageid-eng,ger/imdbid-%07d'
+	};
 
 	/* 
 	 * The following will make Marionette's template retrieval work with
@@ -61,22 +75,20 @@ define([
 	/*
 	 * Create app
 	 */
-	App = new Marionette.Application();
+	App = new Marionette.Application({
+
+		tooltipDefaults: tooltipDefaults,
+		links: links,
+
+		contentView : function(view_mode) {
+			var ViewClass = view_mode === 'grid' ? GridView : TilesView;
+			var view = new ViewClass({ collection: App.movie_collection });
+			App.layout.movies.show(view);
+		}
+
+	});
 	App.root = '/';
 	App.addRegions({ main: 'body' });
-
-	// Defaults
-	App.tooltipDefaults = {
-		container: 'body',
-		placement: 'bottom'
-	};
-	App.links = {
-		imdb_id:    'http://www.imdb.com/title/tt%07d/',
-		imdb_title: 'http://www.imdb.com/find?q=%s',
-		karagarga:  'https://karagarga.net/browse.php?search_type=title&search=%s',
-		os_title:   'http://www.opensubtitles.org/en/search/sublanguageid-eng,ger/moviename-%s',
-		os_imdbid:  'http://www.opensubtitles.org/en/search/sublanguageid-eng,ger/imdbid-%07d'
-	};
 
 	App.addInitializer(function() {
 
@@ -91,25 +103,27 @@ define([
 		var toolbar = new ToolbarView({ model: App.state });
 		App.layout.toolbar.show(toolbar);
 
-		var grid = new GridView({ collection: App.movie_collection });
-		App.layout.movies.show(grid);
+		App.contentView(App.state.get('view-mode'));
 
-		// helper functions
-		App.selectMovie = function(id) {
-			// fetch full movie info
-			var movie = new Movie({ id: id });
-			movie.fetch({
-				success: function(movie) {
-					var details = new DetailsView({ model: movie });
-					App.layout.sidebar.show(details);
-				}
-			});
-		};
+		/*
+		 * Events
+		 */
+
+		App.listenTo(App.movie_collection, 'change:_selected', function(movie, selected) {
+			if (selected)
+				App.router.navigate('movie/%d'.format(movie.id), { trigger: true });
+		});
+
+		App.listenTo(App.movie_collection, 'deselected', function() {
+			App.router.navigate('', { trigger: true });
+		});
+
+		App.listenTo(App.state, 'change:view-mode', function(state, view_mode) {
+			App.contentView(view_mode);
+		});
 
 		// on DOM ready
 		$(function () {
-			// Slickgrid needs container height
-			grid.createGrid();
 			// App router
 			Backbone.history.start({
 				pushState: false,
@@ -119,8 +133,10 @@ define([
 
 	});
 
-	// Central resize event
-	$(window).resize(function(evt) { App.trigger('resize', evt) });
+	// Content pane resize
+	$(window).resize(function() {
+		App.trigger('content-resize');
+	});
 
 	return App;
 });

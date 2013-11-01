@@ -15,15 +15,16 @@ define([
 		multiSelect: false
 	};
 
-	var flag = false; //TODO delme
+	var GridView = Backbone.View.extend({
 
-	var MovieGridView = Backbone.View.extend({
 		id: 'grid',
 
 		initialize: function() {
-			this.listenTo(App, 'resize', this.resize, this);
-			this.listenTo(
-				App.state, 'change:selected_movie_id', this.movieSelect, this);
+			this.listenTo(App, 'content-resize', this.resize, this);
+			this.listenTo(App.movie_collection, 'deselected', function() {
+				this.grid.setSelectedRows([]);
+			}, this);
+			this.on('show', this.createGrid, this);
 		},
 
 		resize: function() {
@@ -31,16 +32,7 @@ define([
 			this.grid.autosizeColumns();
 		},
 
-		movieSelect: function(model, value) {
-			// only do expensive resize if sidebar really opened/closed
-			var old = model.previous('selected_movie_id');
-			if (value === null && old !== null ||
-					value !== null && old === null)
-				this.resize();
-		},
-
 		loadViewport: function() {
-			var that = this;
 			var vp = this.grid.getViewport();
 
 			// ensure one extra screen of items before and after actual
@@ -63,6 +55,8 @@ define([
 			});
 
 			this.grid.onActiveCellChanged.subscribe(function() {
+				// prevent any cell from being active
+				// TODO: better way to do this?
 				that.grid.resetActiveCell()
 			});
 
@@ -70,7 +64,7 @@ define([
 				if (args.rows.length == 1) {
 					var model = that.collection.findWhere({ index: args.rows[0] });
 					if (model)
-						App.router.navigate('movie/%d'.format(model.id), { trigger: true });
+						model.set('_selected', true);
 				}
 			});
 
@@ -80,12 +74,13 @@ define([
 				that.grid.updateRowCount();
 				that.grid.render();
 				// select row
-				var movie = App.state.getSelectedMovie();
+				var movie = App.movie_collection.getSelected();
 				if (movie)
 					that.grid.setSelectedRows([movie.get('index')]);
 			});
 
-			this.listenTo(App.state, 'change:selected_movie_id', function(app_state, id) {
+			this.listenTo(
+				App.state, 'change:selected_movie_id', function(app_state, id) {
 				var movie = app_state.getSelectedMovie();
 				var rows = [];
 				if (movie)
@@ -99,6 +94,6 @@ define([
 
 	});
 
-	return MovieGridView;
+	return GridView;
 
 });

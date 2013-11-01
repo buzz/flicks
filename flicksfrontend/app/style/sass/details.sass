@@ -1,5 +1,4 @@
 @import 'compass/css3/border-radius'
-
 @import 'common'
 
 $padding: 18px
@@ -12,7 +11,6 @@ $padding: 18px
 	height: 100%
 	padding: 0
 	min-height: 100%
-	border-top: 1px solid lighten($color-border, 10%)
 
 	.top
 		display: flex
@@ -44,6 +42,7 @@ $padding: 18px
 
 	.content
 		$border: 1px solid #ccc
+		+border-top-radius($small-border-radius)
 		+border-bottom-radius($default-border-radius)
 		+default-box-shadow
 		+default-gradient

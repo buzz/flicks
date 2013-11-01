@@ -5,26 +5,58 @@ define([
 ) {
 
 	var ToolbarView = Marionette.ItemView.extend({
+
 		template: 'toolbar',
 		className: 'navbar navbar-default navbar-static-top',
 
-		modelEvents: {
-			'change:selected_movie_id': 'updateButtons'
+		events: {
+			'change #radio-grid-tiles input': 'radioViewClick',
+
+			'click #open-imdb':               'openImdb',
+			'click #open-karagarga':          'openKaragarga',
+			'click #open-opensubtitles':      'openOpensubtitles'
 		},
 
-		events: {
-			'click #open-imdb':          'openImdb',
-			'click #open-karagarga':     'openKaragarga',
-			'click #open-opensubtitles': 'openOpensubtitles'
+		initialize: function() {
+			this.listenTo(
+				App.movie_collection, 'deselected', this.onDeselected, this);
+			this.listenTo(
+				App.movie_collection, 'change:_selected', this.onSelected, this);
 		},
 
 		onRender: function() {
 			this.$('.enable-tooltip').tooltip(App.tooltipDefaults);
 		},
 
-		updateButtons: function(model, value) {
-			var func = value ? 'removeClass' : 'addClass';
-			this.$('.movie-action')[func]('disabled');
+		onSelected: function(movie, selected) {
+			if (selected) {
+				var view = this;
+				this.$('.movie-action').removeClass('disabled');
+				_.each(['favourite', 'seen'], function(attr) {
+					var value = movie.get(attr);
+					var func = value ? 'addClass' : 'removeClass';
+					view.$('.btn.%s'.format(attr))[func]('active');
+				});
+			}
+		},
+
+		onDeselected: function() {
+			this.$('.movie-action').addClass('disabled');
+			var view = this;
+			_.each(['favourite', 'seen'], function(attr) {
+				view.$('.btn.%s'.format(attr)).removeClass('active');
+			});
+		},
+
+		radioViewClick: function(ev) {
+			var $el = $(ev.currentTarget);
+			var $label = $el.parent();
+			if ($label.hasClass('active'))
+					return;
+			var $btn_group = $label.parent();
+			$btn_group.children('label').removeClass('active');
+			$label.addClass('active');
+			App.state.set('view-mode', $el.val());
 		},
 
 		openKaragarga: function() {

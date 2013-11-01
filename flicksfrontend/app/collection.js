@@ -20,8 +20,27 @@ define([
 	var req_info = {};
 
 	var MovieCollection = Backbone.Collection.extend({
+
 		model: Movie,
 		url:   '/movies/',
+
+		initialize: function() {
+			// just one movie selected at a time
+			this.on('change:_selected', function(sel_movie, value) {
+
+				if (value) {
+					_.each(this.where({ _selected: true }),
+								 function(movie) {
+									 if (movie !== sel_movie)
+										 movie.set('_selected', false);
+								 });
+				}
+				else if (!this.getSelected()) {
+					this.trigger('deselected');
+				}
+
+			});
+		},
 
 		parse: function(r) {
 			this.total_count = r.meta.total_count;
@@ -116,7 +135,12 @@ define([
 				that._fetchPages(fromPage, toPage);
 			}, FETCH_DELAY);
 
+		},
+
+		getSelected: function() {
+			return this.findWhere({ _selected: true });
 		}
+
 	});
 
 	return MovieCollection;

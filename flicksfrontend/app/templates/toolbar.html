@@ -13,13 +13,13 @@
 <form class="navbar-form navbar-left">
 
 	<!-- View mode -->
-	<div class="btn-group" data-toggle="buttons">
+	<div class="btn-group" id="radio-grid-tiles">
 		<label title="List view" class="btn btn-default active enable-tooltip">
-			<input type="radio" name="options" id="option1">
+			<input type="radio" name="options" value="grid">
 			<i class="fa fa-list"></i>
 		</label>
-		<label title="Tile view" class="btn btn-default enable-tooltip">
-			<input type="radio" name="options" id="option2">
+		<label title="Tiles view" class="btn btn-default enable-tooltip">
+			<input type="radio" name="options" value="tiles">
 			<i class="fa fa-th"></i>
 		</label>
 	</div>
@@ -44,12 +44,12 @@
 
 	<!-- Mark Fav/Seen -->
 	<div class="btn-group" data-toggle="buttons">
-		<label title="Mark seen" class="btn btn-default enable-tooltip movie-action disabled">
+		<label title="Mark seen" class="seen btn btn-default enable-tooltip movie-action disabled">
 			<input type="checkbox">
 			<i class="fa fa-eye seen"></i>
 			Seen
 		</label>
-		<label title="Add to favourites" class="btn btn-default enable-tooltip movie-action disabled">
+		<label title="Add to favourites" class="favourite btn btn-default enable-tooltip movie-action disabled">
 			<input type="checkbox">
 			<i class="fa fa-star fav"></i>
 			Fav

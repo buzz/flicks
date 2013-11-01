@@ -1,22 +1,38 @@
 define([
-	'marionette'
+	'marionette',
+	'views/details',
+	'movie'
 ], function(
-	Marionette
+	Marionette,
+	DetailsView,
+	Movie
 ) {
 
 	var Router = Marionette.AppRouter.extend({
 		appRoutes: {
-			'':          'deselectMovie',
-			'movie/:id': 'selectMovie'
+			'':          'hideDetails',
+			'movie/:id': 'showDetails'
 		},
 		controller: {
 
-			deselectMovie: function() {
-				App.state.set('selected_movie_id', null);
+			hideDetails: function() {
+				if (App.layout.sidebar.currentView) {
+					App.layout.sidebar.currentView.close();
+					App.trigger('content-resize');
+				}
 			},
 
-			selectMovie: function(id) {
-				App.state.set('selected_movie_id', id);
+			showDetails: function(id) {
+				var movie = App.movie_collection.get(id);
+				if (!movie)
+					movie = App.movie_collection.create({ id: id });
+				movie.fetch({
+					success: function(movie) {
+						var details = new DetailsView({ model: movie });
+						App.layout.sidebar.show(details);
+						App.trigger('content-resize');
+					}
+				});
 			}
 
 		}

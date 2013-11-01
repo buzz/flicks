@@ -5,6 +5,7 @@ define([
 ) {
 
 	var AppLayout = Marionette.Layout.extend({
+
 		id: 'main-layout',
 		template: 'layout',
 
@@ -16,7 +17,9 @@ define([
 
 		initialize: function() {
 			this.listenTo(
-				App.state, 'change:selected_movie_id', this.movieSelect, this);
+				App.movie_collection, 'deselected', this.onDeselected, this);
+			this.listenTo(
+				App.movie_collection, 'change:_selected', this.onSelected, this);
 			this.listenTo(
 				App.movie_collection, 'dataloading', this.updateSpinner, this);
 			this.listenTo(
@@ -31,10 +34,13 @@ define([
 				$el.fadeIn();
 		},
 
-		movieSelect: function(model, value) {
-			var $s = this.$('#sidebar');
-			var func = value ? 'removeClass' : 'addClass';
-			$s[func]('collapsed');
+		onSelected: function(movie, value) {
+			if (value)
+				this.$('#sidebar').removeClass('collapsed');
+		},
+
+		onDeselected: function(model, value) {
+			this.$('#sidebar').addClass('collapsed');
 		}
 
 	});

@@ -5,6 +5,7 @@ define([
 ) {
 
 	var DetailsView = Marionette.ItemView.extend({
+
 		template: 'details',
 		id: 'details',
 
@@ -21,9 +22,7 @@ define([
 		},
 
 		dismiss: function() {
-			this.$('.enable-tooltip, .enable-tooltip-top').tooltip('destroy');
-			App.router.navigate('', { trigger: true });
-			this.close();
+			this.model.set('_selected', false);
 		},
 
 		enlargeCover: function() {

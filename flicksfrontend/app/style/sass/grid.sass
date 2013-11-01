@@ -1,12 +1,10 @@
 @import 'compass/css3/box-sizing'
-
 @import 'common'
 
 #grid
 	position: absolute
 	width: 100%
 	height: 100%
-	border-top: 1px solid $color-border
 	border-left: 1px solid $color-border
 	+box-sizing(border-box)
 
@@ -30,6 +28,7 @@
 				border-right: 0 solid transparent
 				border-left: 0 solid transparent
 				border-bottom: solid 1px #ebebeb
+				color: $color-silver
 
 				&.selected
 					background-color: $color-selected
@@ -39,6 +38,9 @@
 
 				&.align-center
 					text-align: center
+
+				&.l1
+					color: black
 
 				.flag
 					margin: 2px 1px 0 0
