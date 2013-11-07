@@ -2,46 +2,46 @@
 @import 'common'
 
 #grid
-	position: absolute
-	width: 100%
-	height: 100%
-	border-left: 1px solid $color-border
-	+box-sizing(border-box)
+  position: absolute
+  width: 100%
+  height: 100%
+  border-left: 1px solid $color-border
+  +box-sizing(border-box)
 
-	.slick-header
+  .slick-header
 
-		.slick-header-columns
-			background-image: none
-			background-color: $color-header-bg
+    .slick-header-columns
+      background-image: none
+      background-color: $color-header-bg
 
-			.slick-header-column
-				+box-sizing(content-box)
+      .slick-header-column
+        +box-sizing(content-box)
 
-	.slick-viewport
-		overflow-x: hidden !important
-		overflow-y: scroll !important
+  .slick-viewport
+    overflow-x: hidden !important
+    overflow-y: scroll !important
 
-		.slick-row
+    .slick-row
 
-			.slick-cell
-				border-top: 0 solid transparent
-				border-right: 0 solid transparent
-				border-left: 0 solid transparent
-				border-bottom: solid 1px #ebebeb
-				color: $color-silver
+      .slick-cell
+        border-top: 0 solid transparent
+        border-right: 0 solid transparent
+        border-left: 0 solid transparent
+        border-bottom: solid 1px #ebebeb
+        color: $color-silver
 
-				&.selected
-					background-color: $color-selected
+        &.selected
+          background-color: $color-selected
 
-				&.align-right
-					text-align: right
+        &.align-right
+          text-align: right
 
-				&.align-center
-					text-align: center
+        &.align-center
+          text-align: center
 
-				&.l1
-					color: black
+        &.l1
+          color: black
 
-				.flag
-					margin: 2px 1px 0 0
-					display: inline-block
+        .flag
+          margin: 2px 1px 0 0
+          display: inline-block

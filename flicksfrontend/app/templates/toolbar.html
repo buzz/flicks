@@ -1,91 +1,91 @@
 <div class="navbar-header">
-	<span class="navbar-brand">
-		<span title="Flicks - Personal Movie Collection" class="enable-tooltip">
-			<span class="fa-stack">
-				<i class="fa fa-square fa-stack-2x"></i>
-				<i class="fa fa-film fa-stack-1x fa-inverse"></i>
-			</span>
-			Flicks
-		</span>
-	</span>
+  <span class="navbar-brand">
+    <span title="Flicks - Personal Movie Collection" class="enable-tooltip">
+      <span class="fa-stack">
+        <i class="fa fa-square fa-stack-2x"></i>
+        <i class="fa fa-film fa-stack-1x fa-inverse"></i>
+      </span>
+      Flicks
+    </span>
+  </span>
 </div>
 
 <form class="navbar-form navbar-left">
 
-	<!-- View mode -->
-	<div class="btn-group" id="radio-grid-tiles">
-		<label title="List view" class="btn btn-default active enable-tooltip">
-			<input type="radio" name="options" value="grid">
-			<i class="fa fa-list"></i>
-		</label>
-		<label title="Tiles view" class="btn btn-default enable-tooltip">
-			<input type="radio" name="options" value="tiles">
-			<i class="fa fa-th"></i>
-		</label>
-	</div>
+  <!-- View mode -->
+  <div class="btn-group" id="radio-grid-tiles">
+    <label title="List view" class="btn btn-default active enable-tooltip">
+      <input type="radio" name="options" value="grid">
+      <i class="fa fa-list"></i>
+    </label>
+    <label title="Tiles view" class="btn btn-default enable-tooltip">
+      <input type="radio" name="options" value="tiles">
+      <i class="fa fa-th"></i>
+    </label>
+  </div>
 
-	<!-- Add/Remove movie -->
-	<div class="btn-group">
-		<button title="Add a new movie to the collection" type="button" class="btn btn-default enable-tooltip">
-			<i class="fa fa-plus"></i>
-			Add
-		</button>
-		<button title="Remove movie from the collection" type="button" class="btn btn-default enable-tooltip movie-action disabled">
-			<i class="fa fa-trash-o"></i>
-			Remove
-		</button>
-	</div>
+  <!-- Add/Remove movie -->
+  <div class="btn-group">
+    <button title="Add a new movie to the collection" type="button" class="btn btn-default enable-tooltip">
+      <i class="fa fa-plus"></i>
+      Add
+    </button>
+    <button title="Remove movie from the collection" type="button" class="btn btn-default enable-tooltip movie-action disabled">
+      <i class="fa fa-trash-o"></i>
+      Remove
+    </button>
+  </div>
 
-	<!-- Play movie -->
-	<button title="Play movie" type="button" class="btn btn-default enable-tooltip movie-action disabled">
-		<i class="fa fa-play"></i>
-		Play
-	</button>
+  <!-- Play movie -->
+  <button title="Play movie" type="button" class="btn btn-default enable-tooltip movie-action disabled">
+    <i class="fa fa-play"></i>
+    Play
+  </button>
 
-	<!-- Mark Fav/Seen -->
-	<div class="btn-group" data-toggle="buttons">
-		<label title="Mark seen" class="seen btn btn-default enable-tooltip movie-action disabled">
-			<input type="checkbox">
-			<i class="fa fa-eye seen"></i>
-			Seen
-		</label>
-		<label title="Add to favourites" class="favourite btn btn-default enable-tooltip movie-action disabled">
-			<input type="checkbox">
-			<i class="fa fa-star fav"></i>
-			Fav
-		</label>
-	</div>
+  <!-- Mark Fav/Seen -->
+  <div class="btn-group" data-toggle="buttons">
+    <label title="Mark seen" class="seen btn btn-default enable-tooltip movie-action disabled">
+      <input type="checkbox">
+      <i class="fa fa-eye seen"></i>
+      Seen
+    </label>
+    <label title="Add to favourites" class="favourite btn btn-default enable-tooltip movie-action disabled">
+      <input type="checkbox">
+      <i class="fa fa-star fav"></i>
+      Fav
+    </label>
+  </div>
 
-	<!-- Play movie -->
-	<button title="Fetch fresh movie information" type="button" class="btn btn-default enable-tooltip movie-action disabled">
-		<i class="fa fa-refresh"></i>
-		Update
-	</button>
+  <!-- Play movie -->
+  <button title="Fetch fresh movie information" type="button" class="btn btn-default enable-tooltip movie-action disabled">
+    <i class="fa fa-refresh"></i>
+    Update
+  </button>
 
-	<!-- External services -->
-	<div class="btn-group">
-		<button title="Find on IMDb" id="open-imdb" type="button" class="btn btn-default enable-tooltip movie-action disabled">
-			<i class="flicks-icon-imdb"></i>
-			IMDb
-		</button>
-		<button type="button" class="btn btn-default dropdown-toggle movie-action disabled" data-toggle="dropdown">
-			<span class="caret"></span>
-		</button>
-		<ul class="dropdown-menu" role="menu">
-			<li>
-				<a id="open-karagarga" href="#">
-					<i class="flicks-icon-karagarga"></i>
-					Karagarga
-				</a>
-			</li>
-			<li>
-				<a id="open-opensubtitles" href="#">
-					<i class="flicks-icon-opensubtitles"></i>
-					OpenSubtitles
-				</a>
-			</li>
-		</ul>
-	</div>
+  <!-- External services -->
+  <div class="btn-group">
+    <button title="Find on IMDb" id="open-imdb" type="button" class="btn btn-default enable-tooltip movie-action disabled">
+      <i class="flicks-icon-imdb"></i>
+      IMDb
+    </button>
+    <button type="button" class="btn btn-default dropdown-toggle movie-action disabled" data-toggle="dropdown">
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li>
+        <a id="open-karagarga" href="#">
+          <i class="flicks-icon-karagarga"></i>
+          Karagarga
+        </a>
+      </li>
+      <li>
+        <a id="open-opensubtitles" href="#">
+          <i class="flicks-icon-opensubtitles"></i>
+          OpenSubtitles
+        </a>
+      </li>
+    </ul>
+  </div>
 
 </form>
 
@@ -95,6 +95,6 @@
     <input type="text" class="form-control" placeholder="Search">
   </div>
   <button type="submit" class="btn btn-default">
-		<i class="fa fa-search"></i>
-	</button>
+    <i class="fa fa-search"></i>
+  </button>
 </form>

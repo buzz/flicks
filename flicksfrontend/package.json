@@ -1,7 +1,7 @@
 {
   "name": "flicks",
   "version": "0.1.0",
-	"description": "Flicks is a personal movie manager.",
+  "description": "Flicks is a personal movie manager.",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.2",

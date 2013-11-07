@@ -1,23 +1,23 @@
 define([
-	'backbone'
+  'backbone'
 ], function(
-	Backbone
+  Backbone
 ) {
 
-	var Movie = Backbone.Model.extend({
+  var Movie = Backbone.Model.extend({
 
-		defaults: {
-			_selected: false
-		},
+    defaults: {
+      _selected: false
+    },
 
-		urlRoot: '/movie/',
+    urlRoot: '/movie/',
 
-		url: function() {
-			return '%s%s/'.format(this.urlRoot, this.id)
-		}
+    url: function() {
+      return '%s%s/'.format(this.urlRoot, this.id)
+    }
 
-	});
+  });
 
-	return Movie;
+  return Movie;
 
 });
