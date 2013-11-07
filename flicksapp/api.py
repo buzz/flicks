@@ -1,7 +1,6 @@
 from django.db.models import Q
 from tastypie import fields
 from tastypie.resources import ModelResource
-from tastypie.paginator import Paginator
 from tastypie.constants import ALL_WITH_RELATIONS
 from tastypie.authorization import Authorization
 
@@ -131,14 +130,17 @@ class MovieListResource(BaseMovieResource):
     """
 
     # these are the related fields we need to show in the grid
-    directors = fields.ToManyField(PersonResource, 'directors', full=True)
-    genres = fields.ToManyField(PersonResource, 'genres', full=True)
+    directors = fields.ToManyField(PersonResource,   'directors', full=True)
+    genres = fields.ToManyField(PersonResource,      'genres',    full=True)
     languages = fields.ToManyField(LanguageResource, 'languages', full=True)
-    countries = fields.ToManyField(CountryResource, 'countries', full=True)
+    countries = fields.ToManyField(CountryResource,  'countries', full=True)
+
     class Meta:
-        queryset = Movie.objects.only(*c.MOVIE_LIST_VIEW_FIELDS)\
-            .prefetch_related('countries', 'languages', 'genres', 'directors')\
-            .distinct()
+        max_limit = 200
+        queryset = Movie.objects\
+            .only(*c.MOVIE_LIST_VIEW_FIELDS)\
+            .distinct()\
+            .prefetch_related('countries', 'languages', 'genres', 'directors')
         fields = c.MOVIE_LIST_VIEW_FIELDS
         resource_name = 'movies'
         include_resource_uri = False
@@ -162,7 +164,6 @@ class MovieListResource(BaseMovieResource):
             'runtime': 'range',
             'rating': 'range',
         }
-        paginator_class = Paginator
 
     def build_filters(self, filters=None):
         if filters is None:
