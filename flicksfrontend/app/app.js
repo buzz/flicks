@@ -6,6 +6,7 @@ define([
   'collection',
   'views/layout',
   'views/toolbar',
+  'views/details',
   'grid/view',
   'views/tiles'
 ], function(
@@ -16,6 +17,7 @@ define([
   MovieCollection,
   AppLayout,
   ToolbarView,
+  DetailsView,
   GridView,
   TilesView
 ) {
@@ -23,7 +25,8 @@ define([
   // Defaults
   var tooltipDefaults = {
     container: 'body',
-    placement: 'bottom'
+    placement: 'auto bottom',
+    trigger:   'manual'
   };
 
   var links = {
@@ -80,10 +83,16 @@ define([
     tooltipDefaults: tooltipDefaults,
     links: links,
 
-    contentView : function(view_mode) {
+    contentView: function(view_mode) {
       var ViewClass = view_mode === 'grid' ? GridView : TilesView;
       var view = new ViewClass({ collection: App.movie_collection });
       App.layout.movies.show(view);
+    },
+
+    sidebarView: function(movie) {
+      var details = new DetailsView({ model: movie });
+      App.layout.sidebar.show(details);
+      App.trigger('content-resize');
     }
 
   });

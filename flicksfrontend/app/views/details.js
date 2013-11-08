@@ -14,13 +14,6 @@ define([
       'click .cover-image': 'enlargeCover'
     },
 
-    onRender: function() {
-      this.$('.enable-tooltip').tooltip(App.tooltipDefaults);
-      this.$('.enable-tooltip-top').tooltip(
-        _.extend(_.clone(App.tooltipDefaults), { placement: 'top' })
-      );
-    },
-
     dismiss: function() {
       this.model.set('_selected', false);
     },

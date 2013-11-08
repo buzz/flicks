@@ -54,16 +54,29 @@ $padding: 18px
     border-bottom: $border
     border-left: $border
 
+    a
+      color: $color-default-font
+
     > .tab-content
-      padding: 14px 20px
+      font-size: 13px
+      padding: 14px 16px
 
       p.row
+        text-align: right
+        margin: 2px 0 2px
+        padding: 2px 6px 2px
 
-        margin: 0
+        label
+          float: left
+          margin: 0 6px 0 0
+          font-weight: bold
 
       .author
         text-align: right
         font-style: italic
+
+      .notes
+        width: 100%
 
   .cover-image
     padding: $padding

@@ -54,16 +54,14 @@ define([
         title = "Favourite";
         cls = "fa-star fav";
       }
-      return '<i class="fa %s"title="%s"></i> %s'.format(cls, title, inner || '');
-      // return (inner || '') + '<div title="' + title + '" class="icon ' +
-      //   cls + '"></div>';
+      return '<i class="fa %s enable-tooltip"title="%s"></i> %s'.format(cls, title, inner || '');
     },
 
     flagList: function(countries) {
       var html = "";
       if (countries !== undefined) {
         $.each(countries, function(i) {
-          html += '<div title="%s" class="flag %s"></div>'.format(
+          html += '<div title="%s" class="flag %s enable-tooltip"></div>'.format(
             this, str2iso(this));
         });
       }

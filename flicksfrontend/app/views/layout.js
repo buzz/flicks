@@ -15,6 +15,11 @@ define([
       sidebar: '#sidebar'
     },
 
+    events: {
+      'mouseenter .enable-tooltip': 'showTooltip',
+      'mouseleave .enable-tooltip': 'hideTooltip'
+    },
+
     initialize: function() {
       this.listenTo(
         App.movie_collection, 'deselected', this.onDeselected, this);
@@ -41,6 +46,14 @@ define([
 
     onDeselected: function(model, value) {
       this.$('#sidebar').addClass('collapsed');
+    },
+
+    showTooltip: function(ev) {
+      $(ev.target).tooltip(App.tooltipDefaults).tooltip('show');
+    },
+
+    hideTooltip: function(ev) {
+      $(ev.target).tooltip('hide');
     }
 
   });
