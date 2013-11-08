@@ -7,18 +7,17 @@
         <link rel="stylesheet" href="app/style/index.css" type="text/css" charset="utf-8"/>
     <!--<!(endif)-->
 
-    <!--(if target release)>
+    <!--(if target dist)>
         <link rel="stylesheet" href="flicks.css" type="text/css" charset="utf-8"/>
     <!(endif)-->
   </head>
-
   <body>
     <!--(if target dev)><!-->
         <script data-main="app/main" src="lib/require-2.1.9.js"></script>
         <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
     <!--<!(endif)-->
 
-    <!--(if target release)>
+    <!--(if target dist)>
         <script src="flicks.js"></script>
     <!(endif)-->
 </body>

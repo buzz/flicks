@@ -26,32 +26,22 @@
 
     <div class="tab-pane active" id="tab-info">
 
-      <p class="row even rating">
+      <p class="row well rating">
         <label>Rating</label>
-        <span class="value"><%- rating %></span>
+        <span class="value enable-tooltip" title="<%- votes %> votes"><%- rating %></span>
       </p>
 
-      <p class="row odd genres">
-        <label>Genre</label>
-        <span class="value"><%- genres %></span>
-      </p>
+      <% _.each([[genres, 'Genres'], [directors, 'Directors'], [producers, 'Producers'], [writers, 'Writers'], [languages, 'Languages'], [countries, 'Countries']], function(d, i) { %>
+      <% var data = d[0], label = d[1], key = label.toLowerCase() %>
+        <p class="row <%= key %> <%= (i % 2 != 0) ? 'even well' : '' %>">
+          <label><%= label %></label>
+          <span class="value <%= key %>">
+            <%= _.map(data, function(entry) { return '<a class="%s" href="#">%s</a>'.format(key, entry)  }).join(', ') %>
+          </span>
+        </p>
+      <% }) %>
 
-      <p class="row even ">
-        <label></label>
-        <span class="value"><%-  %></span>
-      </p>
-
-      <p class="row odd ">
-        <label></label>
-        <span class="value"><%-  %></span>
-      </p>
-
-      <p class="row even ">
-        <label></label>
-        <span class="value"><%-  %></span>
-      </p>
-
-      <p class="row odd mpaa">
+      <p class="row mpaa">
         <label>MPAA</label>
         <span class="value"><%- mpaa %></span>
       </p>
@@ -69,15 +59,17 @@
     </div>
 
     <div class="tab-pane" id="tab-cast">
-      cast
+      <%= _.map(cast, function(entry) { return '<a class="cast" href="#">%s</a>'.format(entry)  }).join(', ') %>
     </div>
 
     <div class="tab-pane" id="tab-keywords">
-      keywords
+      <%= _.map(keywords, function(entry) { return '<a class="keywords" href="#">%s</a>'.format(entry)  }).join(', ') %>
     </div>
 
     <div class="tab-pane" id="tab-notes">
-      notes
+      <form class="notes">
+        <textarea class="form-control">notes</textarea>
+      </form>
     </div>
 
     <div class="tab-pane" id="tab-files">
@@ -89,7 +81,7 @@
 <div class="cover-image">
   <a href="#">
     <img title="Click to enlarge"
-         class="enable-tooltip-top"
+         class="enable-tooltip"
          alt="<%- title %>"
          src="covers/movies_<%- id %>.jpg">
   </a>

@@ -8,4 +8,7 @@ DEADJOE
 *.pyc
 **/node_modules
 .sass-cache
-flicksfrontend/app/style/_compiled
+flicksfrontend/app/style/app.css
+flicksfrontend/app/templates/_templates_compiled.js
+flicksfrontend/dist
+flicksfrontend/tmp

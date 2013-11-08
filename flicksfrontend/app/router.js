@@ -1,10 +1,8 @@
 define([
   'marionette',
-  'views/details',
   'movie'
 ], function(
   Marionette,
-  DetailsView,
   Movie
 ) {
 
@@ -23,16 +21,13 @@ define([
       },
 
       showDetails: function(id) {
+        App.selected_movie_id = id;
         var movie = App.movie_collection.get(id);
-        if (!movie)
-          movie = App.movie_collection.create({ id: id });
-        movie.fetch({
-          success: function(movie) {
-            var details = new DetailsView({ model: movie });
-            App.layout.sidebar.show(details);
-            App.trigger('content-resize');
-          }
-        });
+        if (movie)
+          if (!movie.get('_fullFetch'))
+            movie.fetch({ success: App.sidebarView });
+          else
+            App.sidebarView(movie);
       }
 
     }

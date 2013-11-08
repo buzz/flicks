@@ -1,14 +1,11 @@
 # root of project when deployed
-http_path = ""
-
-# production assets url
-http_images_path = "/images"
+http_path = ''
 
 # project assets location
-project_path = ".."
-css_dir = "_compiled"
-sass_dir = "sass"
-images_dir = "images"
+project_path = '..'
+css_dir = ''
+sass_dir = 'sass'
+images_dir = 'images'
 
 relative_assets = true
 

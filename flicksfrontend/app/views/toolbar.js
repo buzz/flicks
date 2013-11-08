@@ -24,10 +24,6 @@ define([
         App.movie_collection, 'change:_selected', this.onSelected, this);
     },
 
-    onRender: function() {
-      this.$('.enable-tooltip').tooltip(App.tooltipDefaults);
-    },
-
     onSelected: function(movie, selected) {
       if (selected) {
         var view = this;

@@ -25,9 +25,8 @@ define([
     url:   '/movies/',
 
     initialize: function() {
-      // just one movie selected at a time
       this.on('change:_selected', function(sel_movie, value) {
-
+        // just one movie selected at a time
         if (value) {
           _.each(this.where({ _selected: true }),
                  function(movie) {
@@ -38,7 +37,6 @@ define([
         else if (!this.getSelected()) {
           this.trigger('deselected');
         }
-
       });
     },
 
@@ -79,9 +77,9 @@ define([
             limit: PAGESIZE
           },
           success: function(coll, resp) {
-            // set table index
             var offset = resp.meta.offset;
             for (var j = 0; j < resp.objects.length; ++j) {
+              // set table index
               var obj = resp.objects[j];
               var model = coll.get(obj.id);
               model.set('index', j + offset);
