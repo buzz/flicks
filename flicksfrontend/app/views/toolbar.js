@@ -56,7 +56,7 @@ define([
     },
 
     openKaragarga: function() {
-      var title = App.state.getSelectedMovie().get('title');
+      var title = App.movie_collection.getSelected().get('title');
       window.open(App.links.karagarga.format(title), '_blank');
       return false;
     },
@@ -72,7 +72,7 @@ define([
     },
 
     searchImdbIdOrTitle: function(url_imdbid, url_title) {
-      var movie = App.state.getSelectedMovie();
+      var movie = App.movie_collection.getSelected();
       var imdb_id = movie.get('imdb_id'), url;
       if (imdb_id)
         url = url_imdbid.format(imdb_id);
