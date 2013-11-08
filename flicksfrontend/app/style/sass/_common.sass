@@ -24,11 +24,11 @@ $default-border-radius: 8px
   +box-shadow(rgba(0, 0, 0, 0.18) 0 0px 10px)
 
 = default-gradient
-  +background(linear-gradient(top bottom, $color-bg2, $color-bg1))
+  +background(linear-gradient($color-bg2, $color-bg1))
 
 = default-gradient-darker
   $darken-percent: 2%
-  +background(linear-gradient(top bottom, darken($color-bg2, $darken-percent), darken($color-bg1, $darken-percent)))
+  +background(linear-gradient(darken($color-bg2, $darken-percent), darken($color-bg1, $darken-percent)))
 
 = default-gradient-inside
-  +background(linear-gradient(top bottom, $color-bg1, $color-bg2))
+  +background(linear-gradient($color-bg1, $color-bg2))
