@@ -9,6 +9,7 @@ define([
   var AppState = Backbone.Model.extend({
     defaults: {
       'view-mode': 'grid',
+      'selected-movie-id': null,
       search: null
     }
   });

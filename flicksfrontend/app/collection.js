@@ -25,6 +25,19 @@ define([
     url:   '/movies/',
 
     initialize: function() {
+      this.on('dataloaded', function(args) {
+        var sel_id = App.state.get('selected-movie-id');
+        if (!sel_id)
+          return;
+        _.every(this.models, function(movie) {
+          if (movie.id == sel_id) {
+            movie.set('_selected', true);
+            return false;
+          }
+          return true;
+        });
+      });
+
       this.on('change:_selected', function(sel_movie, value) {
         // just one movie selected at a time
         if (value) {

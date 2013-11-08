@@ -21,13 +21,10 @@ define([
       },
 
       showDetails: function(id) {
-        App.selected_movie_id = id;
+        App.state.set('selected-movie-id', id);
         var movie = App.movie_collection.get(id);
         if (movie)
-          if (!movie.get('_fullFetch'))
-            movie.fetch({ success: App.sidebarView });
-          else
-            App.sidebarView(movie);
+          movie.set('_selected', true);
       }
 
     }
