@@ -118,10 +118,17 @@ define([
      * Events
      */
 
-    App.listenTo(App.movie_collection, 'change:_selected', function(movie, selected) {
-      if (selected)
-        App.router.navigate('movie/%d'.format(movie.id), { trigger: true });
-    });
+    App.listenTo(
+      App.movie_collection, 'change:_selected', function(movie, selected) {
+        if (selected) {
+          if (!movie.get('_fullFetch'))
+            movie.fetch({ success: App.sidebarView });
+          else
+            App.sidebarView(movie);
+          App.router.navigate('movie/%d'.format(movie.id));
+        }
+      }
+    );
 
     App.listenTo(App.movie_collection, 'deselected', function() {
       App.router.navigate('', { trigger: true });

@@ -43,6 +43,14 @@ define([
       this.collection.ensureData(from, to);
     },
 
+    selectMovie: function(movie) {
+      var rows = [];
+      var movie = App.movie_collection.getSelected();
+      if (movie)
+        rows = [ movie.get('index') ];
+      this.grid.setSelectedRows(rows);
+    },
+
     createGrid: function() {
       var that = this;
 
@@ -62,9 +70,11 @@ define([
 
       this.grid.onSelectedRowsChanged.subscribe(function(e, args) {
         if (args.rows.length == 1) {
-          var model = that.collection.findWhere({ index: args.rows[0] });
+          var index = args.rows[0]
+          var model = that.collection.findWhere({ index: index });
           if (model)
             model.set('_selected', true);
+          that.grid.scrollRowIntoView(index);
         }
       });
 
@@ -73,20 +83,10 @@ define([
           that.grid.invalidateRow(i);
         that.grid.updateRowCount();
         that.grid.render();
-        // select row
-        var movie = App.movie_collection.getSelected();
-        if (movie)
-          that.grid.setSelectedRows([movie.get('index')]);
+        that.selectMovie();
       });
 
-      this.listenTo(
-        App.state, 'change:selected_movie_id', function(app_state, id) {
-        var movie = app_state.getSelectedMovie();
-        var rows = [];
-        if (movie)
-          rows = [ movie.get('index') ];
-        that.grid.setSelectedRows(rows);
-      }, this);
+      this.listenTo(App.movie_collection, 'change:_selected', this.selectMovie);
 
       // load initial rows
       this.loadViewport();
