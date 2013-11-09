@@ -26,8 +26,9 @@ define([
       this.listenTo(App, 'content-resize', this.resize, this);
 
       // state events
-      this.listenTo(App.state, 'change:order-by', function(state, order_by) {
-        that.loadViewport();
+      this.listenTo(App.state, {
+        'change:order-by': this.loadViewport,
+        'change:search':   this.loadViewport
       });
 
       // collection events

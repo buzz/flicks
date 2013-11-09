@@ -30,9 +30,8 @@ define([
     initialize: function() {
 
       // Read current state
-      this.search_args   = App.state.get('search');
-      // this.order_by_args = { order_by:  };
-      this.setSorting(App.state.get('order-by'));
+      this.setSearchQuery(App.state, App.state.get('search'));
+      this.setSorting(App.state, App.state.get('order-by'));
 
       this.listenTo(App.state, {
         'change:selected-movie-id': function(state, id) {
@@ -48,7 +47,8 @@ define([
               movie.set('_selected', true);
           }
         },
-        'change:order-by': this.setSorting
+        'change:order-by': this.setSorting,
+        'change:search':   this.setSearchQuery
       }, this);
 
       this.on({
@@ -96,7 +96,7 @@ define([
       }
     },
 
-    setSearchQuery: function(q) {
+    setSearchQuery: function(state, q) {
       var search_args = {};
       // search arguments
       if (typeof q === "string" && q.length > 0)
@@ -129,6 +129,7 @@ define([
         });
       }
       this.search_args = search_args;
+      this.reset();
     },
 
     _fetchPages: function(fromPage, toPage) {
