@@ -75,10 +75,6 @@ define([
         var movie = App.layout.sidebar.currentView.model;
         if (movie && !App.movie_collection.findWhere({ id: movie.id }))
           App.layout.sidebar.close();
-      },
-
-      'deselected': function() {
-        App.router.navigate('', { trigger: true });
       }
     });
 
