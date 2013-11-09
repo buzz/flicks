@@ -24,7 +24,24 @@ define([
     model: Movie,
     url:   '/movies/',
 
+    searchargs: {},
+
     initialize: function() {
+
+      this.listenTo(App.state, 'change:selected-movie-id', function(state, id) {
+        // deselect previous
+        var movie = this.findWhere({ _selected: true });
+        if (movie)
+          movie.set('_selected', false);
+
+        // select current
+        if (id) {
+          var movie = this.findWhere({ id: id });
+          if (movie)
+            movie.set('_selected', true);
+        }
+      }, this);
+
       this.on('dataloaded', function(args) {
         var sel_id = App.state.get('selected-movie-id');
         if (!sel_id)
@@ -36,20 +53,6 @@ define([
           }
           return true;
         });
-      });
-
-      this.on('change:_selected', function(sel_movie, value) {
-        // just one movie selected at a time
-        if (value) {
-          _.each(this.where({ _selected: true }),
-                 function(movie) {
-                   if (movie !== sel_movie)
-                     movie.set('_selected', false);
-                 });
-        }
-        else if (!this.getSelected()) {
-          this.trigger('deselected');
-        }
       });
     },
 
@@ -72,23 +75,62 @@ define([
         return model.attributes;
     },
 
+    setSearchQuery: function(q) {
+      var searchargs = {};
+      // search arguments
+      if (typeof q === "string" && q.length > 0)
+        // top/simple search
+        searchargs.q = q;
+      else if (typeof q === "object") {
+        // advanced search
+        _.each(q, function(v, k) {
+          if (typeof v === 'string' && v !== '') {
+            // exact model field
+            if (k === 'year')
+              searchargs[k] = v;
+            // string model field (search)
+            if (_.indexOf(['title', 'mpaa'], k) !== -1)
+              searchargs[k + '__search'] = v;
+            // boolean model field
+            else if (_.indexOf(['seen', 'favourite'], k) !== -1)
+              searchargs[k] = v;
+            // related field
+            else if (_.indexOf(['countries', 'languages', 'genres', 'keywords',
+                                'cast', 'directors', 'producers', 'writers'], k)
+                     !== -1)
+              searchargs[k + '__name__search'] = v;
+          }
+          // range field
+          else if (typeof v === 'object' && v[0] !== '' && v[1] !== '') {
+            if (_.indexOf(['year', 'runtime', 'rating'], k) !== -1)
+              searchargs[k + '__range'] = v[0] + ',' + v[1];
+          }
+        });
+      }
+      this.searchargs = searchargs;
+    },
+
     _fetchPages: function(fromPage, toPage) {
       var that = this;
       for (var i = fromPage; i <= toPage; ++i) {
 
-        var offset = i * PAGESIZE
+        var data = {
+          // pagination
+          offset: i * PAGESIZE,
+          limit: PAGESIZE
+        };
 
         // ignore if an identical request is pending
-        if (offset in req_info)
+        if (data.offset in req_info)
           continue;
+
+        // search
+        _.extend(data, this.searchargs);
 
         // create request
         var req = this.fetch({
           remove: false,
-          data: {
-            offset: offset,
-            limit: PAGESIZE
-          },
+          data: data,
           success: function(coll, resp) {
             var offset = resp.meta.offset;
             for (var j = 0; j < resp.objects.length; ++j) {
@@ -106,11 +148,11 @@ define([
           });
         }).always(function(resp) {
           // remove request info
-          delete req_info[offset]
+          delete req_info[data.offset]
         });
 
         // save request info
-        req_info[offset] = req;
+        req_info[data.offset] = req;
 
         // trigger event
         this.trigger('dataloading', {

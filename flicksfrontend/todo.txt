@@ -1,0 +1,2 @@
+- general purpose spinner that overlays arbitrary divs (movie list,
+  details,..), as mixin?
