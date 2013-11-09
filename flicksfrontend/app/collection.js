@@ -24,36 +24,50 @@ define([
     model: Movie,
     url:   '/movies/',
 
-    searchargs: {},
+    order_by_args: {},
+    search_args:   {},
 
     initialize: function() {
 
-      this.listenTo(App.state, 'change:selected-movie-id', function(state, id) {
-        // deselect previous
-        var movie = this.findWhere({ _selected: true });
-        if (movie)
-          movie.set('_selected', false);
+      // Read current state
+      this.search_args   = App.state.get('search');
+      // this.order_by_args = { order_by:  };
+      this.setSorting(App.state.get('order-by'));
 
-        // select current
-        if (id) {
-          var movie = this.findWhere({ id: id });
+      this.listenTo(App.state, {
+        'change:selected-movie-id': function(state, id) {
+          // deselect previous
+          var movie = this.findWhere({ _selected: true });
           if (movie)
-            movie.set('_selected', true);
-        }
+            movie.set('_selected', false);
+
+          // select current
+          if (id) {
+            var movie = this.findWhere({ id: id });
+            if (movie)
+              movie.set('_selected', true);
+          }
+        },
+        'change:order-by': this.setSorting
       }, this);
 
-      this.on('dataloaded', function(args) {
-        var sel_id = App.state.get('selected-movie-id');
-        if (!sel_id)
-          return;
-        _.every(this.models, function(movie) {
-          if (movie.id == sel_id) {
-            movie.set('_selected', true);
-            return false;
-          }
-          return true;
-        });
-      });
+      this.on({
+        dataloaded: function(args) {
+          var sel_id = App.state.get('selected-movie-id');
+          if (!sel_id)
+            return;
+          _.every(this.models, function(movie) {
+            if (movie.id == sel_id) {
+              movie.set('_selected', true);
+              return false;
+            }
+            return true;
+          });
+        },
+        reset: function() {
+          this.total_count = 0;
+        }
+      }, this);
     },
 
     parse: function(r) {
@@ -75,39 +89,46 @@ define([
         return model.attributes;
     },
 
+    setSorting: function(state, order_by) {
+      if (order_by !== this.order_by_args.order_by) {
+        this.order_by_args = { order_by: order_by };
+        this.reset();
+      }
+    },
+
     setSearchQuery: function(q) {
-      var searchargs = {};
+      var search_args = {};
       // search arguments
       if (typeof q === "string" && q.length > 0)
         // top/simple search
-        searchargs.q = q;
+        search_args.q = q;
       else if (typeof q === "object") {
         // advanced search
         _.each(q, function(v, k) {
           if (typeof v === 'string' && v !== '') {
             // exact model field
             if (k === 'year')
-              searchargs[k] = v;
+              search_args[k] = v;
             // string model field (search)
             if (_.indexOf(['title', 'mpaa'], k) !== -1)
-              searchargs[k + '__search'] = v;
+              search_args[k + '__search'] = v;
             // boolean model field
             else if (_.indexOf(['seen', 'favourite'], k) !== -1)
-              searchargs[k] = v;
+              search_args[k] = v;
             // related field
             else if (_.indexOf(['countries', 'languages', 'genres', 'keywords',
                                 'cast', 'directors', 'producers', 'writers'], k)
                      !== -1)
-              searchargs[k + '__name__search'] = v;
+              search_args[k + '__name__search'] = v;
           }
           // range field
           else if (typeof v === 'object' && v[0] !== '' && v[1] !== '') {
             if (_.indexOf(['year', 'runtime', 'rating'], k) !== -1)
-              searchargs[k + '__range'] = v[0] + ',' + v[1];
+              search_args[k + '__range'] = v[0] + ',' + v[1];
           }
         });
       }
-      this.searchargs = searchargs;
+      this.search_args = search_args;
     },
 
     _fetchPages: function(fromPage, toPage) {
@@ -124,8 +145,11 @@ define([
         if (data.offset in req_info)
           continue;
 
+        // order by
+        _.extend(data, this.order_by_args);
+
         // search
-        _.extend(data, this.searchargs);
+        _.extend(data, this.search_args);
 
         // create request
         var req = this.fetch({

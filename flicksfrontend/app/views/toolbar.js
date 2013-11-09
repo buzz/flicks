@@ -22,7 +22,13 @@ define([
       'input form[role=search] input':             'toggleSearchButton'
     },
 
+    modelEvents: {
+      'change:search':        'searchChanged',
+      'change:results-count': 'resultsCountChanged'
+    },
+
     ui: {
+      status_text:       '#status-text',
       search_form:       'form[role=search]',
       search_input:      'form[role=search] input',
       btn_clear_search:  'form[role=search] #btn-clear-search',
@@ -31,12 +37,13 @@ define([
 
     initialize: function() {
       this.listenTo(App.movie_collection, {
-        'deselected': this.onDeselected,
+        'deselected':       this.onDeselected,
         'change:_selected': this.onSelected
       }, this);
+    },
 
-      // when query string was changed from outside the toolbar
-      this.listenTo(App.state, 'change:search', this.searchChanged, this);
+    onRender: function() {
+      this.resultsCountChanged(this.model, this.model.get('results-count'));
     },
 
     onSelected: function(movie, selected) {
@@ -58,6 +65,12 @@ define([
       }
     },
 
+    resultsCountChanged: function(state, count) {
+      var word = 'movie%s'.format(count == 1 ? '' : 's');
+      this.ui.status_text.html(
+        '<strong>%d</strong> %s found'.format(count, word));
+    },
+
     onDeselected: function() {
       this.$('.movie-action').addClass('disabled');
       var view = this;
@@ -65,8 +78,6 @@ define([
         view.$('.btn.%s'.format(attr)).removeClass('active');
       });
     },
-
-    // UI event callbacks
 
     toggleSearchButton: function() {
       var q = this.ui.search_input.val();
@@ -113,7 +124,7 @@ define([
 
     clearSearch: function() {
       this.ui.search_input.val('');
-      App.router.navigate('search/', { trigger: true });
+      App.router.navigate('search/', { trigger: true, replace: true });
     },
 
     advSearch: function() {
