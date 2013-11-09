@@ -45,12 +45,6 @@ define([
     root: '/',
     regions: {
       main: 'body'
-    },
-
-    doSearch: function(q) {
-      App.movie_collection.reset();
-      App.movie_collection.setSearchQuery(q);
-      App.layout.movies.currentView.loadViewport();
     }
 
   });
@@ -97,10 +91,6 @@ define([
 
       'change:view-mode': function(state, view_mode) {
         App.layout.contentView(view_mode);
-      },
-
-      'change:search': function(state, search) {
-        App.doSearch(search);
       }
     });
 
