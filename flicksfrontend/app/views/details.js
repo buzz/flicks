@@ -15,7 +15,7 @@ define([
     },
 
     dismiss: function() {
-      this.model.set('_selected', false);
+      App.router.navigate('', { trigger: true });
     },
 
     enlargeCover: function() {

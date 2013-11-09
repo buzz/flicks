@@ -87,14 +87,38 @@
     </ul>
   </div>
 
+  <!-- Preferences -->
+  <button title="Customize Flicks to your needs" type="button" class="btn btn-default enable-tooltip">
+    <i class="fa fa-cogs"></i>
+    Preferences
+  </button>
+
 </form>
 
 <!-- Search -->
+
 <form class="navbar-form navbar-right" role="search">
   <div class="form-group">
-    <input type="text" class="form-control" placeholder="Search">
+    <div class="input-group input-group-sm">
+
+      <span class="input-group-btn">
+        <button title="Advanced search" id="btn-adv-search" class="btn btn-default enable-tooltip" type="button">
+          <i class="fa fa-search-plus"></i>
+        </button>
+      </span>
+
+      <input type="text" class="form-control" placeholder="Search">
+
+      <span class="input-group-btn">
+        <button title="Clear search" id="btn-clear-search" class="btn btn-default enable-tooltip disabled" type="button">
+          <i class="fa fa-times"></i>
+        </button>
+
+        <button title="Go!" class="btn btn-default enable-tooltip disabled" type="submit">
+          <i class="fa fa-search"></i>
+        </button>
+      </span>
+
+    </div>
   </div>
-  <button type="submit" class="btn btn-default">
-    <i class="fa fa-search"></i>
-  </button>
 </form>

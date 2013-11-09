@@ -6,9 +6,7 @@ define([
   'collection',
   'views/layout',
   'views/toolbar',
-  'views/details',
-  'grid/view',
-  'views/tiles'
+  'util/jst_render'
 ], function(
   Marionette,
   Router,
@@ -17,9 +15,7 @@ define([
   MovieCollection,
   AppLayout,
   ToolbarView,
-  DetailsView,
-  GridView,
-  TilesView
+  jstRender
 ) {
 
   // Defaults
@@ -37,43 +33,7 @@ define([
     os_imdbid:  'http://www.opensubtitles.org/en/search/sublanguageid-eng,ger/imdbid-%07d'
   };
 
-  /*
-   * The following will make Marionette's template retrieval work with
-   * in both development (templates found in html files) and production
-   * environment (templates all compiled AS JST templates into the require.js
-   * file. This will also use JST instead of the Marionette.TemplateCache.
-   */
-  Marionette.Renderer.render = function(templateId, data) {
-    if (typeof templateId == 'function') {
-      return templateId(data);
-    } else {
-      var path = 'app/templates/' + templateId + '.html';
-
-      // Localize or create a new JavaScript Template object.
-      var JST = window.JST = window.JST || {};
-
-      // Make a blocking ajax call (does not reduce performance in production,
-      // because templates will be contained by the require.js file).
-      if (!JST[path]) {
-        $.ajax({
-          url: App.root + path,
-          async: false
-        }).then(function(templateHtml) {
-          JST[path] = _.template(templateHtml);
-          JST[path].__compiled__ = true;
-        });
-      }
-
-      if (!JST[path]) {
-        var msg = 'Could not find "' + templateId + '"';
-        var error = new Error(msg);
-        error.name = 'NoTemplateError';
-        throw error;
-      }
-
-      return JST[path](data);
-    }
-  };
+  Marionette.Renderer.render = jstRender;
 
   /*
    * Create app
@@ -82,17 +42,15 @@ define([
 
     tooltipDefaults: tooltipDefaults,
     links: links,
-
-    contentView: function(view_mode) {
-      var ViewClass = view_mode === 'grid' ? GridView : TilesView;
-      var view = new ViewClass({ collection: App.movie_collection });
-      App.layout.movies.show(view);
+    root: '/',
+    regions: {
+      main: 'body'
     },
 
-    sidebarView: function(movie) {
-      var details = new DetailsView({ model: movie });
-      App.layout.sidebar.show(details);
-      App.trigger('content-resize');
+    doSearch: function(q) {
+      App.movie_collection.reset();
+      App.movie_collection.setSearchQuery(q);
+      App.layout.movies.currentView.loadViewport();
     }
 
   });
@@ -101,41 +59,50 @@ define([
 
   App.addInitializer(function() {
 
-    App.movie_collection = new MovieCollection();
-
-    App.router = new Router();
     App.state = new AppState();
-
+    App.movie_collection = new MovieCollection();
+    App.router = new Router();
     App.layout = new AppLayout();
     App.main.show(App.layout);
-
-    var toolbar = new ToolbarView({ model: App.state });
-    App.layout.toolbar.show(toolbar);
-
-    App.contentView(App.state.get('view-mode'));
+    App.layout.toolbar.show(new ToolbarView({ model: App.state }));
+    App.layout.contentView(App.state.get('view-mode'));
 
     /*
      * Events
      */
 
-    App.listenTo(
-      App.movie_collection, 'change:_selected', function(movie, selected) {
-        if (selected) {
-          if (!movie.get('_fullFetch'))
-            movie.fetch({ success: App.sidebarView });
-          else
-            App.sidebarView(movie);
-          App.router.navigate('movie/%d'.format(movie.id));
-        }
-      }
-    );
+    App.listenTo(App.movie_collection, {
+      'dataloaded': function() {
+        if (!App.layout.sidebar.currentView)
+          return;
+        var movie = App.layout.sidebar.currentView.model;
+        if (movie && !App.movie_collection.findWhere({ id: movie.id }))
+          App.layout.sidebar.close();
+      },
 
-    App.listenTo(App.movie_collection, 'deselected', function() {
-      App.router.navigate('', { trigger: true });
+      'deselected': function() {
+        App.router.navigate('', { trigger: true });
+      }
     });
 
-    App.listenTo(App.state, 'change:view-mode', function(state, view_mode) {
-      App.contentView(view_mode);
+    App.listenTo(App.state, {
+      'change:selected-movie-id': function(state, id) {
+        var movie = App.movie_collection.get(id);
+        if (movie) {
+          if (movie.get('_fullFetch'))
+            App.layout.sidebarView(movie);
+          else
+            movie.fetch();
+        }
+      },
+
+      'change:view-mode': function(state, view_mode) {
+        App.layout.contentView(view_mode);
+      },
+
+      'change:search': function(state, search) {
+        App.doSearch(search);
+      }
     });
 
     // on DOM ready

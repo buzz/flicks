@@ -1,7 +1,7 @@
 define([
   'backbone',
   'slick.grid',
-  'grid/columns'
+  'views/grid.columns'
 ], function(
   Backbone,
   Slick,
@@ -20,10 +20,29 @@ define([
     id: 'grid',
 
     initialize: function() {
+      var that = this;
+
+      // grid resizing
       this.listenTo(App, 'content-resize', this.resize, this);
-      this.listenTo(App.movie_collection, 'deselected', function() {
-        this.grid.setSelectedRows([]);
-      }, this);
+
+      // collection events
+      this.listenTo(this.collection, {
+        'change:_selected': this.selectMovie,
+
+        dataloaded: function(args) {
+          for (var i = args.from; i <= args.to; ++i)
+            that.grid.invalidateRow(i);
+          that.grid.updateRowCount();
+          that.grid.render();
+          that.selectMovie();
+        },
+
+        reset: function() {
+          this.grid.invalidate();
+        }
+      });
+
+      // create grid after DOM elements have been placed
       this.on('show', this.createGrid, this);
     },
 
@@ -46,47 +65,40 @@ define([
     selectMovie: function(movie) {
       var rows = [];
       var movie = App.movie_collection.getSelected();
-      if (movie)
-        rows = [ movie.get('index') ];
-      this.grid.setSelectedRows(rows);
+      if (movie) {
+        var index = movie.get('index');
+        this.grid.scrollRowIntoView(index);
+        rows.push(index);
+      }
+      if (this.grid.getSelectedRows() != rows)
+        this.grid.setSelectedRows(rows);
     },
 
     createGrid: function() {
       var that = this;
 
+      // create grid
       this.grid = new Slick.Grid(
         this.el, this.collection, columns, grid_options);
       this.grid.setSelectionModel(new Slick.RowSelectionModel());
 
+      // grid events
       this.grid.onViewportChanged.subscribe(function() {
         that.loadViewport();
       });
-
       this.grid.onActiveCellChanged.subscribe(function() {
         // prevent any cell from being active
         // TODO: better way to do this?
         that.grid.resetActiveCell()
       });
-
       this.grid.onSelectedRowsChanged.subscribe(function(e, args) {
         if (args.rows.length == 1) {
           var index = args.rows[0]
-          var model = that.collection.findWhere({ index: index });
-          if (model)
-            model.set('_selected', true);
-          that.grid.scrollRowIntoView(index);
+          var movie = that.collection.findWhere({ index: index });
+          if (movie)
+            App.router.navigate('movie/%d'.format(movie.id), { trigger: true });
         }
       });
-
-      this.listenTo(this.collection, 'dataloaded', function(args) {
-        for (var i = args.from; i <= args.to; ++i)
-          that.grid.invalidateRow(i);
-        that.grid.updateRowCount();
-        that.grid.render();
-        that.selectMovie();
-      });
-
-      this.listenTo(App.movie_collection, 'change:_selected', this.selectMovie);
 
       // load initial rows
       this.loadViewport();

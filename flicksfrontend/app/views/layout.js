@@ -1,7 +1,13 @@
 define([
-  'marionette'
+  'marionette',
+  'views/details',
+  'views/grid',
+  'views/tiles'
 ], function(
-  Marionette
+  Marionette,
+  DetailsView,
+  GridView,
+  TilesView
 ) {
 
   var AppLayout = Marionette.Layout.extend({
@@ -22,13 +28,17 @@ define([
 
     initialize: function() {
       this.listenTo(
-        App.movie_collection, 'deselected', this.onDeselected, this);
-      this.listenTo(
-        App.movie_collection, 'change:_selected', this.onSelected, this);
-      this.listenTo(
-        App.movie_collection, 'dataloading', this.updateSpinner, this);
-      this.listenTo(
-        App.movie_collection, 'dataloaded', this.updateSpinner, this);
+        App.state, 'change:selected-movie-id', function(state, id) {
+          if (!id)
+            this.sidebar.close();
+        }, this
+      );
+
+      this.listenTo(App.movie_collection, {
+        'change:_fullFetch': this.sidebarView,
+        'dataloading':       this.updateSpinner,
+        'dataloaded':        this.updateSpinner
+      }, this);
     },
 
     updateSpinner: function(args) {
@@ -39,17 +49,38 @@ define([
         $el.fadeIn();
     },
 
-    onSelected: function(movie, value) {
-      if (value)
-        this.$('#sidebar').removeClass('collapsed');
+    contentView: function(view_mode) {
+      var ViewClass = view_mode === 'grid' ? GridView : TilesView;
+      var view = new ViewClass({ collection: App.movie_collection });
+      this.movies.show(view);
     },
 
-    onDeselected: function(model, value) {
-      this.$('#sidebar').addClass('collapsed');
+    sidebarView: function(movie) {
+      var details = this.sidebar.currentView;
+      if (!details) {
+        // create view
+        details = new DetailsView({ model: movie });
+        this.sidebar.show(details);
+        this.listenTo(details, 'close', function() {
+          App.layout.sidebar.$el.addClass('collapsed');
+          App.trigger('content-resize');
+        });
+      }
+      // reuse details view
+      else {
+        details.model = movie;
+        details.render();
+      }
+
+      // relayout
+      App.layout.sidebar.$el.removeClass('collapsed');
+      App.trigger('content-resize');
     },
 
     showTooltip: function(ev) {
-      $(ev.target).tooltip(App.tooltipDefaults).tooltip('show');
+      var $el = $(ev.target);
+      $el.tooltip(App.tooltipDefaults).tooltip('show');
+      $el.on('remove', function() { $el.tooltip('hide'); });
     },
 
     hideTooltip: function(ev) {

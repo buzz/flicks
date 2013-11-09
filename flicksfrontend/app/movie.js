@@ -15,6 +15,12 @@ define([
 
     initialize: function() {
       this.on('sync', this.onSync, this);
+      this.on('change:_selected', this.onSelected, this);
+    },
+
+    onSelected: function(movie, selected) {
+      if (selected)
+        movie.fetch();
     },
 
     url: function() {

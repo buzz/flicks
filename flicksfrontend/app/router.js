@@ -7,24 +7,26 @@ define([
 ) {
 
   var Router = Marionette.AppRouter.extend({
+
     appRoutes: {
-      '':          'hideDetails',
-      'movie/:id': 'showDetails'
+      '':          'showDetails',
+      'movie/:id': 'showDetails',
+      'search/':   'search',
+      'search/:q': 'search'
     },
     controller: {
 
-      hideDetails: function() {
-        if (App.layout.sidebar.currentView) {
-          App.layout.sidebar.currentView.close();
-          App.trigger('content-resize');
+      showDetails: function(id) {
+        App.state.set('selected-movie-id', id);
+        if (id) {
+          var movie = App.movie_collection.get(id);
+          if (movie)
+            movie.set('_selected', true);
         }
       },
 
-      showDetails: function(id) {
-        App.state.set('selected-movie-id', id);
-        var movie = App.movie_collection.get(id);
-        if (movie)
-          movie.set('_selected', true);
+      search: function(q) {
+        App.state.set('search', q);
       }
 
     }
