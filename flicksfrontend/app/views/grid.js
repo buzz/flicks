@@ -25,6 +25,11 @@ define([
       // grid resizing
       this.listenTo(App, 'content-resize', this.resize, this);
 
+      // state events
+      this.listenTo(App.state, 'change:order-by', function(state, order_by) {
+        that.loadViewport();
+      });
+
       // collection events
       this.listenTo(this.collection, {
         'change:_selected': this.selectMovie,
@@ -82,15 +87,34 @@ define([
         this.el, this.collection, columns, grid_options);
       this.grid.setSelectionModel(new Slick.RowSelectionModel());
 
-      // grid events
+      // set initial sorting from state
+      var sort_field = App.state.get('order-by'), asc = true;
+      if (sort_field.charAt(0) === '-') {
+        sort_field = sort_field.slice(1);
+        asc = false;
+      }
+      var sort_id = _.find(this.grid.getColumns(), { field: sort_field }).id;
+      this.grid.setSortColumn(sort_id, asc);
+
+      // load initial rows
+      this.loadViewport();
+
+      // GRID EVENTS
+
+      // size of viewport changed
       this.grid.onViewportChanged.subscribe(function() {
         that.loadViewport();
       });
+
+      // cell get active (we prevent it or it causes clicks to be
+      // swallowed)
       this.grid.onActiveCellChanged.subscribe(function() {
         // prevent any cell from being active
         // TODO: better way to do this?
         that.grid.resetActiveCell()
       });
+
+      // user selected a row (by mouse, keyboard interaction)
       this.grid.onSelectedRowsChanged.subscribe(function(e, args) {
         if (args.rows.length == 1) {
           var index = args.rows[0]
@@ -100,8 +124,16 @@ define([
         }
       });
 
-      // load initial rows
-      this.loadViewport();
+      // user changed the sorting
+      this.grid.onSort.subscribe(function(ev, sort_info) {
+        var field = sort_info.sortCol.field, asc = sort_info.sortAsc;
+        App.state.set('order-by', '%s%s'.format(asc ? '' : '-', field));
+      });
+    },
+
+    close: function() {
+      // TODO: Unsubscribe grid events?
+      console.log('CLOSE');
     }
 
   });

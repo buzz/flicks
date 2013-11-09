@@ -67,6 +67,9 @@ define([
     App.layout.toolbar.show(new ToolbarView({ model: App.state }));
     App.layout.contentView(App.state.get('view-mode'));
 
+    App.state.listenTo(
+      App.movie_collection, 'sync', App.state.onCollSync, App.state);
+
     /*
      * Events
      */
@@ -88,12 +91,8 @@ define([
     App.listenTo(App.state, {
       'change:selected-movie-id': function(state, id) {
         var movie = App.movie_collection.get(id);
-        if (movie) {
-          if (movie.get('_fullFetch'))
-            App.layout.sidebarView(movie);
-          else
-            movie.fetch();
-        }
+        if (movie && movie.get('_fullFetch'))
+          App.layout.sidebarView(movie);
       },
 
       'change:view-mode': function(state, view_mode) {

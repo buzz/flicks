@@ -16,6 +16,35 @@
 
       .slick-header-column
         +box-sizing(content-box)
+        background-image: none
+
+        &.slick-header-column-sorted
+          background: black
+          background-color: $color-header-bg-sorted
+          font-style: normal
+
+        .slick-sort-indicator
+          display: inline-block
+          background-image: none
+          width: 12px
+          height: 16px
+          margin-top: 2px
+          font-size: 14px
+          font-family: FontAwesome
+          font-style: normal
+          font-weight: normal
+          line-height: 1
+          -webkit-font-smoothing: antialiased
+          -moz-osx-font-smoothing: grayscale
+
+          &::before
+            content: "\f0dc"
+
+          &.slick-sort-indicator-asc::before
+            content: "\f0dd"
+
+          &.slick-sort-indicator-desc::before
+            content: "\f0de"
 
   .slick-viewport
     overflow-x: hidden !important
@@ -40,7 +69,7 @@
           text-align: center
 
         &.l1
-          color: black
+          color: $color-emph-font
 
         .flag
           margin: 2px 1px 0 0

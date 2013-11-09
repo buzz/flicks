@@ -9,14 +9,14 @@ define([
   var Router = Marionette.AppRouter.extend({
 
     appRoutes: {
-      '':          'showDetails',
-      'movie/:id': 'showDetails',
+      '':          'showMovie',
+      'movie/:id': 'showMovie',
       'search/':   'search',
       'search/:q': 'search'
     },
     controller: {
 
-      showDetails: function(id) {
+      showMovie: function(id) {
         App.state.set('selected-movie-id', id);
         if (id) {
           var movie = App.movie_collection.get(id);

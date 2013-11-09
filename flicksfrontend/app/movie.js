@@ -19,7 +19,7 @@ define([
     },
 
     onSelected: function(movie, selected) {
-      if (selected)
+      if (selected && !this.get('_fullFetch'))
         movie.fetch();
     },
 
