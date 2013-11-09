@@ -36,10 +36,8 @@ define([
     },
 
     initialize: function() {
-      this.listenTo(App.movie_collection, {
-        'deselected':       this.onDeselected,
-        'change:_selected': this.onSelected
-      }, this);
+      this.listenTo(
+        App.movie_collection, 'change:_selected', this.onSelected, this);
     },
 
     onRender: function() {
@@ -47,6 +45,7 @@ define([
     },
 
     onSelected: function(movie, selected) {
+      // disable/enable movie actions
       if (selected) {
         var view = this;
         this.$('.movie-action').removeClass('disabled');
@@ -54,6 +53,13 @@ define([
           var value = movie.get(attr);
           var func = value ? 'addClass' : 'removeClass';
           view.$('.btn.%s'.format(attr))[func]('active');
+        });
+      }
+      else {
+        this.$('.movie-action').addClass('disabled');
+        var view = this;
+        _.each(['favourite', 'seen'], function(attr) {
+          view.$('.btn.%s'.format(attr)).removeClass('active');
         });
       }
     },
@@ -69,14 +75,6 @@ define([
       var word = 'movie%s'.format(count == 1 ? '' : 's');
       this.ui.status_text.html(
         '<strong>%d</strong> %s found'.format(count, word));
-    },
-
-    onDeselected: function() {
-      this.$('.movie-action').addClass('disabled');
-      var view = this;
-      _.each(['favourite', 'seen'], function(attr) {
-        view.$('.btn.%s'.format(attr)).removeClass('active');
-      });
     },
 
     toggleSearchButton: function() {
