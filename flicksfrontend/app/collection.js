@@ -16,9 +16,6 @@ define([
 
   var timeout = null;
 
-  // keep track of current requests (keys are the offset)
-  var req_info = {};
-
   var MovieCollection = Backbone.Collection.extend({
 
     model: Movie,
@@ -26,6 +23,9 @@ define([
 
     order_by_args: {},
     search_args:   {},
+
+    // keep track of current requests (keys are the offset)
+    req_info: {},
 
     initialize: function() {
 
@@ -143,7 +143,7 @@ define([
         };
 
         // ignore if an identical request is pending
-        if (data.offset in req_info)
+        if (data.offset in this.req_info)
           continue;
 
         // order by
@@ -156,38 +156,50 @@ define([
         var req = this.fetch({
           remove: false,
           data: data,
-          success: function(coll, resp) {
-            var offset = resp.meta.offset;
+          success: function(coll, resp, opts) {
+            var offset = opts.data.offset;
+
+            // remove req reference
+            delete that.req_info[offset];
+
+            // set index (important for ordering)
             for (var j = 0; j < resp.objects.length; ++j) {
-              // set table index
               var obj = resp.objects[j];
               var model = coll.get(obj.id);
               model.set('index', j + offset);
             }
+
+            // trigger event
+            that.trigger('dataloaded', {
+              from: resp.meta.offset,
+              to: resp.meta.offset + resp.objects.length - 1,
+              request_count: _.keys(that.req_info).length
+            });
+          },
+          error: function(coll, resp, opts) {
+            // remove req reference
+            delete that.req_info[opts.data.offset];
           }
-        }).success(function(resp) {
-          that.trigger('dataloaded', {
-            from: resp.meta.offset,
-            to: resp.meta.offset + resp.objects.length - 1,
-            request_count: _.keys(req_info).length - 1
-          });
-        }).always(function(resp) {
-          // remove request info
-          delete req_info[data.offset]
         });
 
         // save request info
-        req_info[data.offset] = req;
+        this.req_info[data.offset] = req;
 
         // trigger event
         this.trigger('dataloading', {
-          request_count: _.keys(req_info).length
+          request_count: _.keys(this.req_info).length
         });
       }
     },
 
     ensureData: function(from, to) {
       var that = this;
+
+      // valid range check
+      if (from < 0)
+        from = 0;
+      if (this.total_count && to > this.total_count)
+        to = this.total_count;
 
       var fromPage = Math.floor(from / PAGESIZE);
       var toPage = Math.floor(to / PAGESIZE);
