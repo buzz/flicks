@@ -73,7 +73,6 @@ define([
       var movie = App.movie_collection.getSelected();
       if (movie) {
         var index = movie.get('index');
-        this.grid.scrollRowIntoView(index);
         rows.push(index);
       }
       if (this.grid.getSelectedRows() != rows)
