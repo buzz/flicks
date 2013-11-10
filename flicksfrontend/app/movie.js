@@ -18,6 +18,10 @@ define([
       this.on('change:_selected', this.onSelected, this);
     },
 
+    getImageUrl: function() {
+      return 'covers/movies_%d.jpg'.format(this.id);
+    },
+
     onSelected: function(movie, selected) {
       if (selected && !this.get('_fullFetch'))
         movie.fetch();

@@ -18,14 +18,20 @@ $color-border-lighter: lighten($color-border, 5%)
 $color-bg1: darken(white, 6%)
 $color-bg2: white
 
-$small-border-radius: 2px
+$color-overlay-bg: fade-out(black, 0.1)
+
 $default-border-radius: 8px
+$small-border-radius: $default-border-radius / 4
+$large-border-radius: $default-border-radius * 2.5
+
+= default-box-shadow
+  +box-shadow(rgba(0, 0, 0, 0.18) 0 0px 10px)
 
 = layout-box-shadow
   +box-shadow(rgba(0, 0, 0, 0.1) 0 0px 30px)
 
-= default-box-shadow
-  +box-shadow(rgba(0, 0, 0, 0.18) 0 0px 10px)
+= overlay-box-shadow
+  +box-shadow(black 0 4px 32px)
 
 = default-gradient
   +background(linear-gradient($color-bg2, $color-bg1))

@@ -2,20 +2,23 @@ define([
   'marionette',
   'views/details',
   'views/grid',
-  'views/tiles'
+  'views/tiles',
+  'views/overlay'
 ], function(
   Marionette,
   DetailsView,
   GridView,
-  TilesView
+  TilesView,
+  OverlayView
 ) {
 
   var AppLayout = Marionette.Layout.extend({
 
-    id: 'main-layout',
-    template: 'layout',
+    id:        'layout',
+    template:  'layout',
 
     regions: {
+      overlay: '#overlay',
       toolbar: '#toolbar',
       movies:  '#movies',
       sidebar: '#sidebar'
@@ -23,7 +26,8 @@ define([
 
     events: {
       'mouseenter .enable-tooltip': 'showTooltip',
-      'mouseleave .enable-tooltip': 'hideTooltip'
+      'mouseleave .enable-tooltip': 'hideTooltip',
+      'click #overlay':             'hideOverlay'
     },
 
     initialize: function() {
@@ -64,6 +68,22 @@ define([
       // relayout
       App.layout.sidebar.$el.removeClass('collapsed');
       App.trigger('content-resize');
+    },
+
+    showOverlay: function(movie) {
+      var view = new OverlayView({ model: movie });
+      this.overlay.show(view);
+      this.overlay.$el.show();
+    },
+
+    hideOverlay: function() {
+      var that = this;
+      this.overlay.currentView.$el
+        .one(
+          'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd',
+          function() { that.overlay.close(); }
+        )
+        .css('opacity', '0.0');
     },
 
     showTooltip: function(ev) {
