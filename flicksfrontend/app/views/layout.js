@@ -34,19 +34,8 @@ define([
         }, this
       );
 
-      this.listenTo(App.movie_collection, {
-        'change:_fullFetch': this.sidebarView,
-        'dataloading':       this.updateSpinner,
-        'dataloaded':        this.updateSpinner
-      }, this);
-    },
-
-    updateSpinner: function(args) {
-      var $el = this.$('#spinner');
-      if (args.request_count < 1)
-        $el.fadeOut();
-      else
-        $el.fadeIn();
+      this.listenTo(
+        App.movie_collection, 'change:_fullFetch', this.sidebarView, this);
     },
 
     contentView: function(view_mode) {

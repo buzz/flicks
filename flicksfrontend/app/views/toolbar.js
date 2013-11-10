@@ -32,12 +32,26 @@ define([
       search_form:       'form[role=search]',
       search_input:      'form[role=search] input',
       btn_clear_search:  'form[role=search] #btn-clear-search',
-      btn_submit_search: 'form[role=search] button[type=submit]'
+      btn_submit_search: 'form[role=search] button[type=submit]',
+      spinner:           '#spinner'
     },
 
     initialize: function() {
       this.listenTo(
         App.movie_collection, 'change:_selected', this.onSelected, this);
+
+      this.listenTo(App.movie_collection, {
+        'dataloading':       this.updateSpinner,
+        'dataloaded':        this.updateSpinner
+      }, this);
+    },
+
+    updateSpinner: function(args) {
+      var $el = this.$('#spinner');
+      if (args.request_count < 1)
+        $el.fadeOut();
+      else
+        $el.fadeIn();
     },
 
     onRender: function() {
