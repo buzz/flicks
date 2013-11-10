@@ -47,11 +47,10 @@ define([
     },
 
     updateSpinner: function(args) {
-      var $el = this.$('#spinner');
       if (args.request_count < 1)
-        $el.fadeOut();
+        this.ui.spinner.fadeOut();
       else
-        $el.fadeIn();
+        this.ui.spinner.fadeIn();
     },
 
     onRender: function() {
