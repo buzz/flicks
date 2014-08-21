@@ -1,9 +1,8 @@
-Django==1.4.2
-FormEncode==1.2.4
-hg+https://bitbucket.org/alberanid/imdbpy/@tip
-MySQL-python==1.2.4c1
-SQLAlchemy==0.7.9
-SQLObject==1.3.2
-South==0.7.6
-django-tastypie==0.9.12
-ipython==0.13.1
+Django==1.6.6
+MySQL-python==1.2.5
+South==1.0
+django-tastypie==0.11.1
+ipython==2.2.0
+IMDbPY==5.0
+django-extensions==1.3.11
+Werkzeug==0.9.6

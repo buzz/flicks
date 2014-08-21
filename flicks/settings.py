@@ -39,6 +39,8 @@ USE_I18N = False
 USE_L10N = True
 USE_TZ = False
 
+MOVIES_ROOT = '/media/mapper_storage/flicks'
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = ''
@@ -111,10 +113,9 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+
+    'django_extensions',
+
     'flicksapp',
     'south',
     'tastypie',

@@ -1,9 +1,7 @@
-from django.utils import simplejson
 from django.core.serializers import serialize
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Min, Max, Count
-from rest_framework import generics
 from imdb import IMDb
 
 from flicksapp.models import Movie, Person, Country, Language, Genre, Keyword
