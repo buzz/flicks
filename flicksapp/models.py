@@ -1,6 +1,8 @@
 import datetime
 import re
+import math
 
+from django.conf import settings
 from django.db import models
 from django.db.models import Q, Count
 from django.core.exceptions import ValidationError
@@ -59,20 +61,70 @@ class Keyword(models.Model):
     def __unicode__(self):
         return self.name
 
+class Track(models.Model):
+    format = models.CharField('Format', null=True, blank=True, max_length=100)
+    codec = models.CharField('Codec', null=True, blank=True, max_length=100)
+    bit_rate = models.PositiveIntegerField('Bit rate', null=True, blank=True)
+    stream_size = models.PositiveIntegerField(
+        'Stream size', null=True, blank=True)
+    writing_library = models.CharField(
+        'Writing library', null=True, blank=True, max_length=255)
+    language = models.CharField(
+        'Language', null=True, blank=True, max_length=100)
+
+    # video track only
+    video_width = models.PositiveIntegerField(
+        'Video width', null=True, blank=True)
+    video_height = models.PositiveIntegerField(
+        'Video height', null=True, blank=True)
+    video_aspect_ratio = models.FloatField(
+        'Video aspect ratio', null=True, blank=True)
+    video_frame_rate = models.FloatField(
+        'Video frame rate', null=True, blank=True)
+    video_bpp = models.FloatField('Video bits per pixel', null=True, blank=True)
+
+    # audio track only
+    audio_bit_rate_mode = models.CharField(
+        'Audio bit rate mode', null=True, blank=True, max_length=20)
+    audio_sampling_rate = models.PositiveIntegerField(
+        'Audio sampling rate', null=True, blank=True)
+    audio_channels = models.PositiveIntegerField(
+        'Audio channels', null=True, blank=True)
+
 class File(models.Model):
     PICTURE_TYPE = 'P'
     VIDEO_TYPE = 'V'
     NFO_TYPE = 'N'
     SUBTITLES_TYPE = 'S'
+    OTHER_TYPE = 'S'
     FILETYPE_CHOICES = (
         (PICTURE_TYPE, 'Picture'),
         (VIDEO_TYPE, 'Video'),
         (NFO_TYPE, 'NFO'),
         (SUBTITLES_TYPE, 'Subtitles'),
+        (OTHER_TYPE, 'Other'),
     )
     filename = models.CharField('Filename', max_length=255)
     filetype = models.CharField('Type', choices=FILETYPE_CHOICES, max_length=1)
-    mediainfo = models.TextField('Mediainfo')
+
+    # media info general
+    container_format = models.CharField(
+        'Container Format', null=True, blank=True, max_length=100)
+    container_format_info = models.CharField(
+        'Container Format/Info', null=True, blank=True, max_length=255)
+    file_size = models.PositiveIntegerField(
+        'File size', null=True, blank=True)
+    duration = models.PositiveIntegerField('Duration', null=True, blank=True)
+    overall_bit_rate = models.PositiveIntegerField(
+        'Overall bit rate', null=True, blank=True)
+    writing_application = models.CharField(
+        'Writing application', null=True, blank=True, max_length=255)
+    writing_library = models.CharField(
+        'Writing library', null=True, blank=True, max_length=255)
+
+    # media info audio tracks
+    tracks = models.ManyToManyField(
+        Track, verbose_name='Tracks', related_name='file')
 
     def __unicode__(self):
         return self.name
@@ -123,6 +175,7 @@ class Movie(models.Model):
     imdb_sync_on = models.DateTimeField('IMDb sync on', null=True)
     seen = models.BooleanField('Seen', default=False)
     favourite = models.BooleanField('Favourite', default=False)
+    trumpable = models.BooleanField('Trumpable', default=False)
     notes = models.TextField('Notes', blank=True)
 
     def clear_imdb_relations(self):
@@ -142,6 +195,12 @@ class Movie(models.Model):
     def clean(self):
         if self.favourite and not self.seen:
             raise ValidationError('An unseen movie can not be favourited!.')
+
+    @property
+    def media_directory(self):
+        r = settings.MOVIES_ROOT
+        d1 = math.floor(self.id / 100) * 100
+        return '%s/%05i/%05i/' % (settings.MOVIES_ROOT, d1, self.id)
 
     def sync_with_imdb(self, ia=None):
         """Update movie with IMDb data. Use ia as IMDb access."""

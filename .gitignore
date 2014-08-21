@@ -12,3 +12,4 @@ flicksfrontend/app/style/app.css
 flicksfrontend/app/templates/_templates_compiled.js
 flicksfrontend/dist
 flicksfrontend/tmp
+venv
