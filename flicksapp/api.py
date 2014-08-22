@@ -43,7 +43,7 @@ class FileResource(ModelResource):
     class Meta:
         queryset = File.objects.all()
         resource_name = 'file'
-        fields = ('name',)
+        fields = ('filename',)
         include_resource_uri = False
 
 class LanguageResource(ModelResource):
@@ -89,7 +89,7 @@ class BaseMovieResource(ModelResource):
         return [p.data['name'] for p in bundle.data['keywords']]
 
     def dehydrate_files(self, bundle):
-        return [p.data['name'] for p in bundle.data['files']]
+        return [p.data['filename'] for p in bundle.data['files']]
 
     def dehydrate_countries(self, bundle):
         return [p.data['name'] for p in bundle.data['countries']]

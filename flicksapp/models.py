@@ -11,6 +11,7 @@ from imdb import IMDb
 
 from flicksapp.fields import ListField
 from flicksapp.validators import validate_imdb_id
+from flicksapp.choices import FILE_TYPE_CHOICES, TRACK_TYPE_CHOICES, VIDEO_TYPE
 
 
 class Country(models.Model):
@@ -62,20 +63,23 @@ class Keyword(models.Model):
         return self.name
 
 class Track(models.Model):
+    track_id = models.PositiveIntegerField('Track ID', null=False, default=0)
+    track_type = models.CharField(
+        'Type', choices=TRACK_TYPE_CHOICES, max_length=1, default=VIDEO_TYPE)
+
     format = models.CharField('Format', null=True, blank=True, max_length=100)
     codec = models.CharField('Codec', null=True, blank=True, max_length=100)
     bit_rate = models.PositiveIntegerField('Bit rate', null=True, blank=True)
-    stream_size = models.PositiveIntegerField(
-        'Stream size', null=True, blank=True)
+    stream_size = models.BigIntegerField('Stream size', null=True, blank=True)
     writing_library = models.CharField(
         'Writing library', null=True, blank=True, max_length=255)
     language = models.CharField(
         'Language', null=True, blank=True, max_length=100)
 
     # video track only
-    video_width = models.PositiveIntegerField(
+    video_width = models.PositiveSmallIntegerField(
         'Video width', null=True, blank=True)
-    video_height = models.PositiveIntegerField(
+    video_height = models.PositiveSmallIntegerField(
         'Video height', null=True, blank=True)
     video_aspect_ratio = models.FloatField(
         'Video aspect ratio', null=True, blank=True)
@@ -86,34 +90,27 @@ class Track(models.Model):
     # audio track only
     audio_bit_rate_mode = models.CharField(
         'Audio bit rate mode', null=True, blank=True, max_length=20)
-    audio_sampling_rate = models.PositiveIntegerField(
-        'Audio sampling rate', null=True, blank=True)
-    audio_channels = models.PositiveIntegerField(
-        'Audio channels', null=True, blank=True)
+    audio_sampling_rate = models.CharField(
+        'Audio sampling rate', null=True, blank=True, max_length=20)
+    audio_channels = models.CharField(
+        'Audio channels', null=True, blank=True, max_length=20)
+
+    # file
+    file = models.ForeignKey('File', related_name='tracks')
 
 class File(models.Model):
-    PICTURE_TYPE = 'P'
-    VIDEO_TYPE = 'V'
-    NFO_TYPE = 'N'
-    SUBTITLES_TYPE = 'S'
-    OTHER_TYPE = 'S'
-    FILETYPE_CHOICES = (
-        (PICTURE_TYPE, 'Picture'),
-        (VIDEO_TYPE, 'Video'),
-        (NFO_TYPE, 'NFO'),
-        (SUBTITLES_TYPE, 'Subtitles'),
-        (OTHER_TYPE, 'Other'),
-    )
     filename = models.CharField('Filename', max_length=255)
-    filetype = models.CharField('Type', choices=FILETYPE_CHOICES, max_length=1)
+    file_type = models.CharField(
+        'Type', choices=FILE_TYPE_CHOICES, max_length=1, default=VIDEO_TYPE)
+
+    # output of the file command
+    file_output = models.CharField(
+        'file output', max_length=255, null=True, blank=True)
 
     # media info general
     container_format = models.CharField(
         'Container Format', null=True, blank=True, max_length=100)
-    container_format_info = models.CharField(
-        'Container Format/Info', null=True, blank=True, max_length=255)
-    file_size = models.PositiveIntegerField(
-        'File size', null=True, blank=True)
+    file_size = models.BigIntegerField('File size', null=True, blank=True)
     duration = models.PositiveIntegerField('Duration', null=True, blank=True)
     overall_bit_rate = models.PositiveIntegerField(
         'Overall bit rate', null=True, blank=True)
@@ -122,12 +119,11 @@ class File(models.Model):
     writing_library = models.CharField(
         'Writing library', null=True, blank=True, max_length=255)
 
-    # media info audio tracks
-    tracks = models.ManyToManyField(
-        Track, verbose_name='Tracks', related_name='file')
+    # file
+    movie = models.ForeignKey('Movie', related_name='files')
 
     def __unicode__(self):
-        return self.name
+        return self.filename
 
 class Movie(models.Model):
     # imdb
@@ -161,9 +157,6 @@ class Movie(models.Model):
     plot_outline = models.TextField('Plot outline', blank=True)
     plot = models.TextField('Plot', blank=True)
     mpaa = models.CharField('MPAA', max_length=200, blank=True)
-
-    # storage
-    files = models.ManyToManyField(File, verbose_name='Files')
 
     # karagarga
     on_karagarga = models.BooleanField('On Karagarga', default=False)
