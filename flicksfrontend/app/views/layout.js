@@ -12,7 +12,7 @@ define([
   OverlayView
 ) {
 
-  var AppLayout = Marionette.Layout.extend({
+  var AppLayout = Marionette.LayoutView.extend({
 
     id:        'layout',
     template:  'layout',
@@ -34,7 +34,7 @@ define([
       this.listenTo(
         App.state, 'change:selected-movie-id', function(state, id) {
           if (!id)
-            this.sidebar.close();
+            this.sidebar.empty();
         }, this
       );
 
@@ -77,11 +77,11 @@ define([
     },
 
     hideOverlay: function() {
-      var that = this;
-      this.overlay.currentView.$el
+      var o = this.overlay;
+      o.currentView.$el
         .one(
           'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd',
-          function() { that.overlay.close(); }
+          function(a,b,c) { o.empty(); }
         )
         .css('opacity', '0.0');
     },

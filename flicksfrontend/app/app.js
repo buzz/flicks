@@ -77,7 +77,7 @@ define([
           return;
         var movie = App.layout.sidebar.currentView.model;
         if (movie && !App.movie_collection.findWhere({ id: movie.id }))
-          App.layout.sidebar.close();
+          App.layout.sidebar.empty();
       }
     });
 

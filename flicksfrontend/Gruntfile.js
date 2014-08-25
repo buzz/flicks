@@ -16,12 +16,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-font-awesome-vars');
   grunt.loadNpmTasks('grunt-bg-shell');
 
-  grunt.registerTask('default', ['dist']);
+  grunt.registerTask('default', ['dev']);
 
   grunt.registerTask('dev', [
     'clean:tmp',
+    'fontAwesomeVars:dev',
     'configureProxies',
     'connect:dev',
     'bgShell:compasswatch',
@@ -30,14 +32,17 @@ module.exports = function(grunt) {
 
   grunt.registerTask('dist', [
     // prepare
+    'clean:tmp',
     'clean:dist-tmp',
     'clean:dist',
+    'fontAwesomeVars:dist',
 
     // copy assets
     'copy:dist',
 
     // styles
-    'compass:dist',
+    'bgShell:compasscompile',
+    // 'compass:dist',
     'cssjoin:dist',
     'cssmin',
 
@@ -68,6 +73,18 @@ module.exports = function(grunt) {
       dist: ['dist']
     },
 
+    // set font awesome font path
+    fontAwesomeVars: {
+      dev: {
+        variablesScssPath: 'bower_components/font-awesome/scss/_variables.scss',
+        fontPath: '../../bower_components/font-awesome/fonts'
+      },
+      dist: {
+        variablesScssPath: 'bower_components/font-awesome/scss/_variables.scss',
+        fontPath: 'fonts'
+      }
+    },
+
     // The jst task compiles all application templates into JavaScript
     // functions with the underscore.js template function
     jst: {
@@ -82,7 +99,7 @@ module.exports = function(grunt) {
     concat: {
       dist: {
         src: [
-          'lib/almond.js',
+          'bower_components/almond/almond.js',
           'tmp/templates_compiled.js',
           'tmp/flicks.js'
         ],
@@ -181,7 +198,7 @@ module.exports = function(grunt) {
           },
           {
             expand: true,
-            cwd: 'lib/font-awesome-4.0.3/fonts/',
+            cwd: 'bower_components/font-awesome/fonts/',
             src: 'fontawesome-webfont.{eot,woff,ttf}',
             dest: 'dist/fonts/'
           },
