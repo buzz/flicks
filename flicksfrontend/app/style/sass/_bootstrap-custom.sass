@@ -1,7 +1,7 @@
 @import 'common'
 
 .btn-default
-  +default-gradient-darker()
+  +default-gradient-darker
 
 .btn-group
 
@@ -9,7 +9,7 @@
     display: none
 
 .navbar
-  +default-gradient()
+  +default-gradient
 
 .nav-tabs
   margin-bottom: 0
@@ -20,17 +20,22 @@
 
       > a
         color: $color-emph-font
+        border-top: $default-border
+        border-right: $default-border
+        border-left: $default-border
 
         &:hover
           color: $color-emph-font
+          border-top: $default-border
+          border-right: $default-border
+          border-left: $default-border
 
     > a
-      padding: 4px 6px 3px
-      margin: 1px 1px 0
-      line-height: 12px
+      padding: 6px 10px 4px
+      margin: 0
       color: $color-silver
 
       &:hover
         background-color: transparent
-        border-bottom-color: transparent
+        border-color: transparent
         color: $color-emph-font
