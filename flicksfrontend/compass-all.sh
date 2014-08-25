@@ -18,10 +18,10 @@ do_compass () {
   if [ "$cmd" == "watch" ]
   then
     echo "---------- watching $folder ----------"
-    compass watch -c ${basename} &
+    compass watch -c ${basename} --debug-info &
   else
     echo "---------- compiling $folder ----------"
-    compass compile -c ${basename}
+    compass compile -c ${basename} --no-debug-info
   fi
 }
 export -f do_compass

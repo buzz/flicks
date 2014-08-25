@@ -12,7 +12,8 @@ define([
     editable: false,
     enableAddRow: false,
     forceFitColumns: true,
-    multiSelect: false
+    multiSelect: false,
+    enableColumnReorder: false
   };
 
   var GridView = Backbone.View.extend({

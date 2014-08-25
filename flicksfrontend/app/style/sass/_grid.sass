@@ -13,6 +13,7 @@
     .slick-header-columns
       background-image: none
       background-color: $color-header-bg
+      border-bottom: 1px solid $color-border
 
       .slick-header-column
         +box-sizing(content-box)
@@ -52,12 +53,20 @@
 
     .slick-row
 
+      &.even
+        background-color: $color-bg2
+
+      &.odd
+        background-color: $color-bg1
+
       .slick-cell
         border-top: 0 solid transparent
         border-right: 0 solid transparent
         border-left: 0 solid transparent
         border-bottom: solid 1px #ebebeb
+        padding: 2px 4px
         color: $color-silver
+        height: 25px
 
         &.selected
           background-color: $color-selected
