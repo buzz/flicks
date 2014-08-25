@@ -12,10 +12,6 @@ define([
     events: {
       'change #radio-grid-tiles input':            'radioViewClick',
 
-      'click #open-imdb':                          'openImdb',
-      'click #open-karagarga':                     'openKaragarga',
-      'click #open-opensubtitles':                 'openOpensubtitles',
-
       'submit form[role=search]':                  'search',
       'click form[role=search] #btn-adv-search':   'advSearch',
       'click form[role=search] #btn-clear-search': 'clearSearch',
@@ -48,9 +44,9 @@ define([
 
     updateSpinner: function(args) {
       if (args.request_count < 1)
-        this.ui.spinner.fadeOut();
+        this.ui.spinner.fadeOut('fast');
       else
-        this.ui.spinner.fadeIn();
+        this.ui.spinner.fadeIn('fast');
     },
 
     onRender: function() {
@@ -117,16 +113,6 @@ define([
       App.state.set('view-mode', $el.val());
     },
 
-    searchImdbIdOrTitle: function(url_imdbid, url_title) {
-      var movie = App.movie_collection.getSelected();
-      var imdb_id = movie.get('imdb_id'), url;
-      if (imdb_id)
-        url = url_imdbid.format(imdb_id);
-      else
-        url = url_title.format(movie.get('title').replace(' ', '+'));
-      window.open(url, '_blank');
-    },
-
     search: function() {
       var q = this.ui.search_input.val();
       App.router.navigate('search/%s'.format(q), { trigger: true });
@@ -141,22 +127,6 @@ define([
     advSearch: function() {
       // TODO
       console.log('adv search');
-    },
-
-    openKaragarga: function() {
-      var title = App.movie_collection.getSelected().get('title');
-      window.open(App.links.karagarga.format(title), '_blank');
-      return false;
-    },
-
-    openImdb: function() {
-      this.searchImdbIdOrTitle(App.links.imdb_id, App.links.imdb_title);
-      return false;
-    },
-
-    openOpensubtitles: function() {
-      this.searchImdbIdOrTitle(App.links.os_imdbid, App.links.os_title);
-      return false;
     }
 
   });

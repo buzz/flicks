@@ -1,6 +1,9 @@
 <div class="top">
   <div class="title">
-    <span class="enable-tooltip" title="<%- title %>"><%- title %></span>
+    <span class="enable-tooltip" title="<%- title %>">
+      <i class="fa fa-film"></i>
+      <%- title %>
+    </span>
   </div>
   <div class="year">
      <%- year %>
@@ -10,14 +13,53 @@
   </div>
 </div>
 
+<div class="cover-image">
+  <a href="#">
+    <img title="Click to enlarge"
+         class="enable-tooltip"
+         alt="<%- title %>"
+         src="<%= image_url %>">
+  </a>
+</div>
+
 <div class="menu">
   <ul class="nav nav-tabs">
-    <li class="active"><a href="#tab-info" data-toggle="tab">Info</a></li>
-    <li><a href="#tab-plot" data-toggle="tab">Plot</a></li>
-    <li><a href="#tab-cast" data-toggle="tab">Cast</a></li>
-    <li><a href="#tab-keywords" data-toggle="tab">Keywords</a></li>
-    <li><a href="#tab-notes" data-toggle="tab">Notes</a></li>
-    <li><a href="#tab-files" data-toggle="tab">Files</a></li>
+    <li class="active">
+      <a href="#tab-info" data-toggle="tab" class="enable-tooltip" title="General">
+        <i class="fa fa-info fa-lg"></i>
+        <label>General</label>
+      </a>
+    </li>
+    <li>
+      <a href="#tab-plot" data-toggle="tab" class="enable-tooltip" title="Plot">
+        <i class="fa fa-book fa-lg"></i>
+        <label>Plot</label>
+      </a>
+    </li>
+    <li>
+      <a href="#tab-cast" data-toggle="tab" class="enable-tooltip" title="Cast">
+        <i class="fa fa-users fa-lg"></i>
+        <label>Cast</label>
+      </a>
+    </li>
+    <li>
+      <a href="#tab-keywords" data-toggle="tab" class="enable-tooltip" title="Keywords">
+        <i class="fa fa-tags fa-lg"></i>
+        <label>Keywords</label>
+      </a>
+    </li>
+    <li>
+      <a href="#tab-notes" data-toggle="tab" class="enable-tooltip" title="Notes">
+        <i class="fa fa-file-text-o fa-lg"></i>
+        <label>Notes</label>
+      </a>
+    </li>
+    <li>
+      <a href="#tab-files" data-toggle="tab" class="enable-tooltip" title="Files">
+        <i class="fa fa-file-video-o fa-lg"></i>
+        <label>Files</label>
+      </a>
+    </li>
   </ul>
 </div>
 
@@ -26,14 +68,14 @@
 
     <div class="tab-pane active" id="tab-info">
 
-      <p class="row well rating">
+      <p class="row rating">
         <label>Rating</label>
         <span class="value enable-tooltip" title="<%- votes %> votes"><%- rating %></span>
       </p>
 
       <% _.each([[genres, 'Genres'], [directors, 'Directors'], [producers, 'Producers'], [writers, 'Writers'], [languages, 'Languages'], [countries, 'Countries']], function(d, i) { %>
       <% var data = d[0], label = d[1], key = label.toLowerCase() %>
-        <p class="row <%= key %> <%= (i % 2 != 0) ? 'even well' : '' %>">
+        <p class="row <%= key %>">
           <label><%= label %></label>
           <span class="value <%= key %>">
             <%= _.map(data, function(entry) { return '<a class="%s" href="#">%s</a>'.format(key, entry)  }).join(', ') %>
@@ -63,7 +105,7 @@
     </div>
 
     <div class="tab-pane" id="tab-keywords">
-      <%= _.map(keywords, function(entry) { return '<a class="keywords" href="#">%s</a>'.format(entry)  }).join(', ') %>
+      <%= _.map(keywords, function(entry) { return '<a class="keywords" href="#">%s</a>'.format(entry)  }).join(' ') %>
     </div>
 
     <div class="tab-pane" id="tab-notes">
@@ -73,16 +115,71 @@
     </div>
 
     <div class="tab-pane" id="tab-files">
+      <% _.each(files, function(f, i) { %>
+      <div class="file">
+        <p class="row">
+            <label title="<%= f %>"><%= f %></label>
+        </p>
+      </div>
+      <% }); %>
     </div>
 
   </div>
 </div>
 
-<div class="cover-image">
-  <a href="#">
-    <img title="Click to enlarge"
-         class="enable-tooltip"
-         alt="<%- title %>"
-         src="<%= image_url %>">
-  </a>
+<div class="actionbar">
+
+  <!-- External services -->
+  <div class="btn-group btn-group-sm">
+    <button type="button" class="btn btn-default navbar-btn enable-tooltip action-open-imdb" title="IMDb">
+      <i class="flicks-icon-imdb"></i>
+    </button>
+    <button type="button" class="btn btn-default navbar-btn enable-tooltip action-open-karagarga" title="Karagarga">
+      <i class="flicks-icon-karagarga"></i>
+    </button>
+    <button type="button" class="btn btn-default navbar-btn enable-tooltip action-open-opensubtitles" title="OpenSubtitles">
+      <i class="flicks-icon-opensubtitles"></i>
+    </button>
+    <button type="button" class="btn btn-default navbar-btn enable-tooltip action-open-youtube" title="YouTube">
+      <i class="flicks-icon-youtube"></i>
+    </button>
+  </div>
+
+  <p class="navbar-text navbar-right well runtime"><%= runtime %> min</p>
+
+  <br />
+
+  <!-- Actions -->
+  <button title="Play" type="button" class="btn btn-primary btn-sm navbar-btn enable-tooltip action-play">
+    <i class="fa fa-play"></i>
+  </button>
+  <button title="Update details" type="button" class="btn btn-default btn-sm navbar-btn enable-tooltip action-update">
+    <i class="fa fa-refresh"></i>
+  </button>
+  <button title="Find cover" type="button" class="btn btn-default btn-sm navbar-btn enable-tooltip action-find-cover">
+    <i class="fa fa-image"></i>
+  </button>
+
+  <div class="navbar-right">
+
+  <div class="btn-group btn-group-sm" data-toggle="buttons">
+   <label title="Mark seen" class="seen btn btn-default navbar-btn enable-tooltip action-mark-seen">
+     <input type="checkbox">
+     <i class="fa fa-eye seen"></i>
+   </label>
+   <label title="Add to favourites" class="favourite btn btn-default navbar-btn enable-tooltip action-mark-fav">
+     <input type="checkbox">
+     <i class="fa fa-star fav"></i>
+   </label>
+  </div>
+
+  <div class="btn-group btn-group-sm">
+    <button type="button" class="btn btn-default navbar-btn enable-tooltip action-edit" title="Edit">
+      <i class="fa fa-edit enable-tooltip"></i>
+    </button>
+    <button type="button" class="btn btn-danger navbar-btn enable-tooltip action-delete" title="Delete">
+      <i class="fa fa-trash-o enable-tooltip"></i>
+    </button>
+  </div>
+  </div>
 </div>

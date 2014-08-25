@@ -15,17 +15,22 @@ $color-silver: #666
 
 $color-border: lighten(black, 80%)
 $color-border-lighter: lighten($color-border, 5%)
-$color-bg1: darken(white, 6%)
+$color-bg1: darken(white, 4%)
 $color-bg2: white
 
 $color-overlay-bg: fade-out(black, 0.1)
 
-$default-border-radius: 8px
+$default-border-radius: 6px
 $small-border-radius: $default-border-radius / 4
 $large-border-radius: $default-border-radius * 2.5
 
+$default-border: 1px solid #ccc
+
 = default-box-shadow
   +box-shadow(rgba(0, 0, 0, 0.18) 0 0px 10px)
+
+= light-box-shadow
+  +box-shadow(rgba(0, 0, 0, 0.12) 0 0px 14px)
 
 = layout-box-shadow
   +box-shadow(rgba(0, 0, 0, 0.1) 0 0px 30px)
@@ -42,3 +47,10 @@ $large-border-radius: $default-border-radius * 2.5
 
 = default-gradient-inside
   +background(linear-gradient($color-bg1, $color-bg2))
+
+= font-monospace
+  font-family: "Courier New", monospace
+
+= font-caption
+  font-weight: bold
+  font-size: 18px

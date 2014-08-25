@@ -13,58 +13,83 @@ $padding: 18px
   min-height: 100%
 
   .top
+    flex: 0 0 auto
     display: flex
-    flex-flow: row
-    padding: $padding / 1.5 $padding $padding / 3 $padding
+    padding: ($padding / 1.5) $padding 0 $padding
 
     .title
-      order: 1
-      flex: 1
-      font-weight: bold
-      font-size: 18px
+      flex: 1 0
+      +font-caption
       white-space: nowrap
       text-overflow: ellipsis
       overflow: hidden
 
     .year
-      order: 2
-      font-size: 18px
+      flex: 0 0 42px
+      +font-caption
       color: $color-silver
       text-align: right
-      margin: 0 8px
+      margin: 0 8px 0 0
 
     .dismiss
-      order: 3
       padding-top: 2px
 
   .menu
+    flex: 0 0 auto
     padding: 0 $padding
+    margin-bottom: -1px
+
+    li label
+      display: none
+
+    li.active label
+      display: inline-block
+      margin-left: 4px
+
+  .actionbar
+    flex: 0 0 auto
+    padding: ($padding / 3) $padding ($padding / 3)
+
+    .navbar-btn
+      margin-top: 4px
+      margin-bottom: 4px
+
+    .navbar-text
+      margin: 4px 0 4px $padding
+
+      &.runtime
+        +font-caption
+        padding: 1px 6px
 
   .content
+    flex: 1 0.2 200px
     +border-top-radius($small-border-radius)
     +border-bottom-radius($default-border-radius)
-    +default-box-shadow
+    +light-box-shadow
     +default-gradient
-    $border: 1px solid #ccc
-    flex: 1
     margin: 0 $padding
     overflow-x: hidden
     overflow-y: auto
-    border-right: $border
-    border-bottom: $border
-    border-left: $border
+    border: $default-border
 
     a
       color: $color-default-font
 
     > .tab-content
-      font-size: 13px
       padding: 14px 16px
 
       p.row
         text-align: right
         margin: 2px 0 2px
         padding: 2px 6px 2px
+
+        &:nth-child(even)
+          background-color: #ececec
+
+        &.rating
+
+          .value
+            +font-caption
 
         label
           float: left
@@ -78,10 +103,27 @@ $padding: 18px
       .notes
         width: 100%
 
+      #tab-keywords
+        text-align: justify
+
+      #tab-files
+
+        .file
+
+          label
+            +font-monospace
+            width: 100%
+            float: none
+            text-align: left
+            text-overflow: ellipsis
+            white-space: nowrap
+            overflow: hidden
+
   .cover-image
-    margin: $padding
+    flex: 0 1 45%
+    margin: ($padding / 2) ($padding - 2px)
     text-align: center
-    max-height: 50%
+    max-height: 45%
 
     a
 
