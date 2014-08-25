@@ -51,17 +51,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         i = 0
-        nodir = 0
+        nodir = []
         file_count_new = 0
         file_count_updated = 0
         track_count_new = 0
         track_count_updated = 0
-        dir_count = 0
+        subdirs = []
         for m in Movie.objects.all():
             i += 1
             mdir = m.media_directory
             if not os.path.isdir(mdir):
-                nodir += 1
+                nodir.append([mdir, m.id, m.title])
                 continue
             print '*' * 80
             print ' %25s %90s' % \
@@ -70,8 +70,8 @@ class Command(BaseCommand):
 
                 # warn for dirs
                 for d in dirs:
-                    print 'Warning: Directory found: %s%s' % (root, d)
-                    dir_count += 1
+                    subdir = '%s%s' % (root, d)
+                    subdirs.append([subdir, m.id, m.title])
 
                 # check media files
                 for f in files:
@@ -170,6 +170,17 @@ class Command(BaseCommand):
           (track_count, track_count_new, track_count_updated)
         print ' in %d files (%d new, %d updated)' % \
           (file_count, file_count_new, file_count_updated)
-        print '%d movies processed (of which %d have no dir)' % \
-          (i, nodir)
-        print '%d invalid subdirs in folders found' % dir_count
+
+        print '%d movies processed, of which %d have no dir:' % \
+          (i, len(nodir))
+        print nodir
+        if len(nodir) > 0:
+            for dirname, id, title in nodir:
+                print '  %s: %s (%i)' % \
+                    (dirname, title.encode('ascii', 'replace'), id)
+
+        print '%d subdirs in folders found' % len(subdirs)
+        if len(subdirs) > 0:
+            for dirname, id, title in subdirs:
+                print '  %s: %s (%i)' % \
+                    (dirname, title.encode('ascii', 'replace'), id)
