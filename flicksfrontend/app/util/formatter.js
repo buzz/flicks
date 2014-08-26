@@ -54,7 +54,7 @@ define([
         title = 'Favourite';
         cls = 'fa-star fav';
       }
-      return '<i class="fa %s enable-tooltip"title="%s"></i> %s'.format(cls, title, inner || '');
+      return '<i class="fa %s enable-tooltip"title="%s"></i> <span class="number%s">%s</span>'.format(cls, title, dataContext.trumpable ? ' trumpable' : '', inner || '');
     },
 
     flagList: function(countries) {
