@@ -31,10 +31,10 @@ define([
 
       // Read current state
       this.setSearchQuery(App.state, App.state.get('search'));
-      this.setSorting(App.state, App.state.get('order-by'));
+      this.setSorting(App.state, App.state.get('order_by'));
 
       this.listenTo(App.state, {
-        'change:selected-movie-id': function(state, id) {
+        'change:selected_movie_id': function(state, id) {
           // deselect previous
           var movie = this.findWhere({ _selected: true });
           if (movie)
@@ -47,13 +47,13 @@ define([
               movie.set('_selected', true);
           }
         },
-        'change:order-by': this.setSorting,
+        'change:order_by': this.setSorting,
         'change:search':   this.setSearchQuery
       }, this);
 
       this.on({
         dataloaded: function(args) {
-          var sel_id = App.state.get('selected-movie-id');
+          var sel_id = App.state.get('selected_movie_id');
           if (!sel_id)
             return;
           _.every(this.models, function(movie) {

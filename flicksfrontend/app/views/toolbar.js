@@ -9,27 +9,39 @@ define([
     template:  'toolbar',
     className: 'navbar navbar-default navbar-static-top',
 
-    events: {
-      'change #radio-grid-tiles input':            'radioViewClick',
+    ui: {
+      status_text:                     '#status-text',
+      btn_toggle_sidebar:              '#btn-toggle-sidebar',
+      display_mode:                    '#radio-display-mode',
+      display_mode_input:              '#radio-display-mode input',
+      search_form:                     'form[role=search]',
+      search_input:                    'form[role=search] input',
+      btn_adv_search:                  'form[role=search] #btn-adv-search',
+      btn_clear_search:                'form[role=search] #btn-clear-search',
+      btn_submit_search:               'form[role=search] button[type=submit]',
+      spinner:                         '#spinner'
+    },
 
-      'submit form[role=search]':                  'search',
-      'click form[role=search] #btn-adv-search':   'advSearch',
-      'click form[role=search] #btn-clear-search': 'clearSearch',
-      'input form[role=search] input':             'toggleSearchButton'
+    events: {
+      'click  @ui.btn_toggle_sidebar': 'toggleSidebarClick',
+      'change @ui.display_mode_input': 'displayModeClick',
+
+      'submit @ui.search_form':        'search',
+      'click  @ui.btn_adv_search':     'advSearch',
+      'click  @ui.btn_clear_search':   'clearSearch',
+      'input  @ui.search_input':       'updateSearchButtons'
     },
 
     modelEvents: {
-      'change:search':        'searchChanged',
-      'change:results-count': 'resultsCountChanged'
+      'change:search':                 'searchChanged',
+      'change:results_count':          'resultsCountChanged',
+      'change:sidebar_enabled':        'sidebarEnabledChanged'
     },
 
-    ui: {
-      status_text:       '#status-text',
-      search_form:       'form[role=search]',
-      search_input:      'form[role=search] input',
-      btn_clear_search:  'form[role=search] #btn-clear-search',
-      btn_submit_search: 'form[role=search] button[type=submit]',
-      spinner:           '#spinner'
+    behaviors: {
+      ToolTips: {
+        placement: 'bottom'
+      }
     },
 
     initialize: function() {
@@ -42,6 +54,14 @@ define([
       }, this);
     },
 
+    onRender: function() {
+      this.resultsCountChanged(this.model, this.model.get('results_count'));
+      this.sidebarEnabledChanged(
+        this.model, this.model.get('sidebar_enabled'));
+    },
+
+    // model/collection events
+
     updateSpinner: function(args) {
       if (args.request_count < 1)
         this.ui.spinner.fadeOut('fast');
@@ -49,35 +69,22 @@ define([
         this.ui.spinner.fadeIn('fast');
     },
 
-    onRender: function() {
-      this.resultsCountChanged(this.model, this.model.get('results-count'));
-    },
-
-    onSelected: function(movie, selected) {
-      // disable/enable movie actions
-      if (selected) {
-        var view = this;
-        this.$('.movie-action').removeClass('disabled');
-        _.each(['favourite', 'seen'], function(attr) {
-          var value = movie.get(attr);
-          var func = value ? 'addClass' : 'removeClass';
-          view.$('.btn.%s'.format(attr))[func]('active');
-        });
-      }
-      else {
-        this.$('.movie-action').addClass('disabled');
-        var view = this;
-        _.each(['favourite', 'seen'], function(attr) {
-          view.$('.btn.%s'.format(attr)).removeClass('active');
-        });
-      }
-    },
-
     searchChanged: function(state, search) {
-      if (this.ui.search_input.val() !== search) {
-        this.ui.search_input.val(search);
-        this.toggleSearchButton();
+      var $i = this.ui.search_input;
+      if ($i.val() !== search) {
+        $i.val(search);
+        this.updateSearchButtons();
       }
+    },
+
+    sidebarEnabledChanged: function(state, enabled) {
+      var $i = this.ui.btn_toggle_sidebar.find('i');
+      if (enabled)
+        $i.removeClass('fa-caret-square-o-right')
+          .addClass('fa-caret-square-o-left');
+      else
+        $i.addClass('fa-caret-square-o-right')
+          .removeClass('fa-caret-square-o-left');
     },
 
     resultsCountChanged: function(state, count) {
@@ -86,7 +93,19 @@ define([
         '<strong>%d</strong> %s found'.format(count, word));
     },
 
-    toggleSearchButton: function() {
+    // UI handlers
+
+    toggleSidebarClick: function(ev) {
+      v = !this.model.get('sidebar_enabled');
+      this.model.set('sidebar_enabled', v);
+    },
+
+    displayModeClick: function(ev) {
+      var $el = $(ev.currentTarget);
+      App.state.set('view_mode', $el.val());
+    },
+
+    updateSearchButtons: function() {
       var q = this.ui.search_input.val();
       if (q.length > 0) {
         this.ui.btn_clear_search.removeClass('disabled');
@@ -100,17 +119,6 @@ define([
           .addClass('disabled')
           .tooltip('hide');
       }
-    },
-
-    radioViewClick: function(ev) {
-      var $el = $(ev.currentTarget);
-      var $label = $el.parent();
-      if ($label.hasClass('active'))
-          return;
-      var $btn_group = $label.parent();
-      $btn_group.children('label').removeClass('active');
-      $label.addClass('active');
-      App.state.set('view-mode', $el.val());
     },
 
     search: function() {

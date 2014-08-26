@@ -1,6 +1,6 @@
 <div class="top">
   <div class="title">
-    <span class="enable-tooltip" title="<%- title %>">
+    <span>
       <i class="fa fa-film"></i>
       <%- title %>
     </span>
@@ -8,17 +8,11 @@
   <div class="year">
      <%- year %>
   </div>
-  <div class="dismiss">
-    <button class="btn btn-default btn-xs"><i class="fa fa-times"></i></button>
-  </div>
 </div>
 
 <div class="cover-image">
   <a href="#">
-    <img title="Click to enlarge"
-         class="enable-tooltip"
-         alt="<%- title %>"
-         src="<%= image_url %>">
+    <img alt="<%- title %>" src="<%= image_url %>">
   </a>
 </div>
 
@@ -70,7 +64,7 @@
 
       <p class="row rating">
         <label>Rating</label>
-        <span class="value enable-tooltip" title="<%- votes %> votes"><%- rating %></span>
+        <span class="value"><%- rating %></span>
       </p>
 
       <% _.each([[genres, 'Genres'], [directors, 'Directors'], [producers, 'Producers'], [writers, 'Writers'], [languages, 'Languages'], [countries, 'Countries']], function(d, i) { %>
@@ -118,7 +112,7 @@
       <% _.each(files, function(f, i) { %>
       <div class="file">
         <p class="row">
-            <label title="<%= f %>"><%= f %></label>
+            <label class="enable-tooltip" title="<%= f %>"><%= f %></label>
         </p>
       </div>
       <% }); %>
@@ -131,16 +125,16 @@
 
   <!-- External services -->
   <div class="btn-group btn-group-sm">
-    <button type="button" class="btn btn-default navbar-btn enable-tooltip action-open-imdb" title="IMDb">
+    <button type="button" class="btn btn-default navbar-btn enable-tooltip btn-open-imdb" title="IMDb">
       <i class="flicks-icon-imdb"></i>
     </button>
-    <button type="button" class="btn btn-default navbar-btn enable-tooltip action-open-karagarga" title="Karagarga">
+    <button type="button" class="btn btn-default navbar-btn enable-tooltip btn-open-karagarga" title="Karagarga">
       <i class="flicks-icon-karagarga"></i>
     </button>
-    <button type="button" class="btn btn-default navbar-btn enable-tooltip action-open-opensubtitles" title="OpenSubtitles">
+    <button type="button" class="btn btn-default navbar-btn enable-tooltip btn-open-opensubtitles" title="OpenSubtitles">
       <i class="flicks-icon-opensubtitles"></i>
     </button>
-    <button type="button" class="btn btn-default navbar-btn enable-tooltip action-open-youtube" title="YouTube">
+    <button type="button" class="btn btn-default navbar-btn enable-tooltip btn-open-youtube" title="YouTube">
       <i class="flicks-icon-youtube"></i>
     </button>
   </div>
@@ -150,34 +144,34 @@
   <br />
 
   <!-- Actions -->
-  <button title="Play" type="button" class="btn btn-primary btn-sm navbar-btn enable-tooltip action-play">
+  <button title="Play" type="button" class="btn btn-primary btn-sm navbar-btn enable-tooltip btn-play">
     <i class="fa fa-play"></i>
   </button>
-  <button title="Update details" type="button" class="btn btn-default btn-sm navbar-btn enable-tooltip action-update">
+  <button title="Update details" type="button" class="btn btn-default btn-sm navbar-btn enable-tooltip btn-update">
     <i class="fa fa-refresh"></i>
   </button>
-  <button title="Find cover" type="button" class="btn btn-default btn-sm navbar-btn enable-tooltip action-find-cover">
+  <button title="Find cover" type="button" class="btn btn-default btn-sm navbar-btn enable-tooltip btn-find-cover">
     <i class="fa fa-image"></i>
   </button>
 
   <div class="navbar-right">
 
   <div class="btn-group btn-group-sm" data-toggle="buttons">
-   <label title="Mark seen" class="seen btn btn-default navbar-btn enable-tooltip action-mark-seen">
+   <label title="Mark seen" class="seen btn btn-default navbar-btn enable-tooltip btn-mark-seen">
      <input type="checkbox">
      <i class="fa fa-eye seen"></i>
    </label>
-   <label title="Add to favourites" class="favourite btn btn-default navbar-btn enable-tooltip action-mark-fav">
+   <label title="Add to favourites" class="favourite btn btn-default navbar-btn enable-tooltip btn-mark-fav">
      <input type="checkbox">
      <i class="fa fa-star fav"></i>
    </label>
   </div>
 
   <div class="btn-group btn-group-sm">
-    <button type="button" class="btn btn-default navbar-btn enable-tooltip action-edit" title="Edit">
+    <button type="button" class="btn btn-default navbar-btn enable-tooltip btn-edit" title="Edit">
       <i class="fa fa-edit enable-tooltip"></i>
     </button>
-    <button type="button" class="btn btn-danger navbar-btn enable-tooltip action-delete" title="Delete">
+    <button type="button" class="btn btn-danger navbar-btn enable-tooltip btn-delete" title="Delete">
       <i class="fa fa-trash-o enable-tooltip"></i>
     </button>
   </div>

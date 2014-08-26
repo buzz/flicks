@@ -11,16 +11,6 @@
     max-height: 51px
     margin-bottom: 0
 
-    .navbar-brand
-      +transition(color 0.5s)
-      +user-select(none)
-      cursor: default
-      padding-top: 8px
-      padding-bottom: 6px
-
-      &:hover
-        color: $color-emph-font
-
     #status-text
 
       strong
@@ -29,7 +19,10 @@
     #spinner
       +text-shadow(none)
       color: $color-emph-font
-      margin: 11px 6px
+      margin: 11px 6px 0
 
-    form[role=search] input[type=text]
-      height: auto
+    form[role=search]
+      padding-right: 0
+
+      input[type=text]
+        height: auto

@@ -44,21 +44,21 @@ define([
     number_seen_fav: function(dataContext, inner) {
       var title, cls;
       if (dataContext.seen) {
-        title = "Seen";
-        cls = "fa-eye seen";
+        title = 'Seen';
+        cls = 'fa-eye seen';
       } else {
-        title = "Not seen";
-        cls = "fa-eye not-seen";
+        title = 'Not seen';
+        cls = 'fa-eye not-seen';
       }
       if (dataContext.favourite) {
-        title = "Favourite";
-        cls = "fa-star fav";
+        title = 'Favourite';
+        cls = 'fa-star fav';
       }
       return '<i class="fa %s enable-tooltip"title="%s"></i> %s'.format(cls, title, inner || '');
     },
 
     flagList: function(countries) {
-      var html = "";
+      var html = '';
       if (countries !== undefined) {
         $.each(countries, function(i) {
           html += '<div title="%s" class="flag %s enable-tooltip"></div>'.format(
@@ -69,14 +69,25 @@ define([
     },
 
     plot: function(raw_plot) {
-      var html = "";
-      var plot = raw_plot.split("::");
+      var html = '';
+      var plot = raw_plot.split('::');
       if (plot.length > 1) {
         html += plot[0];
         html += '<p class="author">' + plot[1] + '</p>';
       }
       return html;
     },
+
+    aka: function(raw_aka) {
+      var html = '';
+      var aka = raw_aka.split('::');
+      if (aka.length > 1) {
+        html += '<span class="aka-title">%s</span>'.format(aka[0]);
+        html += '<br /><span class="aka-country">' + aka[1] + '</span>';
+        return html;
+      }
+      return raw_aka;
+    }
 
   };
 

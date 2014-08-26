@@ -8,16 +8,17 @@ define([
 
   var AppState = Backbone.Model.extend({
     defaults: {
-      'view-mode':          'grid',
-      'selected-movie-id':  null,
+      'view_mode':          'grid',
+      'selected_movie_id':  null,
       'search':             {},
-      'results-count':      0,
-      'order-by':           'title'
+      'results_count':      0,
+      'order_by':           'title',
+      'sidebar_enabled':    true
     },
 
     onCollSync: function(coll) {
       if (!_.isUndefined(coll.total_count))
-        this.set('results-count', coll.total_count);
+        this.set('results_count', coll.total_count);
     }
   });
 
