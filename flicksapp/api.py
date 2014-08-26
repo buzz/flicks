@@ -101,22 +101,24 @@ class MovieDetailResource(BaseMovieResource):
     """
     Lists all relevant properties.
     """
-    cast = fields.ToManyField(PersonResource, 'cast', full=True)
-    directors = fields.ToManyField(PersonResource, 'directors', full=True)
-    producers = fields.ToManyField(PersonResource, 'producers', full=True)
-    writers = fields.ToManyField(PersonResource, 'writers', full=True)
-    genres = fields.ToManyField(GenreResource, 'genres', full=True)
-    keywords = fields.ToManyField(KeywordResource, 'keywords', full=True)
-    files = fields.ToManyField(FileResource, 'files', full=True)
-    languages = fields.ToManyField(LanguageResource, 'languages', full=True)
-    countries = fields.ToManyField(CountryResource, 'countries', full=True)
+    cast = fields.ToManyField(PersonResource, 'cast', full=True, readonly=True)
+    directors = fields.ToManyField(PersonResource, 'directors', full=True, readonly=True)
+    producers = fields.ToManyField(PersonResource, 'producers', full=True, readonly=True)
+    writers = fields.ToManyField(PersonResource, 'writers', full=True, readonly=True)
+    genres = fields.ToManyField(GenreResource, 'genres', full=True, readonly=True)
+    keywords = fields.ToManyField(KeywordResource, 'keywords', full=True, readonly=True)
+    files = fields.ToManyField(FileResource, 'files', full=True, readonly=True)
+    languages = fields.ToManyField(LanguageResource, 'languages', full=True, readonly=True)
+    countries = fields.ToManyField(CountryResource, 'countries', full=True, readonly=True)
     # this makes sure aka is sent as json array
-    akas = fields.ListField(attribute='akas')
+    akas = fields.ListField(attribute='akas', readonly=True)
 
     class Meta:
         queryset = Movie.objects.all()
         resource_name = 'movie'
         include_resource_uri = False
+        authorization = Authorization() # anyone can write!
+        always_return_data = True
 
 class MovieListResource(BaseMovieResource):
     """
@@ -144,7 +146,6 @@ class MovieListResource(BaseMovieResource):
         fields = c.MOVIE_LIST_VIEW_FIELDS
         resource_name = 'movies'
         include_resource_uri = False
-        authorization = Authorization() # anyone can write!
         ordering = ('id', 'title', 'year', 'rating', 'runtime')
         filtering = {
             'id': 'exact',

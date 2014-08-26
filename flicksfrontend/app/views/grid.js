@@ -22,8 +22,6 @@ define([
     id: 'grid',
 
     initialize: function() {
-      var that = this;
-
       // grid resizing
       this.listenTo(App, 'content-resize', this.resize, this);
 
@@ -37,18 +35,24 @@ define([
       this.listenTo(this.collection, {
         'change:_selected': this.selectMovie,
 
+        'change': function(model, options) {
+          this.grid.invalidateRow(model.get('index'));
+          this.grid.render();
+        },
+
         dataloaded: function(args) {
           for (var i = args.from; i <= args.to; ++i)
-            that.grid.invalidateRow(i);
-          that.grid.updateRowCount();
-          that.grid.render();
-          that.selectMovie();
+            this.grid.invalidateRow(i);
+          this.grid.updateRowCount();
+          this.grid.render();
+          this.selectMovie();
         },
 
         reset: function() {
           this.grid.invalidate();
         }
-      });
+
+      }, this);
 
       // create grid after DOM elements have been placed
       this.on('show', this.createGrid, this);

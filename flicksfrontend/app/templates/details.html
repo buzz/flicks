@@ -157,13 +157,17 @@
   <div class="navbar-right">
 
   <div class="btn-group btn-group-sm" data-toggle="buttons">
-   <label title="Mark seen" class="seen btn btn-default navbar-btn enable-tooltip btn-mark-seen">
+   <label title="Mark seen" class="seen btn btn-default navbar-btn enable-tooltip btn-mark-seen<%= seen ? ' active' : '' %>">
      <input type="checkbox">
-     <i class="fa fa-eye seen"></i>
+     <i class="fa fa-eye"></i>
    </label>
-   <label title="Add to favourites" class="favourite btn btn-default navbar-btn enable-tooltip btn-mark-fav">
+   <label title="Add to favourites" class="favourite btn btn-default navbar-btn enable-tooltip btn-mark-fav<%= favourite ? ' active' : '' %>">
      <input type="checkbox">
-     <i class="fa fa-star fav"></i>
+     <i class="fa fa-star"></i>
+   </label>
+   <label title="Mark trumpable" class="trumpable btn btn-default navbar-btn enable-tooltip btn-mark-trumpable<%= trumpable ? ' active' : '' %>">
+     <input type="checkbox">
+     <i class="fa fa-trophy"></i>
    </label>
   </div>
 
