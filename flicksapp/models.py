@@ -159,7 +159,6 @@ class Movie(models.Model):
     mpaa = models.CharField('MPAA', max_length=200, blank=True)
 
     # karagarga
-    on_karagarga = models.BooleanField('On Karagarga', default=False)
     karagarga_id = models.PositiveIntegerField(
         'Karagarga ID', null=True, blank=True)
 
