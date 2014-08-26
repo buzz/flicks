@@ -18,6 +18,7 @@ define([
       btn_find_cover:                     '.btn-find-cover',
       btn_mark_seen:                      '.btn-mark-seen',
       btn_mark_fav:                       '.btn-mark-fav',
+      btn_mark_trumpable:                 '.btn-mark-trumpable',
       btn_edit:                           '.btn-edit',
       btn_delete:                         '.btn-delete',
       btn_open_imdb:                      '.btn-open-imdb',
@@ -33,6 +34,7 @@ define([
       'click @ui.btn_find_cover':         'findCoverClick',
       'click @ui.btn_mark_seen':          'markSeenClick',
       'click @ui.btn_mark_fav':           'markFavClick',
+      'click @ui.btn_mark_trumpable':     'markTrumpableClick',
       'click @ui.btn_edit':               'editClick',
       'click @ui.btn_delete':             'deleteClick',
       'click @ui.btn_open_imdb':          'openImdb',
@@ -79,6 +81,15 @@ define([
       return data;
     },
 
+    saveWithErrorHandling: function(attrs) {
+      this.model.save(attrs, {
+        patch: true,
+        error: function() {
+          alert('Error saving movie…');
+        }
+      });
+    },
+
     // UI handler
 
     enlargeCover: function(e) {
@@ -102,13 +113,15 @@ define([
     },
 
     markSeenClick: function() {
-      // TODO
-      console.log('TODO... mark-seen');
+      this.saveWithErrorHandling({ seen: !this.model.get('seen') });
     },
 
     markFavClick: function() {
-      // TODO
-      console.log('TODO... mark-fav');
+      this.saveWithErrorHandling({ favourite: !this.model.get('favourite') });
+    },
+
+    markTrumpableClick: function() {
+      this.saveWithErrorHandling({ trumpable: !this.model.get('trumpable') });
     },
 
     editClick: function() {
@@ -136,26 +149,6 @@ define([
     openYoutube: function() {
       window.open(this.model.externalUrl('youtube'), '_blank');
     }
-
-    // onSelected: function(movie, selected) {
-    //   // disable/enable movie actions
-    //   if (selected) {
-    //     var view = this;
-    //     this.$('.movie-action').removeClass('disabled');
-    //     _.each(['favourite', 'seen'], function(attr) {
-    //       var value = movie.get(attr);
-    //       var func = value ? 'addClass' : 'removeClass';
-    //       view.$('.btn.%s'.format(attr))[func]('active');
-    //     });
-    //   }
-    //   else {
-    //     this.$('.movie-action').addClass('disabled');
-    //     var view = this;
-    //     _.each(['favourite', 'seen'], function(attr) {
-    //       view.$('.btn.%s'.format(attr)).removeClass('active');
-    //     });
-    //   }
-    // },
 
   });
 
