@@ -18,13 +18,7 @@ define([
   jstRender
 ) {
 
-  // Defaults
-  var tooltipDefaults = {
-    container: 'body',
-    placement: 'auto bottom',
-    trigger:   'manual'
-  };
-
+  // External links
   var links = {
     imdb_id:    'http://www.imdb.com/title/tt%07d/',
     imdb_title: 'http://www.imdb.com/find?q=%s',
@@ -42,14 +36,11 @@ define([
    * Create app
    */
   App = new Marionette.Application({
-
-    tooltipDefaults: tooltipDefaults,
     links: links,
     root: '/',
     regions: {
       main: 'body'
     }
-
   });
   App.root = '/';
   App.addRegions({ main: 'body' });
@@ -59,10 +50,10 @@ define([
     App.state = new AppState();
     App.movie_collection = new MovieCollection();
     App.router = new Router();
-    App.layout = new AppLayout();
+    App.layout = new AppLayout({ model: App.state });
     App.main.show(App.layout);
     App.layout.toolbar.show(new ToolbarView({ model: App.state }));
-    App.layout.contentView(App.state.get('view-mode'));
+    App.layout.contentView(App.state.get('view_mode'));
 
     App.state.listenTo(
       App.movie_collection, 'sync', App.state.onCollSync, App.state);
@@ -73,22 +64,27 @@ define([
 
     App.listenTo(App.movie_collection, {
       'dataloaded': function() {
-        if (!App.layout.sidebar.currentView)
-          return;
-        var movie = App.layout.sidebar.currentView.model;
-        if (movie && !App.movie_collection.findWhere({ id: movie.id }))
-          App.layout.sidebar.empty();
+        var c = App.movie_collection, selected = c.getSelected();
+
+        if (!selected) {
+          var f = c.first();
+          if (f)
+            f.set('_selected', true);
+          else
+            App.layout.sidebar.empty();
+        }
       }
     });
 
     App.listenTo(App.state, {
-      'change:selected-movie-id': function(state, id) {
+      'change:selected_movie_id': function(state, id) {
         var movie = App.movie_collection.get(id);
-        if (movie && movie.get('_fullFetch'))
+        if (movie && movie.get('_fullFetch')) {
           App.layout.sidebarView(movie);
+        }
       },
 
-      'change:view-mode': function(state, view_mode) {
+      'change:view_mode': function(state, view_mode) {
         App.layout.contentView(view_mode);
       }
     });

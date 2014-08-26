@@ -1,19 +1,11 @@
-<!-- Navbar header -->
+<div class="container-fluid">
 
-<div class="navbar-header">
-  <span class="navbar-brand">
-    <span title="Flicks - Personal Movie Collection" class="enable-tooltip">
-      <span class="fa-stack">
-        <i class="fa fa-square fa-stack-2x"></i>
-        <i class="fa fa-film fa-stack-1x fa-inverse"></i>
-      </span>
-      Flicks
-    </span>
-  </span>
-</div>
+<!-- Display -->
+<button id="btn-toggle-sidebar" title="Toggle details" type="button" class="btn btn-default enable-tooltip<%= sidebar_enabled === true ? ' active' : '' %>" data-toggle="button">
+  <i class="fa"></i>
+</button>
 
-<!-- View mode toggle -->
-<div class="btn-group" id="radio-grid-tiles">
+<div class="btn-group" id="radio-display-mode" data-toggle="buttons">
   <label title="List view" class="btn btn-default navbar-btn active enable-tooltip">
     <input type="radio" name="options" value="grid">
     <i class="fa fa-list"></i>
@@ -25,13 +17,13 @@
 </div>
 
 <!-- Add movie -->
-<button title="Add a new movie to the collection" type="button" class="btn btn-default navbar-btn enable-tooltip">
+<button type="button" class="btn btn-default navbar-btn">
   <i class="fa fa-plus"></i>
   Add movie
 </button>
 
 <!-- Preferences button -->
-<button title="Customize Flicks to your needs" type="button" class="btn btn-default navbar-btn enable-tooltip">
+<button type="button" class="btn btn-default navbar-btn">
   <i class="fa fa-cogs"></i>
   Preferences
 </button>
@@ -39,14 +31,13 @@
 <!-- Search input -->
 <form class="navbar-form navbar-right" role="search">
   <div class="form-group">
-    <div class="input-group input-group">
+    <div class="input-group">
 
       <span class="input-group-btn">
         <button title="Advanced search" id="btn-adv-search" class="btn btn-default enable-tooltip" type="button">
           <i class="fa fa-search-plus"></i>
         </button>
       </span>
-
       <input type="text" class="form-control" placeholder="Search">
 
       <span class="input-group-btn">
@@ -70,3 +61,5 @@
 <p id="spinner" class="navbar-text navbar-right">
   <i class="fa fa-spinner fa-2x fa-spin"></i>
 </p>
+
+</div>

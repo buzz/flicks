@@ -9,11 +9,12 @@ define([
 ) {
 
   var grid_options = {
-    editable: false,
-    enableAddRow: false,
-    forceFitColumns: true,
-    multiSelect: false,
-    enableColumnReorder: false
+    editable:             false,
+    enableAddRow:         false,
+    forceFitColumns:      true,
+    multiSelect:          false,
+    enableColumnReorder:  false,
+    rowHeight:            25
   };
 
   var GridView = Backbone.View.extend({
@@ -28,7 +29,7 @@ define([
 
       // state events
       this.listenTo(App.state, {
-        'change:order-by': this.loadViewport,
+        'change:order_by': this.loadViewport,
         'change:search':   this.loadViewport
       });
 
@@ -89,7 +90,7 @@ define([
       this.grid.setSelectionModel(new Slick.RowSelectionModel());
 
       // set initial sorting from state
-      var sort_field = App.state.get('order-by'), asc = true;
+      var sort_field = App.state.get('order_by'), asc = true;
       if (sort_field.charAt(0) === '-') {
         sort_field = sort_field.slice(1);
         asc = false;
@@ -115,9 +116,10 @@ define([
         that.grid.resetActiveCell()
       });
 
-      // user selected a row (by mouse, keyboard interaction)
+      // user selected a row
       this.grid.onSelectedRowsChanged.subscribe(function(e, args) {
         if (args.rows.length == 1) {
+          // select movie
           var index = args.rows[0]
           var movie = that.collection.findWhere({ index: index });
           if (movie)
@@ -128,13 +130,12 @@ define([
       // user changed the sorting
       this.grid.onSort.subscribe(function(ev, sort_info) {
         var field = sort_info.sortCol.field, asc = sort_info.sortAsc;
-        App.state.set('order-by', '%s%s'.format(asc ? '' : '-', field));
+        App.state.set('order_by', '%s%s'.format(asc ? '' : '-', field));
       });
     },
 
     close: function() {
-      // TODO: Unsubscribe grid events?
-      console.log('CLOSE');
+      this.grid.unsubscribeAll();
     }
 
   });

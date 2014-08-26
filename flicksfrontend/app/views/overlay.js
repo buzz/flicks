@@ -10,7 +10,7 @@ define([
     className: 'overlay-wrapper',
 
     initialize: function() {
-      this.listenTo(App.state, 'change:selected-movie-id', function(state, id) {
+      this.listenTo(App.state, 'change:selected_movie_id', function(state, id) {
         if (_.isNull(id))
           this.close();
         else {

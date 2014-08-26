@@ -55,10 +55,12 @@ require.config({
 
 require([
   'app',
+  'views/behaviors',
   'bootstrap',
   'sprintf'
 ], function(
   App,
+  _,
   Bootstrap,
   sprintf
 ){
@@ -67,6 +69,10 @@ require([
   String.prototype.format = function() {
     var args = Array.prototype.slice.call(arguments);
     return sprintf.sprintf.apply(null, [this].concat(args));
+  };
+
+  Marionette.Behaviors.behaviorsLookup = function() {
+    return window.Behaviors;
   };
 
   App.start();

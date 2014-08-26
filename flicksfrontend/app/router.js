@@ -17,7 +17,7 @@ define([
     controller: {
 
       showMovie: function(id) {
-        App.state.set('selected-movie-id', id);
+        App.state.set('selected_movie_id', id);
         if (id) {
           var movie = App.movie_collection.get(id);
           if (movie)

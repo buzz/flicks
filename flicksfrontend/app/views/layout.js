@@ -25,19 +25,15 @@ define([
     },
 
     events: {
-      'mouseenter .enable-tooltip': 'showTooltip',
-      'mouseleave .enable-tooltip': 'hideTooltip',
-      'click #overlay':             'hideOverlay'
+      'click #overlay': 'hideOverlay'
+    },
+
+    modelEvents: {
+      'change:sidebar_enabled': 'sidebarEnabledChanged',
+      'change:selected_movie_id': 'selectedMovieIdChanged'
     },
 
     initialize: function() {
-      this.listenTo(
-        App.state, 'change:selected-movie-id', function(state, id) {
-          if (!id)
-            this.sidebar.empty();
-        }, this
-      );
-
       this.listenTo(
         App.movie_collection, 'change:_fullFetch', this.sidebarView, this);
     },
@@ -46,6 +42,9 @@ define([
       var ViewClass = view_mode === 'grid' ? GridView : TilesView;
       var view = new ViewClass({ collection: App.movie_collection });
       this.movies.show(view);
+      this.listenTo(view, 'render', function() {
+        console.log('render!');
+      });
     },
 
     sidebarView: function(movie) {
@@ -54,20 +53,12 @@ define([
         // create view
         details = new DetailsView({ model: movie });
         this.sidebar.show(details);
-        this.listenTo(details, 'close', function() {
-          App.layout.sidebar.$el.addClass('collapsed');
-          App.trigger('content-resize');
-        });
       }
       // reuse details view
       else {
         details.model = movie;
         details.render();
       }
-
-      // relayout
-      App.layout.sidebar.$el.removeClass('collapsed');
-      App.trigger('content-resize');
     },
 
     showOverlay: function(movie) {
@@ -86,14 +77,18 @@ define([
         .css('opacity', '0.0');
     },
 
-    showTooltip: function(ev) {
-      var $el = $(ev.target);
-      $el.tooltip(App.tooltipDefaults).tooltip('show');
-      $el.on('remove', function() { $el.tooltip('hide'); });
+    sidebarEnabledChanged: function(state, enabled) {
+      var $el = App.layout.sidebar.$el;
+      if (enabled)
+        $el.removeClass('collapsed');
+      else
+        $el.addClass('collapsed');
+      App.trigger('content-resize');
     },
 
-    hideTooltip: function(ev) {
-      $(ev.target).tooltip('hide');
+    selectedMovieIdChanged: function(state, id) {
+      if (!id)
+        this.sidebar.empty();
     }
 
   });
