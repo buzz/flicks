@@ -27,10 +27,7 @@ define([
         movie.fetch();
     },
 
-    url: function() {
-      return '%s%s/'.format(this.urlRoot, this.id)
-    },
-
+    // get external service urls
     externalUrl: function(service) {
       var
       l = App.links,
@@ -65,6 +62,18 @@ define([
 
     onSync: function() {
       this.set('_fullFetch', true);
+    },
+
+    // exclude attrs that start with _
+    save: function(attrs, options) {
+      attrs = attrs || this.toJSON();
+      options = options || {};
+
+      attrs = _.pick(attrs, function(v, k) {
+        return k.indexOf('_') !== 0;
+      });
+
+      Backbone.Model.prototype.save.call(this, attrs, options);
     }
 
   });
