@@ -5,6 +5,7 @@ from django.db.models import Min, Max, Count
 from imdb import IMDb
 
 from flicksapp.models import Movie, Person, Country, Language, Genre, Keyword
+from flicksapp.api import MovieListResource
 from flicksapp.utils import FlicksJSONEncoder
 import flicksapp.constants as c
 
@@ -13,9 +14,9 @@ import flicksapp.constants as c
 AC_LIMIT = 20
 
 def bootstrap(request):
-    """
+    '''
     Serves as entry point for this web application.
-    """
+    '''
     enc = FlicksJSONEncoder()
     agg = Movie.objects.aggregate(Min('year'), Max('year'),
                                   Min('rating'), Max('rating'),
@@ -37,7 +38,7 @@ def autocomplete(request):
     what = request.POST.get('what', None)
     if q is None or what is None:
         return HttpResponse(enc.encode({ 'error': 'Wrong arguments!' }),
-                            mimetype='application/json', status=400)
+                            content_type='application/json', status=400)
     enc = FlicksJSONEncoder()
     searchterm = ' '.join(['+%s*' % t for t in q.split()])
     data = {}
@@ -74,10 +75,10 @@ def autocomplete(request):
         q = Person.objects.writers().filter(
             name__search=searchterm).order_by('-written_count')
         data = enc.encode([a.name for a in q[:AC_LIMIT]])
-    return HttpResponse(data, mimetype='application/json')
+    return HttpResponse(data, content_type='application/json')
 
 def fav(request):
-    """(Un)favourite a movie."""
+    '''(Un)favourite a movie.'''
     id = request.POST.get('id', None)
     unfav = request.POST.get('unfav', None)
     enc = FlicksJSONEncoder()
@@ -85,17 +86,17 @@ def fav(request):
         movie = Movie.objects.get(id=id)
     except Movie.DoesNotExist():
         return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
-                            mimetype='application/json', status=404)
+                            content_type='application/json', status=404)
     if unfav:
         movie.favourite = False
     else:
         movie.favourite = True
     movie.save()
     return HttpResponse(enc.encode({ 'success': True }),
-                        mimetype='application/json')
+                        content_type='application/json')
 
 def mark_seen(request):
-    """(Un)mark a movie seen."""
+    '''(Un)mark a movie seen.'''
     id = request.POST.get('id', None)
     unmark = request.POST.get('unmark', None)
     enc = FlicksJSONEncoder()
@@ -103,17 +104,17 @@ def mark_seen(request):
         movie = Movie.objects.get(id=id)
     except Movie.DoesNotExist():
         return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
-                            mimetype='application/json', status=404)
+                            content_type='application/json', status=404)
     if unmark:
         movie.seen = False
     else:
         movie.seen = True
     movie.save()
     return HttpResponse(enc.encode({ 'success': True }),
-                        mimetype='application/json')
+                        content_type='application/json')
 
 def imdb_search(request):
-    """Search IMDb."""
+    '''Search IMDb.'''
     enc = FlicksJSONEncoder()
     data = {
         'results': [],
@@ -133,19 +134,19 @@ def imdb_search(request):
             except KeyError:
                 movie['year'] = '????'
             data['results'].append(movie)
-    return HttpResponse(enc.encode(data), mimetype='application/json')
+    return HttpResponse(enc.encode(data), content_type='application/json')
 
 def imdb_import(request, movie_id):
-    """
+    '''
     Import movie data from IMDb. Optionally takes a GET argument
     'imdb_id' to change movies IMDb ID.
-    """
+    '''
     enc = FlicksJSONEncoder()
     try:
         movie = Movie.objects.get(id=movie_id)
     except Movie.DoesNotExist():
         return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
-                            mimetype='application/json', status=404)
+                            content_type='application/json', status=404)
     try:
         imdb_id = request.GET.get('imdb_id', None)
     except ValueError, TypeError:
@@ -154,18 +155,41 @@ def imdb_import(request, movie_id):
         movie.imdb_id = imdb_id
     movie.sync_with_imdb()
     return HttpResponse(enc.encode({ 'success': True }),
-                        mimetype='application/json')
+                        content_type='application/json')
 
 def imdb_change(request, id, imdb_id):
-    """Change IMDb ID and updates movie."""
+    '''Change IMDb ID and updates movie.'''
     enc = FlicksJSONEncoder()
     try:
         movie = Movie.objects.get(id=movie_id)
     except Movie.DoesNotExist():
         return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
-                            mimetype='application/json', status=404)
+                            content_type='application/json', status=404)
     movie.imdb_id = imdb_id
     movie.save()
     movie.sync_with_imdb()
     return HttpResponse(enc.encode({ 'success': True }),
-                        mimetype='application/json')
+                        content_type='application/json')
+
+def get_index_by_id(request, movie_id):
+    '''Get index in result list by movie id.'''
+    enc = FlicksJSONEncoder()
+    movie_id = int(movie_id)
+    res = MovieListResource()
+    request_bundle = res.build_bundle(request=request)
+    qs = res.obj_get_list(request_bundle)
+    qs = qs.only('id')
+    qs = res.apply_sorting(qs, options=request.GET)
+    l = list(qs.values_list('id', flat=True))
+
+    try:
+        index = l.index(movie_id)
+    except ValueError:
+        index = -1
+
+    ret = {
+        'success':     True,
+        'index':       index,
+        'total_count': len(l),
+    }
+    return HttpResponse(enc.encode(ret), content_type='application/json')

@@ -9,7 +9,7 @@ define([
   var AppState = Backbone.Model.extend({
     defaults: {
       'view_mode':          'grid',
-      'selected_movie_id':  null,
+      'selected_movie_id':  undefined,
       'search':             {},
       'results_count':      0,
       'order_by':           'title',

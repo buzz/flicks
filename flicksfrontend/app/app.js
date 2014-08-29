@@ -2,19 +2,19 @@ define([
   'marionette',
   'router',
   'state',
-  'movie',
   'collection',
   'views/layout',
   'views/toolbar',
+  'views/grid',
   'util/jst_render'
 ], function(
   Marionette,
   Router,
   AppState,
-  Movie,
   MovieCollection,
   AppLayout,
   ToolbarView,
+  GridView,
   jstRender
 ) {
 
@@ -53,14 +53,33 @@ define([
     App.layout = new AppLayout({ model: App.state });
     App.main.show(App.layout);
     App.layout.toolbar.show(new ToolbarView({ model: App.state }));
-    App.layout.contentView(App.state.get('view_mode'));
 
-    App.state.listenTo(
-      App.movie_collection, 'sync', App.state.onCollSync, App.state);
+    // Grid view
+    // TODO: consider view_mode
+    var view = new GridView({ collection: App.movie_collection });
+    App.listenToOnce(view, 'render', function(view) {
+      console.log('run!');
+      var movie_id = App.state.get('selected_movie_id');
+      if (!movie_id)
+        view.loadViewport();
+      else
+        App.movie_collection.getIndexById(movie_id, function(index) {
+          if (index >= 0) {
+            view.grid.updateRowCount();
+            view.scrollToRow(index);
+          }
+          else
+            view.loadViewport();
+        });
+    });
+    App.layout.movies.show(view);
 
     /*
      * Events
      */
+
+    App.state.listenTo(
+      App.movie_collection, 'sync', App.state.onCollSync, App.state);
 
     App.listenTo(App.movie_collection, {
       'dataloaded': function() {
@@ -85,7 +104,7 @@ define([
       },
 
       'change:view_mode': function(state, view_mode) {
-        App.layout.contentView(view_mode);
+        App.layout.moviesView(view_mode);
       }
     });
 

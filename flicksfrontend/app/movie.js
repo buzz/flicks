@@ -7,8 +7,9 @@ define([
   var Movie = Backbone.Model.extend({
 
     defaults: {
-      _selected: false,
-      _fullFetch: false
+      _selected:  false,
+      _fullFetch: false,
+      _index:     undefined
     },
 
     urlRoot: '/movie/',
