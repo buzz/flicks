@@ -1,8 +1,10 @@
 define([
+  'backbone',
   'marionette',
   'views/modal',
   'util/formatter'
 ], function(
+  Backbone,
   Marionette,
   ModalView,
   formatter
@@ -77,7 +79,7 @@ define([
     },
 
     serializeData: function() {
-      var data = Backbone.Marionette.ItemView.prototype.serializeData.apply(
+      var data = Marionette.ItemView.prototype.serializeData.apply(
         this, arguments);
       data.image_url = this.model.getImageUrl();
       return data;
@@ -95,8 +97,14 @@ define([
     // UI handler
 
     enlargeCover: function(e) {
-      e.preventDefault();
-      App.layout.showOverlay(this.model);
+      var view = new ModalView({
+        model: new Backbone.Model({
+          title:     this.model.get('title'),
+          image_url: this.model.getImageUrl()
+        }),
+        template: 'modal-cover'
+      });
+      App.layout.modal.show(view);
     },
 
     playClick: function() {

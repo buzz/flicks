@@ -23,8 +23,9 @@ define([
 
     onRender: function() {
       var that = this;
-      this.ui.modal.modal()
-        .on('hidden.bs.modal', function() { that.destroy(); });
+      this.ui.modal.modal().on('hidden.bs.modal', function() {
+        that.destroy();
+      });
     }
 
   });

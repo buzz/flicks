@@ -19,8 +19,6 @@ $color-border-lighter: lighten($color-border, 5%)
 $color-bg1: #fafafa
 $color-bg2: white
 
-$color-overlay-bg: fade-out(black, 0.5)
-
 $default-border-radius: 6px
 $small-border-radius: $default-border-radius / 2
 $large-border-radius: $default-border-radius * 2.5
@@ -32,9 +30,6 @@ $default-border: 1px solid #ccc
 
 = light-box-shadow
   +box-shadow(rgba(0, 0, 0, 0.12) 0 0px 14px)
-
-= overlay-box-shadow
-  +box-shadow(black 0 4px 32px)
 
 = default-gradient
   +background(linear-gradient($color-bg2, $color-bg1))
