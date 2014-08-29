@@ -18,6 +18,7 @@ define([
     template:  'layout',
 
     regions: {
+      modal:   '#modal',
       overlay: '#overlay',
       toolbar: '#toolbar',
       movies:  '#movies',
@@ -38,14 +39,12 @@ define([
         App.movie_collection, 'change:_fullFetch', this.sidebarView, this);
     },
 
-    contentView: function(view_mode) {
-      var ViewClass = view_mode === 'grid' ? GridView : TilesView;
-      var view = new ViewClass({ collection: App.movie_collection });
-      this.movies.show(view);
-      this.listenTo(view, 'render', function() {
-        console.log('render!');
-      });
-    },
+    // moviesView: function(view_mode) {
+    //   var ViewClass = view_mode === 'grid' ? GridView : TilesView;
+    //   var view = new ViewClass({ collection: App.movie_collection });
+    //   this.movies.show(view);
+    //   return view;
+    // },
 
     sidebarView: function(movie) {
       var details = this.sidebar.currentView;

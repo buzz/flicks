@@ -84,9 +84,38 @@ define([
     // Slickgrid dataview interface
     // returns item using table row index
     getItem: function(i) {
-      var model = this.findWhere({ index: i });
+      var model = this.findWhere({ _index: i });
       if (model)
         return model.attributes;
+    },
+
+    // Returns index of movie in the result list even if movie is not
+    // in current client-side cached results. This is important for
+    // views to be able to jump directly to a movie. Also returns
+    // total_count.
+    getIndexById: function(id, cb) {
+      var that = this;
+      var movie = this.findWhere({ id: id });
+      if (movie)
+        cb(movie.get('_index'));
+      else {
+        var data = {};
+        var url = '%sindex-by-id/%d'.format(this.url, id);
+        _.extend(data, this.order_by_args);
+        _.extend(data, this.search_args);
+        $.ajax({
+          url: url,
+          data: data,
+          dataType: 'json',
+          success: function(resp) {
+            that.total_count = resp.total_count;
+            cb(resp.index);
+          },
+          error: function() {
+            alert('Error: Communication with server failed!');
+          }
+        });
+      }
     },
 
     setSorting: function(state, order_by) {
@@ -166,7 +195,7 @@ define([
             for (var j = 0; j < resp.objects.length; ++j) {
               var obj = resp.objects[j];
               var model = coll.get(obj.id);
-              model.set('index', j + offset);
+              model.set('_index', j + offset);
             }
 
             // trigger event
@@ -179,6 +208,7 @@ define([
           error: function(coll, resp, opts) {
             // remove req reference
             delete that.req_info[opts.data.offset];
+            alert('Error: Fetching movies failed!');
           }
         });
 
@@ -224,7 +254,6 @@ define([
         timeout = null;
         that._fetchPages(fromPage, toPage);
       }, FETCH_DELAY);
-
     },
 
     getSelected: function() {

@@ -1,8 +1,10 @@
 define([
   'marionette',
+  'views/modal',
   'util/formatter'
 ], function(
   Marionette,
+  ModalView,
   formatter
 ) {
 
@@ -130,8 +132,21 @@ define([
     },
 
     deleteClick: function() {
-      // TODO
-      console.log('TODO... delete');
+      var view = new ModalView({
+        model:    this.model,
+        template: 'modal-confirm-delete',
+        confirm:  function() {
+          this.model.destroy({
+            success: function() {
+              App.movie_collection.reset();
+            },
+            error: function() {
+              alert('Error deleting movie…');
+            }
+          });
+        }
+      });
+      App.layout.modal.show(view);
     },
 
     openKaragarga: function() {

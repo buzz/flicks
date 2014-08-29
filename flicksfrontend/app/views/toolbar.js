@@ -1,7 +1,11 @@
 define([
-  'marionette'
+  'marionette',
+  'movie',
+  'views/add-movie'
 ], function(
-  Marionette
+  Marionette,
+  Movie,
+  AddMovieView
 ) {
 
   var ToolbarView = Marionette.ItemView.extend({
@@ -10,21 +14,26 @@ define([
     className: 'navbar navbar-default navbar-static-top',
 
     ui: {
-      status_text:                     '#status-text',
       btn_toggle_sidebar:              '#btn-toggle-sidebar',
       display_mode:                    '#radio-display-mode',
       display_mode_input:              '#radio-display-mode input',
+      btn_add_movie:                   '#btn-add-movie',
+      btn_prefs:                       '#btn-prefs',
+      status_text:                     '#status-text',
+      spinner:                         '#spinner',
       search_form:                     'form[role=search]',
       search_input:                    'form[role=search] input',
       btn_adv_search:                  'form[role=search] #btn-adv-search',
       btn_clear_search:                'form[role=search] #btn-clear-search',
-      btn_submit_search:               'form[role=search] button[type=submit]',
-      spinner:                         '#spinner'
+      btn_submit_search:               'form[role=search] button[type=submit]'
     },
 
     events: {
       'click  @ui.btn_toggle_sidebar': 'toggleSidebarClick',
       'change @ui.display_mode_input': 'displayModeClick',
+
+      'click  @ui.btn_add_movie':      'addMovieClick',
+      'click  @ui.btn_prefs':          'prefsClick',
 
       'submit @ui.search_form':        'search',
       'click  @ui.btn_adv_search':     'advSearch',
@@ -103,6 +112,35 @@ define([
     displayModeClick: function(ev) {
       var $el = $(ev.currentTarget);
       App.state.set('view_mode', $el.val());
+    },
+
+    addMovieClick: function(ev) {
+      var view = new AddMovieView();
+      App.layout.modal.show(view);
+    },
+
+    // addMovieClick: function(ev) {
+    //   var that = this, m = new Movie();
+    //   m.save({}, {
+    //     success: function(m) {
+    //       // reload collection
+    //       that.listenToOnce(App.movie_collection, 'dataloaded', function() {
+    //         // select new movie
+    //         App.movie_collection.getIndexById(m.id, function(index) {
+    //           App.layout.movies.currentView.scrollToRow(index);
+    //           App.router.navigate('movie/%d'.format(m.id), { trigger: true });
+    //         });
+    //       });
+    //       App.movie_collection.reset();
+    //     },
+    //     error: function() {
+    //       alert('Error: Could not create movie!');
+    //     }
+    //   });
+    // },
+
+    prefsClick: function(ev) {
+      // TODO
     },
 
     updateSearchButtons: function() {

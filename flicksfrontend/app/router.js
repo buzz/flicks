@@ -9,7 +9,6 @@ define([
   var Router = Marionette.AppRouter.extend({
 
     appRoutes: {
-      '':          'showMovie',
       'movie/:id': 'showMovie',
       'search/':   'search',
       'search/:q': 'search'

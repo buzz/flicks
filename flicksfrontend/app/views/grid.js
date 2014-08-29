@@ -33,10 +33,10 @@ define([
 
       // collection events
       this.listenTo(this.collection, {
-        'change:_selected': this.selectMovie,
+        'change:_selected': this.selectedChange,
 
         'change': function(model, options) {
-          this.grid.invalidateRow(model.get('index'));
+          this.grid.invalidateRow(model.get('_index'));
           this.grid.render();
         },
 
@@ -45,44 +45,36 @@ define([
             this.grid.invalidateRow(i);
           this.grid.updateRowCount();
           this.grid.render();
-          this.selectMovie();
         },
 
-        reset: function() {
-          this.grid.invalidate();
-        }
+        reset: this.loadViewport
 
       }, this);
 
-      // create grid after DOM elements have been placed
-      this.on('show', this.createGrid, this);
     },
 
-    resize: function() {
-      this.grid.resizeCanvas();
-      this.grid.autosizeColumns();
+    render: function() {
+      var that = this;
+      _.delay(function() {
+        that.trigger('before:render', that);
+        that.createGrid();
+        that.trigger('render', that);
+      }, 150);
+      return this;
+    },
+
+    scrollToRow: function(index) {
+      this.grid.scrollRowToTop(index);
     },
 
     loadViewport: function() {
       var vp = this.grid.getViewport();
-
       // ensure one extra screen of items before and after actual
       // range
       var count = vp.bottom - vp.top;
-      var from = Math.max(0, vp.top - count)
-      var to = vp.bottom + count
+      var from = Math.max(0, vp.top - count);
+      var to = vp.bottom + count;
       this.collection.ensureData(from, to);
-    },
-
-    selectMovie: function(movie) {
-      var rows = [];
-      var movie = App.movie_collection.getSelected();
-      if (movie) {
-        var index = movie.get('index');
-        rows.push(index);
-      }
-      if (this.grid.getSelectedRows() != rows)
-        this.grid.setSelectedRows(rows);
     },
 
     createGrid: function() {
@@ -101,9 +93,6 @@ define([
       }
       var sort_id = _.find(this.grid.getColumns(), { field: sort_field }).id;
       this.grid.setSortColumn(sort_id, asc);
-
-      // load initial rows
-      this.loadViewport();
 
       // GRID EVENTS
 
@@ -125,7 +114,7 @@ define([
         if (args.rows.length == 1) {
           // select movie
           var index = args.rows[0]
-          var movie = that.collection.findWhere({ index: index });
+          var movie = that.collection.findWhere({ _index: index });
           if (movie)
             App.router.navigate('movie/%d'.format(movie.id), { trigger: true });
         }
@@ -136,6 +125,26 @@ define([
         var field = sort_info.sortCol.field, asc = sort_info.sortAsc;
         App.state.set('order_by', '%s%s'.format(asc ? '' : '-', field));
       });
+    },
+
+    // event handlers
+
+    selectedChange: function(movie, selected) {
+      if (!selected)
+        return;
+      var movie = App.movie_collection.getSelected(), g = this.grid;
+      if (movie) {
+        this.collection.getIndexById(movie.get('id'), function(index) {
+          var rows = [index];
+          if (g.getSelectedRows() != rows)
+            g.setSelectedRows(rows);
+        })
+      }
+    },
+
+    resize: function() {
+      this.grid.resizeCanvas();
+      this.grid.autosizeColumns();
     },
 
     close: function() {
