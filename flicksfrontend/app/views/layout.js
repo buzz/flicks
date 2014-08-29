@@ -2,14 +2,12 @@ define([
   'marionette',
   'views/details',
   'views/grid',
-  'views/tiles',
-  'views/overlay'
+  'views/tiles'
 ], function(
   Marionette,
   DetailsView,
   GridView,
-  TilesView,
-  OverlayView
+  TilesView
 ) {
 
   var AppLayout = Marionette.LayoutView.extend({
@@ -19,14 +17,9 @@ define([
 
     regions: {
       modal:   '#modal',
-      overlay: '#overlay',
       toolbar: '#toolbar',
       movies:  '#movies',
       sidebar: '#sidebar'
-    },
-
-    events: {
-      'click #overlay': 'hideOverlay'
     },
 
     modelEvents: {
@@ -58,22 +51,6 @@ define([
         details.model = movie;
         details.render();
       }
-    },
-
-    showOverlay: function(movie) {
-      var view = new OverlayView({ model: movie });
-      this.overlay.show(view);
-      this.overlay.$el.show();
-    },
-
-    hideOverlay: function() {
-      var o = this.overlay;
-      o.currentView.$el
-        .one(
-          'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd',
-          function(a,b,c) { o.empty(); }
-        )
-        .css('opacity', '0.0');
     },
 
     sidebarEnabledChanged: function(state, enabled) {
