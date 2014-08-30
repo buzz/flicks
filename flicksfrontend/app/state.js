@@ -13,7 +13,10 @@ define([
       'search':             {},
       'results_count':      0,
       'order_by':           'title',
-      'sidebar_enabled':    true
+      'sidebar_enabled':    true,
+
+      // preferences
+      'image_url':          'covers/'
     },
 
     onCollSync: function(coll) {

@@ -1,11 +1,13 @@
 define([
   'marionette',
   'movie',
-  'views/add-movie'
+  'views/add-movie',
+  'views/preferences'
 ], function(
   Marionette,
   Movie,
-  AddMovieView
+  AddMovieView,
+  PreferencesView
 ) {
 
   var ToolbarView = Marionette.ItemView.extend({
@@ -140,7 +142,8 @@ define([
     // },
 
     prefsClick: function(ev) {
-      // TODO
+      var view = new PreferencesView({ model: App.state });
+      App.layout.modal.show(view);
     },
 
     updateSearchButtons: function() {

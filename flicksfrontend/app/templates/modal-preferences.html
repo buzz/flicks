@@ -1,31 +1,40 @@
 <div class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
+
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">
           <i class="fa fa-times"></i>
         </button>
         <h4 class="modal-title">
-          <i class="fa fa-plus"></i>
-          Add movie from IMDb</h4>
+          <i class="fa fa-sliders"></i>
+          Preferences
+        </h4>
       </div>
+
       <div class="modal-body">
-        <form class="form-inline" role="form">
+        <form class="form-horizontal" role="form">
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="Search IMDb…">
+            <label for="input-image-url" class="col-sm-3 control-label">Image URL</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="input-image-url" value="<%= image_url %>">
+              <span class="help-block">
+                Where the cover images are found (eg. <tt>http://example.com/covers/</tt>)
+              </span>
+            </div>
           </div>
-          <button type="submit" class="btn btn-default">Search!</button>
-          <span class="help-block">You can search by title or 7-digit IMDb number.</span>
         </form>
       </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary disabled" data-dismiss="modal">
-          Add
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          Save
         </button>
         <button type="button" class="btn btn-default" data-dismiss="modal">
           Cancel
         </button>
       </div>
+
     </div>
   </div>
 </div>
