@@ -147,6 +147,8 @@ define([
     // event handlers
 
     selectedMovieIdChanged: function(model, movie_id) {
+      if (!movie_id)
+        return;
       var that = this;
       App.movie_collection.getIndexById(movie_id, function(index) {
         // update grid selected rows

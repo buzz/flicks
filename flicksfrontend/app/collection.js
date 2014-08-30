@@ -27,6 +27,9 @@ define([
     // keep track of current requests (keys are the offset)
     req_info: {},
 
+    // this cache avoids multiple requests
+    index_by_id_cache: {},
+
     initialize: function() {
 
       // Read current state
@@ -56,6 +59,7 @@ define([
 
       this.on({
         reset: function() {
+          this.index_by_id_cache = {};
           this.total_count = 0;
         }
       }, this);
@@ -88,28 +92,36 @@ define([
     getIndexById: function(id, cb) {
       var that = this;
       var movie = this.get(id);
-      if (movie)
-        // movie already in cache
+      if (movie) {
+        // movie is already loaded
         cb(movie.get('_index'));
-      else {
-        // asking server
-        var data = {};
-        var url = '%sindex-by-id/%d'.format(this.url, id);
-        _.extend(data, this.order_by_args);
-        _.extend(data, this.search_args);
-        $.ajax({
-          url: url,
-          data: data,
-          dataType: 'json',
-          success: function(resp) {
-            that.total_count = resp.total_count;
-            cb(resp.index);
-          },
-          error: function() {
-            alert('Error: Communication with server failed!');
-          }
-        });
+        return;
       }
+
+      // cache hit?
+      if (id in this.index_by_id_cache) {
+        cb(this.index_by_id_cache[id]);
+        return;
+      }
+
+      // asking server
+      var data = {};
+      var url = '%sindex-by-id/%d'.format(this.url, id);
+      _.extend(data, this.order_by_args);
+      _.extend(data, this.search_args);
+      $.ajax({
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function(resp) {
+          that.total_count = resp.total_count;
+          that.index_by_id_cache[id] = resp.index;
+          cb(resp.index);
+        },
+        error: function() {
+          alert('Error: Communication with server failed!');
+        }
+      });
     },
 
     setSorting: function(state, order_by) {
