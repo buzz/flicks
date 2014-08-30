@@ -23,7 +23,7 @@ define([
 
     initialize: function() {
       // grid resizing
-      this.listenTo(App, 'content-resize', this.resize, this);
+      this.listenTo(App.vent, 'display:content-resize', this.resize, this);
 
       // state events
       this.listenTo(App.state, {

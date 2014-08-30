@@ -1,13 +1,7 @@
 define([
-  'marionette',
-  'movie',
-  'views/add-movie',
-  'views/preferences'
+  'marionette'
 ], function(
-  Marionette,
-  Movie,
-  AddMovieView,
-  PreferencesView
+  Marionette
 ) {
 
   var ToolbarView = Marionette.ItemView.extend({
@@ -107,20 +101,19 @@ define([
     // UI handlers
 
     toggleSidebarClick: function(ev) {
-      v = !this.model.get('sidebar_enabled');
-      this.model.set('sidebar_enabled', v);
+      App.vent.trigger('display:toggle-sidebar');
     },
 
     displayModeClick: function(ev) {
-      var $el = $(ev.currentTarget);
-      App.state.set('view_mode', $el.val());
+      var mode = $(ev.currentTarget).val();
+      App.vent.trigger('display:%s-mode'.format(mode));
     },
 
     addMovieClick: function(ev) {
-      var view = new AddMovieView();
-      App.layout.modal.show(view);
+      App.vent.trigger('display:add-movie');
     },
 
+    // TODO: this has to go to the vent
     // addMovieClick: function(ev) {
     //   var that = this, m = new Movie();
     //   m.save({}, {
@@ -142,8 +135,22 @@ define([
     // },
 
     prefsClick: function(ev) {
-      var view = new PreferencesView({ model: App.state });
-      App.layout.modal.show(view);
+      App.vent.trigger('display:preferences');
+    },
+
+    search: function(evt) {
+      evt.preventDefault();
+      var q = this.ui.search_input.val();
+      App.vent.trigger('action:search', q);
+    },
+
+    clearSearch: function() {
+      this.ui.search_input.val('');
+      App.vent.trigger('action:search', '');
+    },
+
+    advSearch: function() {
+      App.vent.trigger('display:adv-search');
     },
 
     updateSearchButtons: function() {
@@ -160,22 +167,6 @@ define([
           .addClass('disabled')
           .tooltip('hide');
       }
-    },
-
-    search: function(evt) {
-      evt.preventDefault();
-      var q = this.ui.search_input.val();
-      App.state.set('search', q);
-    },
-
-    clearSearch: function() {
-      this.ui.search_input.val('');
-      App.state.set('search', '');
-    },
-
-    advSearch: function() {
-      // TODO
-      console.info('toolbar: adv search clicked');
     }
 
   });

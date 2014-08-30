@@ -1,12 +1,10 @@
 define([
   'backbone',
   'marionette',
-  'views/modal',
   'util/formatter'
 ], function(
   Backbone,
   Marionette,
-  ModalView,
   formatter
 ) {
 
@@ -92,26 +90,11 @@ define([
       return data;
     },
 
-    saveWithErrorHandling: function(attrs) {
-      this.model.save(attrs, {
-        patch: true,
-        error: function() {
-          alert('Error saving movie…');
-        }
-      });
-    },
-
     // UI handler
 
     enlargeCover: function(e) {
-      var view = new ModalView({
-        model: new Backbone.Model({
-          title:     this.model.get('title'),
-          image_url: this.model.getImageUrl()
-        }),
-        template: 'modal-cover'
-      });
-      App.layout.modal.show(view);
+      e.preventDefault();
+      App.vent.trigger('display:cover', this.model);
     },
 
     playClick: function() {
@@ -130,15 +113,18 @@ define([
     },
 
     markSeenClick: function() {
-      this.saveWithErrorHandling({ seen: !this.model.get('seen') });
+      App.vent.trigger('action:set-flag',
+                       this.model, 'seen', !this.model.get('seen'));
     },
 
     markFavClick: function() {
-      this.saveWithErrorHandling({ favourite: !this.model.get('favourite') });
+      App.vent.trigger('action:set-flag',
+                       this.model, 'favourite', !this.model.get('favourite'));
     },
 
     markTrumpableClick: function() {
-      this.saveWithErrorHandling({ trumpable: !this.model.get('trumpable') });
+      App.vent.trigger('action:set-flag',
+                       this.model, 'trumpable', !this.model.get('trumpable'));
     },
 
     editClick: function() {
@@ -147,37 +133,27 @@ define([
     },
 
     deleteClick: function() {
-      var view = new ModalView({
-        model:    this.model,
-        template: 'modal-confirm-delete',
-        confirm:  function() {
-          this.model.destroy({
-            success: function() {
-              App.movie_collection.reset();
-            },
-            error: function() {
-              alert('Error deleting movie…');
-            }
-          });
-        }
-      });
-      App.layout.modal.show(view);
+      App.vent.trigger('display:confirm-delete', this.model);
     },
 
     openKaragarga: function() {
-      window.open(this.model.externalUrl('karagarga'), '_blank');
+      var url = this.model.externalUrl('karagarga');
+      App.vent.trigger('action:open-external-url', url);
     },
 
     openImdb: function() {
-      window.open(this.model.externalUrl('imdb'), '_blank');
+      var url = this.model.externalUrl('imdb');
+      App.vent.trigger('action:open-external-url', url);
     },
 
     openOpensubtitles: function() {
-      window.open(this.model.externalUrl('opensubtitles'), '_blank');
+      var url = this.model.externalUrl('opensubtitles');
+      App.vent.trigger('action:open-external-url', url);
     },
 
     openYoutube: function() {
-      window.open(this.model.externalUrl('youtube'), '_blank');
+      var url = this.model.externalUrl('youtube');
+      App.vent.trigger('action:open-external-url', url);
     }
 
   });

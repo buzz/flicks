@@ -8,7 +8,11 @@ define([
   'views/layout',
   'views/toolbar',
   'views/details',
-  'views/grid'
+  'views/grid',
+  'views/tiles',
+  'views/modal',
+  'views/add-movie',
+  'views/preferences'
 ], function(
   Marionette,
   Router,
@@ -19,7 +23,11 @@ define([
   AppLayout,
   ToolbarView,
   DetailsView,
-  GridView
+  GridView,
+  TilesView,
+  ModalView,
+  AddMovieView,
+  PreferencesView
 ) {
 
   // External links
@@ -82,6 +90,7 @@ define([
 
     App.listenTo(App.movie_collection, {
 
+      // select movie after load
       'dataloaded': function(info) {
         if (info.request_count > 0)
           return;
@@ -101,8 +110,8 @@ define([
           App.selectFirstOrNone();
       },
 
+      // show details when data is available
       'change:_fullFetch': function(movie) {
-        // show details when data is available
         App.vent.trigger('display:details', movie);
       }
 
@@ -110,14 +119,18 @@ define([
 
     function viewModeChanged(state, view_mode) {
       if (view_mode === 'grid')
-        App.vent.trigger('display:grid');
+        App.vent.trigger('display:grid-mode');
       else if (view_mode === 'tiles')
-        App.vent.trigger('display:tiles');
+        App.vent.trigger('display:tiles-mode');
     }
 
     App.listenTo(App.state, {
-      'change:selected_movie_id': function(state, id) {
         // display details in sidebar
+      'change:selected_movie_id': function(state, id) {
+        if (!id) {
+          App.vent.trigger('display:details', undefined);
+          return;
+        }
         var movie = App.movie_collection.get(id);
         if (movie) {
           if (movie.get('_fullFetch'))
@@ -136,6 +149,25 @@ define([
      */
     App.vent.on({
 
+      // DISPLAY
+
+      'display:grid-mode': function() {
+        var view = new GridView({ collection: App.movie_collection });
+        App.layout.movies.show(view);
+      },
+
+      'display:tiles-mode': function() {
+        var view = new TilesView({ collection: App.movie_collection });
+        App.layout.movies.show(view);
+      },
+
+      'display:adv-search': function() {
+        // TODO
+        // var view = new AdvancedView( ... );
+        // App.layout.modal.show(view);
+        console.info('TODO: adv search');
+      },
+
       'display:details': function(movie) {
         if (movie) {
           var details = App.layout.sidebar.currentView;
@@ -151,18 +183,80 @@ define([
           }
         }
         else
-          // TODO: is this doubled in layout.js?
           App.layout.sidebar.empty();
       },
 
-      'display:grid': function() {
-        var view = new GridView({ collection: App.movie_collection });
-        App.layout.movies.show(view);
+      'display:toggle-sidebar': function() {
+        v = !App.state.get('sidebar_enabled');
+        App.state.set('sidebar_enabled', v);
       },
 
-      'display:tiles': function() {
-        var view = new TilesView({ collection: App.movie_collection });
-        App.layout.movies.show(view);
+      'display:add-movie': function() {
+        var view = new AddMovieView();
+        App.layout.modal.show(view);
+      },
+
+      'display:preferences': function() {
+        var view = new PreferencesView({ model: App.state });
+        App.layout.modal.show(view);
+      },
+
+      'display:cover': function(movie) {
+        var view = new ModalView({
+          model: new Backbone.Model({
+            title:     movie.get('title'),
+            image_url: movie.getImageUrl()
+          }),
+          template: 'modal-cover'
+        });
+        App.layout.modal.show(view);
+      },
+
+      'display:confirm-delete': function(movie) {
+        var view = new ModalView({
+          model:    movie,
+          template: 'modal-confirm-delete',
+          confirm:  function() {
+            App.vent.trigger('action:delete', movie);
+          }
+        });
+        App.layout.modal.show(view);
+      },
+
+      // ACTIONS
+
+      'action:add': function(movie) {
+        // TODO
+      },
+
+      'action:delete': function(movie) {
+        movie.destroy({
+          success: function() {
+            App.movie_collection.reset();
+          },
+          error: function() {
+            alert('Error deleting movie…');
+          }
+        });
+      },
+
+      'action:set-flag': function(movie, flag, value) {
+        var attrs = {};
+        attrs[flag] = value;
+        movie.save(attrs, {
+          patch: true,
+          error: function() {
+            alert('Error saving movie…');
+          }
+        });
+      },
+
+      'action:open-external-url': function(url) {
+        window.open(url, '_blank');
+      },
+
+      'action:search': function(q) {
+        App.state.set('search', q);
       }
 
     });
@@ -180,7 +274,7 @@ define([
 
   // Content pane resize
   $(window).resize(function() {
-    App.trigger('content-resize');
+    App.vent.trigger('display:content-resize');
   });
 
   return App;

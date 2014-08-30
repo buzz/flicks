@@ -1,11 +1,7 @@
 define([
-  'marionette',
-  'views/grid',
-  'views/tiles'
+  'marionette'
 ], function(
-  Marionette,
-  GridView,
-  TilesView
+  Marionette
 ) {
 
   var AppLayout = Marionette.LayoutView.extend({
@@ -21,13 +17,7 @@ define([
     },
 
     modelEvents: {
-      'change:sidebar_enabled': 'sidebarEnabledChanged',
-      'change:selected_movie_id': 'selectedMovieIdChanged'
-    },
-
-    initialize: function() {
-      this.listenTo(
-        App.movie_collection, 'change:_fullFetch', this.sidebarView, this);
+      'change:sidebar_enabled':   'sidebarEnabledChanged'
     },
 
     sidebarEnabledChanged: function(state, enabled) {
@@ -36,13 +26,7 @@ define([
         $el.removeClass('collapsed');
       else
         $el.addClass('collapsed');
-      App.trigger('content-resize');
-    },
-
-    selectedMovieIdChanged: function(state, id) {
-      if (!id)
-        // TODO: is this doubled in app.js?
-        this.sidebar.empty();
+      App.vent.trigger('display:content-resize');
     }
 
   });
