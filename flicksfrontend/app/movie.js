@@ -20,7 +20,7 @@ define([
     },
 
     getImageUrl: function() {
-      return 'covers/movies_%d.jpg'.format(this.id);
+      return '%smovies_%d.jpg'.format(App.state.get('image_url'), this.id);
     },
 
     onSelected: function(movie, selected) {

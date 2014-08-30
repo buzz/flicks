@@ -58,7 +58,6 @@ define([
     // TODO: consider view_mode
     var view = new GridView({ collection: App.movie_collection });
     App.listenToOnce(view, 'render', function(view) {
-      console.log('run!');
       var movie_id = App.state.get('selected_movie_id');
       if (!movie_id)
         view.loadViewport();
