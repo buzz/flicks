@@ -48,9 +48,13 @@ define([
     },
 
     behaviors: {
+
       ToolTips: {},
+
       PopOvers: {
         selectors: {
+
+          // AKA titles
           '.top': {
             placement: 'right',
             title: '<strong>Also known as</strong>',
@@ -64,6 +68,8 @@ define([
               return '<ul class="akas">%s</ul>'.format(lis)
             }
           },
+
+          // number of votes
           '.row.rating .value': {
             placement: 'top',
             title: '<strong># votes</strong>',
@@ -74,6 +80,7 @@ define([
               return '%d'.format(model.get('votes'));
             }
           }
+
         }
       }
     },
@@ -109,17 +116,17 @@ define([
 
     playClick: function() {
       // TODO
-      console.log('TODO... play');
+      console.info('details: TODO... play');
     },
 
     updateClick: function() {
       // TODO
-      console.log('TODO... update');
+      console.info('details: TODO... update');
     },
 
     findCoverClick: function() {
       // TODO
-      console.log('TODO... find-cover');
+      console.info('details: TODO... find-cover');
     },
 
     markSeenClick: function() {
@@ -136,7 +143,7 @@ define([
 
     editClick: function() {
       // TODO
-      console.log('TODO... edit');
+      console.info('details: TODO... edit');
     },
 
     deleteClick: function() {
