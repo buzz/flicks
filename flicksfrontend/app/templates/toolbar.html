@@ -38,10 +38,10 @@
           <i class="fa fa-search-plus"></i>
         </button>
       </span>
-      <input type="text" class="form-control" placeholder="Search">
+      <input type="text" class="form-control" placeholder="Search" value="<%= typeof(search) === 'string' ? search : '' %>">
 
       <span class="input-group-btn">
-        <button title="Clear search" id="btn-clear-search" class="btn btn-default enable-tooltip disabled" type="button">
+        <button title="Clear search" id="btn-clear-search" class="btn btn-default enable-tooltip" type="button">
           <i class="fa fa-times"></i>
         </button>
 

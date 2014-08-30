@@ -18,7 +18,11 @@ define([
       // select the first movie in the list or nothing if the list is
       // empty
       root: function() {
-        App.selectFirstOrNone();
+        var sel_id = App.state.get('selected_movie_id');
+        if (sel_id)
+          App.router.navigate('movie/%d'.format(sel_id), { trigger: true });
+        else
+          App.selectFirstOrNone();
       },
 
       showMovie: function(id) {

@@ -62,6 +62,8 @@ define([
   App.addInitializer(function() {
 
     App.state = new AppState();
+    App.state.fetch();
+
     App.movie_collection = new MovieCollection();
     App.router = new Router();
     App.layout = new AppLayout({ model: App.state });
