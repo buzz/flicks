@@ -49,6 +49,21 @@ define([
   App.root = '/';
   App.addRegions({ main: 'body' });
 
+  // select first movie if no other is selected
+  App.selectFirstOrNone = function() {
+    var first = App.movie_collection.first();
+    if (first) {
+      first_id = first.get('id');
+      App.router.navigate('movie/%d'.format(first_id), { trigger: true });
+      App.movie_collection.get(first_id).set('_selected', true);
+    }
+    else {
+      // no movie in list? -> no movie selected
+      App.state.set('selected_movie_id', undefined);
+      App.router.navigate('', { trigger: false });
+    }
+  }
+
   App.addInitializer(function() {
 
     App.state = new AppState();
@@ -82,16 +97,8 @@ define([
           else if (!movie.get('_fullFetch'))
             movie.fetch();
         }
-        if (!sel_id) {
-          // select first movie if no other is selected
-          var first = App.movie_collection.first();
-          if (first) {
-            first_id = first.get('id');
-            App.router.navigate(
-              'movie/%d'.format(first_id), { trigger: true });
-            App.movie_collection.get(first_id).set('_selected', true);
-          }
-        }
+        if (!sel_id)
+          App.selectFirstOrNone();
       },
 
       'change:_fullFetch': function(movie) {
