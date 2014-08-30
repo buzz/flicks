@@ -63,6 +63,7 @@ define([
       this.resultsCountChanged(this.model, this.model.get('results_count'));
       this.sidebarEnabledChanged(
         this.model, this.model.get('sidebar_enabled'));
+      this.updateSearchButtons();
     },
 
     // model/collection events
@@ -146,6 +147,7 @@ define([
 
     clearSearch: function() {
       this.ui.search_input.val('');
+      this.updateSearchButtons();
       App.vent.trigger('action:search', '');
     },
 
@@ -155,18 +157,12 @@ define([
 
     updateSearchButtons: function() {
       var q = this.ui.search_input.val();
-      if (q.length > 0) {
-        this.ui.btn_clear_search.removeClass('disabled');
+      if (q.length > 0)
         this.ui.btn_submit_search.removeClass('disabled');
-      }
-      else {
-        this.ui.btn_clear_search
-          .addClass('disabled')
-          .tooltip('hide');
+      else
         this.ui.btn_submit_search
           .addClass('disabled')
           .tooltip('hide');
-      }
     }
 
   });
