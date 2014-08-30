@@ -8,12 +8,18 @@ define([
 
     template:  'modal-add-movie',
 
-    events: {
-      'click @ui.btn_search': 'searchClick'
+    ui: {
+      modal: '.modal',
+      form:  '.form-add-movie-search'
     },
 
-    searchClick: function() {
-      console.log('search click');
+    events: {
+      'submit @ui.form': 'searchFormSubmit'
+    },
+
+    searchFormSubmit: function(evt) {
+      evt.preventDefault();
+      console.info('add movie: search submit');
     }
 
   });

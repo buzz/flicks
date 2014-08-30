@@ -34,6 +34,9 @@ define([
       this.setSorting(App.state, App.state.get('order_by'));
 
       this.listenTo(App.state, {
+
+        // set _selected flag on movie while ensuring there's always
+        // only one movie selected at a time
         'change:selected_movie_id': function(state, id) {
           // deselect previous
           var movie = this.findWhere({ _selected: true });
@@ -42,7 +45,7 @@ define([
 
           // select current
           if (id) {
-            var movie = this.findWhere({ id: id });
+            var movie = this.get(id);
             if (movie)
               movie.set('_selected', true);
           }
@@ -52,18 +55,6 @@ define([
       }, this);
 
       this.on({
-        dataloaded: function(args) {
-          var sel_id = App.state.get('selected_movie_id');
-          if (!sel_id)
-            return;
-          _.every(this.models, function(movie) {
-            if (movie.id == sel_id) {
-              movie.set('_selected', true);
-              return false;
-            }
-            return true;
-          });
-        },
         reset: function() {
           this.total_count = 0;
         }
@@ -92,13 +83,16 @@ define([
     // Returns index of movie in the result list even if movie is not
     // in current client-side cached results. This is important for
     // views to be able to jump directly to a movie. Also returns
-    // total_count.
+    // total_count that is needed for movie views that rely on
+    // getLength().
     getIndexById: function(id, cb) {
       var that = this;
-      var movie = this.findWhere({ id: id });
+      var movie = this.get(id);
       if (movie)
+        // movie already in cache
         cb(movie.get('_index'));
       else {
+        // asking server
         var data = {};
         var url = '%sindex-by-id/%d'.format(this.url, id);
         _.extend(data, this.order_by_args);
@@ -254,10 +248,6 @@ define([
         timeout = null;
         that._fetchPages(fromPage, toPage);
       }, FETCH_DELAY);
-    },
-
-    getSelected: function() {
-      return this.findWhere({ _selected: true });
     }
 
   });

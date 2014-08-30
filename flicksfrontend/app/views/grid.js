@@ -27,14 +27,15 @@ define([
 
       // state events
       this.listenTo(App.state, {
-        'change:order_by': this.loadViewport,
-        'change:search':   this.loadViewport
+        'change:order_by':            this.loadViewport,
+        'change:search':              this.loadViewport,
+        'change:selected_movie_id':   this.selectedMovieIdChanged
       });
 
       // collection events
       this.listenTo(this.collection, {
-        'change:_selected': this.selectedChange,
 
+        // when a movie changes re-render that row
         'change': function(model, options) {
           this.grid.invalidateRow(model.get('_index'));
           this.grid.render();
@@ -47,19 +48,34 @@ define([
           this.grid.render();
         },
 
-        reset: this.loadViewport
+        reset: function() {
+          this.loadViewport();
+          var movie_id = App.state.get('selected_movie_id');
+          this.selectedMovieIdChanged(App.state, movie_id);
+        }
 
       }, this);
+
+      this.on('render', function(view) {
+        var movie_id = App.state.get('selected_movie_id');
+        if (!movie_id)
+          // no selected movie -> just load first chunk
+          this.loadViewport();
+        else
+          // set selected movie
+          this.selectedMovieIdChanged(App.state, movie_id);
+      });
 
     },
 
     render: function() {
       var that = this;
-      _.delay(function() {
+      // without defer element dimenions are wrong
+      _.defer(function() {
         that.trigger('before:render', that);
         that.createGrid();
         that.trigger('render', that);
-      }, 150);
+      });
       return this;
     },
 
@@ -67,6 +83,7 @@ define([
       this.grid.scrollRowToTop(index);
     },
 
+    // loads data pages for the current visible range of rows
     loadViewport: function() {
       var vp = this.grid.getViewport();
       // ensure one extra screen of items before and after actual
@@ -129,17 +146,22 @@ define([
 
     // event handlers
 
-    selectedChange: function(movie, selected) {
-      if (!selected)
-        return;
-      var movie = App.movie_collection.getSelected(), g = this.grid;
-      if (movie) {
-        this.collection.getIndexById(movie.get('id'), function(index) {
-          var rows = [index];
-          if (g.getSelectedRows() != rows)
-            g.setSelectedRows(rows);
-        })
-      }
+    selectedMovieIdChanged: function(model, movie_id) {
+      var that = this;
+      App.movie_collection.getIndexById(movie_id, function(index) {
+        // update grid selected rows
+        var rows = [index];
+        if (that.grid.getSelectedRows() != rows)
+          that.grid.setSelectedRows(rows);
+
+        // scroll to row if not in viewport
+        var vp = that.grid.getViewport();
+        if (index < vp.top || index > vp.bottom) {
+          that.grid.updateRowCount();
+          that.scrollToRow(index);
+        } else
+          that.loadViewport();
+      });
     },
 
     resize: function() {

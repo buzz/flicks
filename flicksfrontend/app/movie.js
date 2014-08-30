@@ -16,16 +16,10 @@ define([
 
     initialize: function() {
       this.on('sync', this.onSync, this);
-      this.on('change:_selected', this.onSelected, this);
     },
 
     getImageUrl: function() {
       return '%smovies_%d.jpg'.format(App.state.get('image_url'), this.id);
-    },
-
-    onSelected: function(movie, selected) {
-      if (selected && !this.get('_fullFetch'))
-        movie.fetch();
     },
 
     // get external service urls

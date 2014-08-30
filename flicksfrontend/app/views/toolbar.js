@@ -162,20 +162,20 @@ define([
       }
     },
 
-    search: function() {
+    search: function(evt) {
+      evt.preventDefault();
       var q = this.ui.search_input.val();
-      App.router.navigate('search/%s'.format(q), { trigger: true });
-      return false;
+      App.state.set('search', q);
     },
 
     clearSearch: function() {
       this.ui.search_input.val('');
-      App.router.navigate('search/', { trigger: true, replace: true });
+      App.state.set('search', '');
     },
 
     advSearch: function() {
       // TODO
-      console.log('adv search');
+      console.info('toolbar: adv search clicked');
     }
 
   });

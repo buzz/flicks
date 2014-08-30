@@ -1,11 +1,9 @@
 define([
   'marionette',
-  'views/details',
   'views/grid',
   'views/tiles'
 ], function(
   Marionette,
-  DetailsView,
   GridView,
   TilesView
 ) {
@@ -32,27 +30,6 @@ define([
         App.movie_collection, 'change:_fullFetch', this.sidebarView, this);
     },
 
-    // moviesView: function(view_mode) {
-    //   var ViewClass = view_mode === 'grid' ? GridView : TilesView;
-    //   var view = new ViewClass({ collection: App.movie_collection });
-    //   this.movies.show(view);
-    //   return view;
-    // },
-
-    sidebarView: function(movie) {
-      var details = this.sidebar.currentView;
-      if (!details) {
-        // create view
-        details = new DetailsView({ model: movie });
-        this.sidebar.show(details);
-      }
-      // reuse details view
-      else {
-        details.model = movie;
-        details.render();
-      }
-    },
-
     sidebarEnabledChanged: function(state, enabled) {
       var $el = App.layout.sidebar.$el;
       if (enabled)
@@ -64,6 +41,7 @@ define([
 
     selectedMovieIdChanged: function(state, id) {
       if (!id)
+        // TODO: is this doubled in app.js?
         this.sidebar.empty();
     }
 

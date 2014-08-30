@@ -3,19 +3,23 @@ define([
   'router',
   'state',
   'collection',
+  'util/jst_render',
+
   'views/layout',
   'views/toolbar',
-  'views/grid',
-  'util/jst_render'
+  'views/details',
+  'views/grid'
 ], function(
   Marionette,
   Router,
   AppState,
   MovieCollection,
+  jstRender,
+
   AppLayout,
   ToolbarView,
-  GridView,
-  jstRender
+  DetailsView,
+  GridView
 ) {
 
   // External links
@@ -54,25 +58,6 @@ define([
     App.main.show(App.layout);
     App.layout.toolbar.show(new ToolbarView({ model: App.state }));
 
-    // Grid view
-    // TODO: consider view_mode
-    var view = new GridView({ collection: App.movie_collection });
-    App.listenToOnce(view, 'render', function(view) {
-      var movie_id = App.state.get('selected_movie_id');
-      if (!movie_id)
-        view.loadViewport();
-      else
-        App.movie_collection.getIndexById(movie_id, function(index) {
-          if (index >= 0) {
-            view.grid.updateRowCount();
-            view.scrollToRow(index);
-          }
-          else
-            view.loadViewport();
-        });
-    });
-    App.layout.movies.show(view);
-
     /*
      * Events
      */
@@ -81,40 +66,108 @@ define([
       App.movie_collection, 'sync', App.state.onCollSync, App.state);
 
     App.listenTo(App.movie_collection, {
-      'dataloaded': function() {
-        var c = App.movie_collection, selected = c.getSelected();
 
-        if (!selected) {
-          var f = c.first();
-          if (f)
-            f.set('_selected', true);
-          else
-            App.layout.sidebar.empty();
+      'dataloaded': function(info) {
+        if (info.request_count > 0)
+          return;
+
+        var sel_id = App.state.get('selected_movie_id');
+
+        if (sel_id) {
+          var movie = App.movie_collection.get(sel_id);
+          if (!movie)
+            // selected movie is not in the current set, trigger
+            // selection of first movie
+            sel_id = undefined;
+          else if (!movie.get('_fullFetch'))
+            movie.fetch();
         }
-      }
-    });
-
-    App.listenTo(App.state, {
-      'change:selected_movie_id': function(state, id) {
-        var movie = App.movie_collection.get(id);
-        if (movie && movie.get('_fullFetch')) {
-          App.layout.sidebarView(movie);
+        if (!sel_id) {
+          // select first movie if no other is selected
+          var first = App.movie_collection.first();
+          if (first) {
+            first_id = first.get('id');
+            App.router.navigate(
+              'movie/%d'.format(first_id), { trigger: true });
+            App.movie_collection.get(first_id).set('_selected', true);
+          }
         }
       },
 
-      'change:view_mode': function(state, view_mode) {
-        App.layout.moviesView(view_mode);
+      'change:_fullFetch': function(movie) {
+        // show details when data is available
+        App.vent.trigger('display:details', movie);
       }
+
     });
 
-    // on DOM ready
-    $(function () {
-      // App router
-      Backbone.history.start({
-        pushState: false,
-        hashChange: true
-      });
+    function viewModeChanged(state, view_mode) {
+      if (view_mode === 'grid')
+        App.vent.trigger('display:grid');
+      else if (view_mode === 'tiles')
+        App.vent.trigger('display:tiles');
+    }
+
+    App.listenTo(App.state, {
+      'change:selected_movie_id': function(state, id) {
+        // display details in sidebar
+        var movie = App.movie_collection.get(id);
+        if (movie) {
+          if (movie.get('_fullFetch'))
+            App.vent.trigger('display:details', movie);
+          else
+            movie.fetch();
+        }
+      },
+
+      'change:view_mode': viewModeChanged
+
     });
+
+    /*
+     * App event aggregator
+     */
+    App.vent.on({
+
+      'display:details': function(movie) {
+        if (movie) {
+          var details = App.layout.sidebar.currentView;
+          if (!details) {
+            // create view
+            details = new DetailsView({ model: movie });
+            App.layout.sidebar.show(details);
+          }
+          // reuse details view
+          else {
+            details.model = movie;
+            details.render();
+          }
+        }
+        else
+          // TODO: is this doubled in layout.js?
+          App.layout.sidebar.empty();
+      },
+
+      'display:grid': function() {
+        var view = new GridView({ collection: App.movie_collection });
+        App.layout.movies.show(view);
+      },
+
+      'display:tiles': function() {
+        var view = new TilesView({ collection: App.movie_collection });
+        App.layout.movies.show(view);
+      }
+
+    });
+
+    // Init browser history
+    Backbone.history.start({
+      pushState: false,
+      hashChange: true
+    });
+
+    // Start movie list view
+    viewModeChanged(App.state, App.state.get('view_mode'));
 
   });
 
