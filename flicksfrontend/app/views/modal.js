@@ -18,13 +18,12 @@ define([
     },
 
     initialize: function() {
-      this.confirmCallback = this.options.confirm;
-    },
-
-    onRender: function() {
       var that = this;
-      this.ui.modal.modal().on('hidden.bs.modal', function() {
-        that.destroy();
+      this.confirmCallback = this.options.confirm;
+      this.on('render', function() {
+        this.ui.modal.modal().on('hidden.bs.modal', function() {
+          that.destroy();
+        });
       });
     }
 

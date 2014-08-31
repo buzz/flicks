@@ -6,9 +6,12 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Q, Count
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from imdb import IMDb
 
+from flicksapp.constants import COVER_MAX_WIDTH, COVER_MAX_HEIGHT
 from flicksapp.fields import ListField
 from flicksapp.validators import validate_imdb_id
 from flicksapp.choices import FILE_TYPE_CHOICES, TRACK_TYPE_CHOICES, VIDEO_TYPE
@@ -194,6 +197,10 @@ class Movie(models.Model):
         d1 = math.floor(self.id / 100) * 100
         return '%s/%05i/%05i/' % (settings.MOVIES_ROOT, d1, self.id)
 
+    @property
+    def cover_filepath(self):
+        return '%s/movies_%d.jpg' % (settings.COVERS_ROOT, self.id)
+
     def sync_with_imdb(self, ia=None):
         """Update movie with IMDb data. Use ia as IMDb access."""
         if not self.imdb_id:
@@ -271,7 +278,26 @@ class Movie(models.Model):
             except KeyError:
                 continue
 
+        # cover
+        if im.has_key('cover url'):
+            m = re.search('^(.+)(SX[0-9]+_SY[0-9]+)(.+)$', im['cover url'])
+            if m:
+                g = m.groups()
+                res = 'SX%d_SY%d' % (COVER_MAX_WIDTH, COVER_MAX_HEIGHT)
+                cover_url = '%s%s%s' % (g[0], res, g[2])
+
+                # save to disk
+                import urllib
+                coverfile = urllib.URLopener()
+                coverfile.retrieve(cover_url, self.cover_filepath)
+
         # save movie
         self.imdb_sync_on = datetime.datetime.now()
-        self.save()
         return True
+
+
+@receiver(post_save, sender=Movie)
+def sync_with_imdb(sender, instance, created, **kwargs):
+    if created and instance.imdb_id is not None:
+        instance.sync_with_imdb()
+        instance.save()

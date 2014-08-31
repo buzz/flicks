@@ -1,0 +1,13 @@
+<td class="imdb-id">
+  <button type="button" class="btn btn-default btn-xs btn-open-imdb">
+    <i class="flicks-icon-imdb"></i>
+    <%= imdb_id %>
+  </button>
+</td>
+<td class="title">
+  <%= title %>
+  <% if (in_db) { %>
+    <i class="fa fa-warning text-danger enable-tooltip" title="Already in database!"></i>
+  <% } %>
+</td>
+<td class="year"><%= year %></td>

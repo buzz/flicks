@@ -118,15 +118,18 @@ def imdb_search(request):
     enc = FlicksJSONEncoder()
     data = {
         'results': [],
+        'meta': {},
     }
     q = request.GET.get('q', None)
     if q:
         i = IMDb()
         results = i.search_movie(q)
         for r in results:
+            imdb_id = int(i.get_imdbID(r))
             movie = {
-                'imdb_id': int(i.get_imdbID(r)),
-                'title': r['title'],
+                'imdb_id': imdb_id,
+                'title':   r['title'],
+                'in_db':   Movie.objects.filter(imdb_id=imdb_id).count() > 0
             }
             # year is sometimes not present
             try:
@@ -134,6 +137,7 @@ def imdb_search(request):
             except KeyError:
                 movie['year'] = '????'
             data['results'].append(movie)
+    data['meta']['total_count'] = len(data['results'])
     return HttpResponse(enc.encode(data), content_type='application/json')
 
 def imdb_import(request, movie_id):

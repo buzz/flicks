@@ -40,6 +40,7 @@ USE_L10N = True
 USE_TZ = False
 
 MOVIES_ROOT = '/media/mapper_storage/flicks'
+COVERS_ROOT = '/home/buzz/public_html/flicks/flicksfrontend/covers'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
