@@ -3,6 +3,7 @@ define([
   'router',
   'state',
   'collection',
+  'imdb-results',
   'util/jst_render',
 
   'views/layout',
@@ -18,6 +19,7 @@ define([
   Router,
   AppState,
   MovieCollection,
+  ImdbResultCollection,
   jstRender,
 
   AppLayout,
@@ -65,6 +67,7 @@ define([
     App.state.fetch();
 
     App.movie_collection = new MovieCollection();
+    App.imdb_results = new ImdbResultCollection();
     App.router = new Router();
     App.layout = new AppLayout({ model: App.state });
     App.main.show(App.layout);
@@ -214,8 +217,24 @@ define([
 
       // ACTIONS
 
-      'action:add': function(movie) {
-        // TODO
+      'action:add': function(m) {
+        var that = this;
+        m.save({}, {
+          success: function(m) {
+            // reload collection
+            that.listenToOnce(App.movie_collection, 'dataloaded', function() {
+              // select new movie
+              App.movie_collection.getIndexById(m.id, function(index) {
+                App.layout.movies.currentView.scrollToRow(index);
+                App.router.navigate('movie/%d'.format(m.id), { trigger: true });
+              });
+            });
+            App.movie_collection.reset();
+          },
+          error: function() {
+            alert('Error: Could not create movie!');
+          }
+        });
       },
 
       'action:delete': function(movie) {
@@ -246,6 +265,13 @@ define([
 
       'action:search': function(q) {
         App.state.set('search', q);
+      },
+
+      'action:imdb-search': function(q) {
+        App.imdb_results.fetch({
+          reset: true,
+          data: { q: q }
+        });
       }
 
     });

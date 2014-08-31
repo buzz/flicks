@@ -19,6 +19,7 @@ class Command(BaseCommand):
         for i, m in enumerate(to_sync):
             res = m.sync_with_imdb(ia)
             if res:
+                m.save()
                 self.stdout.write("Synced %s\n" % m.title)
             else:
                 self.stdout.write("Skipping %s\n" % m.title)

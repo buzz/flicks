@@ -1,6 +1,7 @@
-<div class="modal fade" tabindex="-1" role="dialog">
+<div class="modal fade add-movie" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
+
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">
           <i class="fa fa-times"></i>
@@ -9,23 +10,33 @@
           <i class="fa fa-plus"></i>
           Add movie from IMDb</h4>
       </div>
+
       <div class="modal-body">
-        <form class="form-add-movie-search form-inline" role="form">
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Search IMDb…">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <form class="form-add-movie-search form-inline" role="form">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search IMDb…">
+              </div>
+              <button type="submit" class="btn btn-default">Search!</button>
+              <span class="help-block">You can search by title or 7-digit IMDb number.</span>
+            </form>
           </div>
-          <button type="submit" class="btn btn-default">Search!</button>
-          <span class="help-block">You can search by title or 7-digit IMDb number.</span>
-        </form>
+          <table class="imdb-results table-condensed table-striped"></table>
+        </div>
+
       </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary disabled" data-dismiss="modal">
+        <button type="button" class="btn-add-movie btn btn-primary disabled">
           Add
         </button>
         <button type="button" class="btn btn-default" data-dismiss="modal">
           Cancel
         </button>
       </div>
+
     </div>
   </div>
 </div>
