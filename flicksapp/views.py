@@ -5,10 +5,57 @@ from django.db.models import Min, Max, Count
 from imdb import IMDb
 
 from flicksapp.models import Movie, Person, Country, Language, Genre, Keyword
-from flicksapp.api import MovieListResource
+from flicksapp.api import MovieDetailResource, MovieListResource
 from flicksapp.utils import FlicksJSONEncoder
 import flicksapp.constants as c
 
+
+def imdb_import(request, movie_id):
+    '''
+    Import movie data from IMDb.
+    '''
+    enc = FlicksJSONEncoder()
+    movie_id = int(movie_id)
+    res = MovieDetailResource()
+    bundle = res.build_bundle(request=request)
+
+    try:
+        movie = res.obj_get(bundle, id=movie_id)
+    except Movie.DoesNotExist():
+        return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
+                            content_type='application/json', status=404)
+
+    movie.sync_with_imdb()
+    movie.save()
+
+    json = res.serialize(None, res.full_dehydrate(bundle), 'application/json')
+    return HttpResponse(json, content_type='application/json')
+
+
+def get_index_by_id(request, movie_id):
+    '''Get index in result list by movie id.'''
+    enc = FlicksJSONEncoder()
+    movie_id = int(movie_id)
+    res = MovieListResource()
+    bundle = res.build_bundle(request=request)
+    qs = res.obj_get_list(bundle)
+    qs = qs.only('id')
+    qs = res.apply_sorting(qs, options=request.GET)
+    l = list(qs.values_list('id', flat=True))
+
+    try:
+        index = l.index(movie_id)
+    except ValueError:
+        index = -1
+
+    ret = {
+        'success':     True,
+        'index':       index,
+        'total_count': len(l),
+    }
+    return HttpResponse(enc.encode(ret), content_type='application/json')
+
+### OLD:
 
 # limit auto-complete results
 AC_LIMIT = 20
@@ -140,7 +187,7 @@ def imdb_search(request):
     data['meta']['total_count'] = len(data['results'])
     return HttpResponse(enc.encode(data), content_type='application/json')
 
-def imdb_import(request, movie_id):
+def imdb_import_OLD(request, movie_id):
     '''
     Import movie data from IMDb. Optionally takes a GET argument
     'imdb_id' to change movies IMDb ID.
@@ -174,26 +221,3 @@ def imdb_change(request, id, imdb_id):
     movie.sync_with_imdb()
     return HttpResponse(enc.encode({ 'success': True }),
                         content_type='application/json')
-
-def get_index_by_id(request, movie_id):
-    '''Get index in result list by movie id.'''
-    enc = FlicksJSONEncoder()
-    movie_id = int(movie_id)
-    res = MovieListResource()
-    request_bundle = res.build_bundle(request=request)
-    qs = res.obj_get_list(request_bundle)
-    qs = qs.only('id')
-    qs = res.apply_sorting(qs, options=request.GET)
-    l = list(qs.values_list('id', flat=True))
-
-    try:
-        index = l.index(movie_id)
-    except ValueError:
-        index = -1
-
-    ret = {
-        'success':     True,
-        'index':       index,
-        'total_count': len(l),
-    }
-    return HttpResponse(enc.encode(ret), content_type='application/json')

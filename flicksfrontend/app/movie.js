@@ -26,12 +26,18 @@ define([
 
     urlRoot: '/movie/',
 
+    // when image is updated on the server-side
+    cacheBreakImage: false,
+
     initialize: function() {
       this.on('sync', this.onSync, this);
     },
 
     getImageUrl: function() {
-      return '%smovies_%d.jpg'.format(App.state.get('image_url'), this.id);
+      return '%smovies_%d.jpg%s'.format(
+        App.state.get('image_url'), this.id,
+        this.cacheBreakImage ? '?' + this.cacheBreakImage : ''
+      );
     },
 
     // get external service urls
@@ -80,6 +86,22 @@ define([
       });
 
       Backbone.Model.prototype.save.call(this, attrs, options);
+    },
+
+    updateImdb: function(cb) {
+      var that = this;
+      this.cacheBreakImage = new Date().getTime();
+      $.ajax({
+        url: '/imdb-import/%d/'.format(this.get('id')),
+        dataType: 'json',
+        success: function(attrs) {
+          that.set(attrs);
+          cb(that);
+        },
+        error: function() {
+          alert('Error: Communication with server failed!');
+        }
+      });
     }
 
   });

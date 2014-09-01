@@ -137,8 +137,7 @@ class Movie(models.Model):
     akas = ListField('Also known as')
     year = models.PositiveIntegerField('Year', null=True, blank=True,
                                        db_index=True)
-    rating = models.DecimalField('Rating', max_digits=3, decimal_places=1,
-                                 null=True, blank=True)
+    rating = models.FloatField('Rating', null=True, blank=True)
     votes = models.PositiveIntegerField('Votes', null=True, blank=True)
     countries = models.ManyToManyField(Country, verbose_name='Countries',
                                        related_name='movies')
