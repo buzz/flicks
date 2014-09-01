@@ -17,7 +17,7 @@ define([
       cover_image:                        '.cover-image',
       btn_play:                           '.btn-play',
       btn_update:                         '.btn-update',
-      btn_find_cover:                     '.btn-find-cover',
+      btn_update_icon:                    '.btn-update i',
       btn_mark_seen:                      '.btn-mark-seen',
       btn_mark_fav:                       '.btn-mark-fav',
       btn_mark_trumpable:                 '.btn-mark-trumpable',
@@ -33,7 +33,6 @@ define([
       'click @ui.cover_image':            'enlargeCover',
       'click @ui.btn_play':               'playClick',
       'click @ui.btn_update':             'updateClick',
-      'click @ui.btn_find_cover':         'findCoverClick',
       'click @ui.btn_mark_seen':          'markSeenClick',
       'click @ui.btn_mark_fav':           'markFavClick',
       'click @ui.btn_mark_trumpable':     'markTrumpableClick',
@@ -43,6 +42,10 @@ define([
       'click @ui.btn_open_karagarga':     'openKaragarga',
       'click @ui.btn_open_opensubtitles': 'openOpensubtitles',
       'click @ui.btn_open_youtube':       'openYoutube'
+    },
+
+    modelEvents: {
+      'change': 'render'
     },
 
     behaviors: {
@@ -103,13 +106,13 @@ define([
     },
 
     updateClick: function() {
-      // TODO
-      console.info('details: TODO... update');
-    },
-
-    findCoverClick: function() {
-      // TODO
-      console.info('details: TODO... find-cover');
+      var ui = this.ui;
+      ui.btn_update.addClass('disabled');
+      ui.btn_update_icon.addClass('fa-spin');
+      App.vent.trigger('action:update', this.model, function() {
+        ui.btn_update.removeClass('disabled');
+        ui.btn_update_icon.removeClass('fa-spin');
+      });
     },
 
     markSeenClick: function() {

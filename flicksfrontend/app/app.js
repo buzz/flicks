@@ -163,16 +163,11 @@ define([
       'display:details': function(movie) {
         if (movie) {
           var details = App.layout.sidebar.currentView;
-          if (!details) {
-            // create view
-            details = new DetailsView({ model: movie });
-            App.layout.sidebar.show(details);
-          }
-          // reuse details view
-          else {
-            details.model = movie;
-            details.render();
-          }
+          if (details)
+            details.destroy();
+          // create view
+          details = new DetailsView({ model: movie });
+          App.layout.sidebar.show(details);
         }
         else
           App.layout.sidebar.empty();
@@ -246,6 +241,10 @@ define([
             alert('Error deleting movie…');
           }
         });
+      },
+
+      'action:update': function(movie, cb) {
+        movie.updateImdb(cb);
       },
 
       'action:set-flag': function(movie, flag, value) {

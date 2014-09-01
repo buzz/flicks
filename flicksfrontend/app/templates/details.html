@@ -64,7 +64,7 @@
 
       <p class="row rating">
         <label>Rating</label>
-        <span class="value"><%- rating %></span>
+        <span class="value"><%- '%.1f'.format(rating) %></span>
       </p>
 
       <% _.each([[genres, 'Genres'], [directors, 'Directors'], [producers, 'Producers'], [writers, 'Writers'], [languages, 'Languages'], [countries, 'Countries']], function(d, i) { %>
@@ -147,37 +147,41 @@
   <button title="Play" type="button" class="btn btn-primary btn-sm navbar-btn enable-tooltip btn-play">
     <i class="fa fa-play"></i>
   </button>
-  <button title="Update details" type="button" class="btn btn-default btn-sm navbar-btn enable-tooltip btn-update">
-    <i class="fa fa-refresh"></i>
-  </button>
-  <button title="Find cover" type="button" class="btn btn-default btn-sm navbar-btn enable-tooltip btn-find-cover">
-    <i class="fa fa-image"></i>
-  </button>
-
-  <div class="navbar-right">
-
-  <div class="btn-group btn-group-sm" data-toggle="buttons">
-   <label title="Mark seen" class="seen btn btn-default navbar-btn enable-tooltip btn-mark-seen<%= seen ? ' active' : '' %>">
-     <input type="checkbox">
-     <i class="fa fa-eye"></i>
-   </label>
-   <label title="Add to favourites" class="favourite btn btn-default navbar-btn enable-tooltip btn-mark-fav<%= favourite ? ' active' : '' %>">
-     <input type="checkbox">
-     <i class="fa fa-star"></i>
-   </label>
-   <label title="Mark trumpable" class="trumpable btn btn-default navbar-btn enable-tooltip btn-mark-trumpable<%= trumpable ? ' active' : '' %>">
-     <input type="checkbox">
-     <i class="fa fa-trophy"></i>
-   </label>
-  </div>
 
   <div class="btn-group btn-group-sm">
+
+    <button type="button" class="btn btn-default btn-sm navbar-btn enable-tooltip btn-update" title="Update details">
+      <i class="fa fa-refresh"></i>
+    </button>
+
     <button type="button" class="btn btn-default navbar-btn enable-tooltip btn-edit" title="Edit">
       <i class="fa fa-edit enable-tooltip"></i>
     </button>
+
     <button type="button" class="btn btn-danger navbar-btn enable-tooltip btn-delete" title="Delete">
       <i class="fa fa-trash-o enable-tooltip"></i>
     </button>
+
   </div>
+
+  <div class="navbar-right">
+    <div class="btn-group btn-group-sm" data-toggle="buttons">
+
+      <label title="Mark seen" class="seen btn btn-default navbar-btn enable-tooltip btn-mark-seen<%= seen ? ' active' : '' %>">
+        <input type="checkbox">
+        <i class="fa fa-eye"></i>
+      </label>
+
+      <label title="Add to favourites" class="favourite btn btn-default navbar-btn enable-tooltip btn-mark-fav<%= favourite ? ' active' : '' %>">
+        <input type="checkbox">
+        <i class="fa fa-star"></i>
+      </label>
+
+      <label title="Mark trumpable" class="trumpable btn btn-default navbar-btn enable-tooltip btn-mark-trumpable<%= trumpable ? ' active' : '' %>">
+        <input type="checkbox">
+        <i class="fa fa-trophy"></i>
+      </label>
+
+    </div>
   </div>
 </div>
