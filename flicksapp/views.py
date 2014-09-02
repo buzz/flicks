@@ -1,13 +1,84 @@
+from django.conf import settings
 from django.core.serializers import serialize
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Min, Max, Count
+from django.core.urlresolvers import reverse
+
 from imdb import IMDb
 
 from flicksapp.models import Movie, Person, Country, Language, Genre, Keyword
 from flicksapp.api import MovieDetailResource, MovieListResource
 from flicksapp.utils import FlicksJSONEncoder
 import flicksapp.constants as c
+
+
+def bootstrap(request):
+    '''
+    Serves as entry point for this web application.
+    '''
+    enc = FlicksJSONEncoder()
+    agg = Movie.objects.aggregate(Min('year'), Max('year'),
+                                  Min('rating'), Max('rating'),
+                                  Min('runtime'), Max('runtime'))
+
+    movie_root = reverse('api_dispatch_list', kwargs={
+        'resource_name': 'movie'
+    })
+    movies_root = reverse('api_dispatch_list', kwargs={
+        'resource_name': 'movies'
+    })
+    get_index_by_id = reverse('get_index_by_id', kwargs={ 'movie_id': 99999 })
+    imdb_import = reverse('imdb_import', kwargs={ 'movie_id': 99999 })
+    imdb_search = reverse('imdb_search')
+    ctx = {
+        'config': enc.encode({
+            # app config
+            'movie_root':      movie_root,
+            'movies_root':     movies_root,
+            'covers_root':     settings.COVERS_URL,
+            'get_index_by_id': get_index_by_id,
+            'imdb_import':     imdb_import,
+            'imdb_search':     imdb_search,
+
+            # for search form
+            'year_min': agg['year__min'],
+            'year_max': agg['year__max'],
+            'rating_min': agg['rating__min'],
+            'rating_max': agg['rating__max'],
+            'runtime_min': agg['runtime__min'],
+            'runtime_max': agg['runtime__max'],
+        })
+    }
+    return render(request, 'index.html', ctx)
+
+
+def imdb_search(request):
+    '''Search IMDb.'''
+    enc = FlicksJSONEncoder()
+    data = {
+        'results': [],
+        'meta': {},
+    }
+    q = request.GET.get('q', None)
+    if q:
+        i = IMDb()
+        results = i.search_movie(q)
+        for r in results:
+            imdb_id = int(i.get_imdbID(r))
+            movie = {
+                'imdb_id': imdb_id,
+                'title':   r['title'],
+                'in_db':   Movie.objects.filter(imdb_id=imdb_id).count() > 0
+            }
+            # year is sometimes not present
+            try:
+                movie['year'] = r['year']
+            except KeyError:
+                movie['year'] = '????'
+            data['results'].append(movie)
+    data['meta']['total_count'] = len(data['results'])
+    return HttpResponse(enc.encode(data), content_type='application/json')
 
 
 def imdb_import(request, movie_id):
@@ -60,7 +131,7 @@ def get_index_by_id(request, movie_id):
 # limit auto-complete results
 AC_LIMIT = 20
 
-def bootstrap(request):
+def bootstrap_OLD(request):
     '''
     Serves as entry point for this web application.
     '''
@@ -142,7 +213,7 @@ def fav(request):
     return HttpResponse(enc.encode({ 'success': True }),
                         content_type='application/json')
 
-def mark_seen(request):
+def mark_seen_OLD(request):
     '''(Un)mark a movie seen.'''
     id = request.POST.get('id', None)
     unmark = request.POST.get('unmark', None)
@@ -160,7 +231,7 @@ def mark_seen(request):
     return HttpResponse(enc.encode({ 'success': True }),
                         content_type='application/json')
 
-def imdb_search(request):
+def imdb_search_OLD(request):
     '''Search IMDb.'''
     enc = FlicksJSONEncoder()
     data = {
@@ -208,7 +279,7 @@ def imdb_import_OLD(request, movie_id):
     return HttpResponse(enc.encode({ 'success': True }),
                         content_type='application/json')
 
-def imdb_change(request, id, imdb_id):
+def imdb_change_OLD(request, id, imdb_id):
     '''Change IMDb ID and updates movie.'''
     enc = FlicksJSONEncoder()
     try:

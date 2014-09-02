@@ -111,10 +111,7 @@ define([
 
       // asking server
       var data = {};
-      var url = Constants.formats.index_by_id.format({
-        url:      this.url,
-        movie_id: id
-      });
+      var url = App.config.get_index_by_id.replace('99999', id);
       _.extend(data, this.order_by_args);
       _.extend(data, this.search_args);
       $.ajax({

@@ -2,8 +2,7 @@ define({
 
   // image url builder
   formats: {
-    movie_image: '%(url)smovies_%(movie_id)d.jpg%(cachebreaker)s',
-    index_by_id: '%(url)sindex-by-id/%(movie_id)d/'
+    movie_image: '%(url)smovies_%(movie_id)d.jpg%(cachebreaker)s'
   },
 
   // external links

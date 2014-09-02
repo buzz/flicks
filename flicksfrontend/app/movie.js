@@ -27,12 +27,14 @@ define([
 
     url: function() {
       var url = Backbone.Model.prototype.url.apply(this, arguments);
-      return url + '/';
+      if (url[url.length - 1] !== '/')
+        return url + '/';
+      return url;
     },
 
     getImageUrl: function() {
       return Constants.formats.movie_image.format({
-        url:          App.config.image_url,
+        url:          App.config.covers_root,
         movie_id:     this.id,
         cachebreaker: this.cacheBreakImage ? '?' + this.cacheBreakImage : ''
       });
@@ -90,9 +92,10 @@ define([
 
     updateImdb: function(cb) {
       var that = this;
+      var url = App.config.imdb_import.replace('99999', this.get('id'));
       this.cacheBreakImage = new Date().getTime();
       $.ajax({
-        url: '%s%d/'.format(App.config.imdb_import, this.get('id')),
+        url: url,
         dataType: 'json',
         success: function(attrs) {
           that.set(attrs);
