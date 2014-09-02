@@ -1,20 +1,10 @@
 define([
-  'backbone'
+  'backbone',
+  'constants'
 ], function(
-  Backbone
+  Backbone,
+  Constants
 ) {
-
-  // External links
-  var links = {
-    imdb_id:    'http://www.imdb.com/title/tt%07d/',
-    imdb_title: 'http://www.imdb.com/find?q=%s',
-    kg_id:      'https://karagarga.net/details.php?id=%d',
-    kg_imdb:    'https://karagarga.net/browse.php?search_type=imdb&search=%07d',
-    kg_title:   'https://karagarga.net/browse.php?search_type=title&search=%s',
-    os_imdb:    'http://www.opensubtitles.org/en/search/sublanguageid-eng,ger/imdbid-%07d',
-    os_title:   'http://www.opensubtitles.org/en/search/sublanguageid-eng,ger/moviename-%s',
-    youtube:    'https://www.youtube.com/results?search_query=%s'
-  };
 
   var Movie = Backbone.Model.extend({
 
@@ -24,7 +14,9 @@ define([
       _index:     undefined
     },
 
-    urlRoot: '/movie/',
+    urlRoot: function() {
+      return App.config.movie_root;
+    },
 
     // when image is updated on the server-side
     cacheBreakImage: false,
@@ -33,42 +25,50 @@ define([
       this.on('sync', this.onSync, this);
     },
 
+    url: function() {
+      var url = Backbone.Model.prototype.url.apply(this, arguments);
+      return url + '/';
+    },
+
     getImageUrl: function() {
-      return '%smovies_%d.jpg%s'.format(
-        App.state.get('image_url'), this.id,
-        this.cacheBreakImage ? '?' + this.cacheBreakImage : ''
-      );
+      return Constants.formats.movie_image.format({
+        url:          App.config.image_url,
+        movie_id:     this.id,
+        cachebreaker: this.cacheBreakImage ? '?' + this.cacheBreakImage : ''
+      });
     },
 
     // get external service urls
     externalUrl: function(service) {
       var
+      l =       Constants.links,
       imdb_id = this.get('imdb_id'),
-      title = this.get('title').replace(' ', '+');
+      title =   this.get('title').replace(' ', '+');
 
       if (service === 'imdb') {
         if (imdb_id)
-          return links.imdb_id.format(imdb_id);
+          return l.imdb_id.format(imdb_id);
         else
-          return links.imdb_title.format(title);
+          return l.imdb_title.format(title);
       }
       else if (service === 'karagarga') {
         var kg_id = this.get('karagarga_id');
         if (kg_id)
-          return links.kg_id.format(kg_id);
+          return l.kg_id.format(kg_id);
         else if (imdb_id)
-          return links.kg_imdb.format(imdb_id);
+          return l.kg_imdb.format(imdb_id);
         else
-          return links.kg_title.format(title);
+          return l.kg_title.format(title);
       }
       else if (service === 'opensubtitles') {
         if (imdb_id)
-          return links.os_imdb.format(imdb_id);
+          return l.os_imdb.format(imdb_id);
         else
-          return links.os_title.format(title);
+          return l.os_title.format(title);
       }
       else if (service === 'youtube')
-        return links.youtube.format(title);
+        return l.youtube.format(title);
+
       throw Error('Wrong argument!');
     },
 
@@ -92,7 +92,7 @@ define([
       var that = this;
       this.cacheBreakImage = new Date().getTime();
       $.ajax({
-        url: '/imdb-import/%d/'.format(this.get('id')),
+        url: '%s%d/'.format(App.config.imdb_import, this.get('id')),
         dataType: 'json',
         success: function(attrs) {
           that.set(attrs);

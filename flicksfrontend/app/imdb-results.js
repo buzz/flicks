@@ -9,7 +9,10 @@ define([
   var ImdbResultCollection = Backbone.Collection.extend({
 
     model: ImdbResult,
-    url:   '/imdb-search/',
+
+    url:   function() {
+      return App.config.imdb_search;
+    },
 
     initialize: function() {
       // only one selected result at a time

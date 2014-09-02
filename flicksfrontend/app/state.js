@@ -8,6 +8,7 @@ define([
 
   var AppState = Backbone.Model.extend({
     defaults: {
+      // current state
       'view_mode':          'grid',
       'selected_movie_id':  undefined,
       'search':             {},
@@ -16,7 +17,7 @@ define([
       'sidebar_enabled':    true,
 
       // preferences
-      'image_url':          'covers/'
+      // empty for now...
     },
 
     initialize: function() {

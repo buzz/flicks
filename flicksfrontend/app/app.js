@@ -286,6 +286,16 @@ define([
 
   });
 
+  // Load configuration
+  // TODO: Bootstrap into index.html (prod) or hard-coded (dev)
+  App.config = {
+    movie_root:  '/movie/',
+    movies_root: '/movies/',
+    image_url:   '/covers/',
+    imdb_import: '/imdb-import/',
+    imdb_search: '/imdb-search/'
+  },
+
   // Content pane resize
   $(window).resize(function() {
     App.vent.trigger('display:content-resize');

@@ -1,9 +1,11 @@
 define([
   'backbone',
-  'movie'
+  'movie',
+  'constants'
 ], function(
   Backbone,
-  Movie
+  Movie,
+  Constants
 ) {
 
   // size of one page
@@ -19,7 +21,10 @@ define([
   var MovieCollection = Backbone.Collection.extend({
 
     model: Movie,
-    url:   '/movies/',
+
+    url: function() {
+      return App.config.movies_root;
+    },
 
     order_by_args: {},
     search_args:   {},
@@ -106,7 +111,10 @@ define([
 
       // asking server
       var data = {};
-      var url = '%sindex-by-id/%d'.format(this.url, id);
+      var url = Constants.formats.index_by_id.format({
+        url:      this.url,
+        movie_id: id
+      });
       _.extend(data, this.order_by_args);
       _.extend(data, this.search_args);
       $.ajax({
