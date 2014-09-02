@@ -30,16 +30,19 @@ def bootstrap(request):
     })
     get_index_by_id = reverse('get_index_by_id', kwargs={ 'movie_id': 99999 })
     imdb_import = reverse('imdb_import', kwargs={ 'movie_id': 99999 })
+    imdb_cover_import = reverse(
+        'imdb_cover_import', kwargs={ 'movie_id': 99999 })
     imdb_search = reverse('imdb_search')
     ctx = {
         'config': enc.encode({
             # app config
-            'movie_root':      movie_root,
-            'movies_root':     movies_root,
-            'covers_root':     settings.COVERS_URL,
-            'get_index_by_id': get_index_by_id,
-            'imdb_import':     imdb_import,
-            'imdb_search':     imdb_search,
+            'movie_root':        movie_root,
+            'movies_root':       movies_root,
+            'covers_root':       settings.COVERS_URL,
+            'get_index_by_id':   get_index_by_id,
+            'imdb_import':       imdb_import,
+            'imdb_cover_import': imdb_cover_import,
+            'imdb_search':       imdb_search,
 
             # for search form
             'year_min': agg['year__min'],
@@ -98,6 +101,27 @@ def imdb_import(request, movie_id):
 
     movie.sync_with_imdb()
     movie.save()
+
+    json = res.serialize(None, res.full_dehydrate(bundle), 'application/json')
+    return HttpResponse(json, content_type='application/json')
+
+
+def imdb_cover_import(request, movie_id):
+    '''
+    Import cover from IMDb.
+    '''
+    enc = FlicksJSONEncoder()
+    movie_id = int(movie_id)
+    res = MovieDetailResource()
+    bundle = res.build_bundle(request=request)
+
+    try:
+        movie = res.obj_get(bundle, id=movie_id)
+    except Movie.DoesNotExist():
+        return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
+                            content_type='application/json', status=404)
+
+    movie.fetch_cover_from_imdb()
 
     json = res.serialize(None, res.full_dehydrate(bundle), 'application/json')
     return HttpResponse(json, content_type='application/json')

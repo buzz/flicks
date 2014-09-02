@@ -93,12 +93,27 @@ define([
     updateImdb: function(cb) {
       var that = this;
       var url = App.config.imdb_import.replace('99999', this.get('id'));
-      this.cacheBreakImage = new Date().getTime();
       $.ajax({
         url: url,
         dataType: 'json',
         success: function(attrs) {
           that.set(attrs);
+          cb(that);
+        },
+        error: function() {
+          alert('Error: Communication with server failed!');
+        }
+      });
+    },
+
+    fetchCover: function(cb) {
+      var that = this;
+      var url = App.config.imdb_cover_import.replace('99999', this.get('id'));
+      this.cacheBreakImage = new Date().getTime();
+      $.ajax({
+        url: url,
+        dataType: 'json',
+        success: function() {
           cb(that);
         },
         error: function() {

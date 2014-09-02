@@ -247,6 +247,10 @@ define([
         movie.updateImdb(cb);
       },
 
+      'action:fetch-cover': function(movie, cb) {
+        movie.fetchCover(cb);
+      },
+
       'action:set-flag': function(movie, flag, value) {
         var attrs = {};
         attrs[flag] = value;
@@ -288,7 +292,7 @@ define([
 
   // Load configuration
   // TODO: Bootstrap into index.html (prod) or hard-coded (dev)
-  App.config = window.FLICKS_CONFIG,
+  App.config = window.FLICKS_CONFIG;
 
   // Content pane resize
   $(window).resize(function() {
