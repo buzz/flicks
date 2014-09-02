@@ -17,7 +17,9 @@ define([
       cover_image:                        '.cover-image',
       btn_play:                           '.btn-play',
       btn_update:                         '.btn-update',
-      btn_update_icon:                    '.btn-update i',
+      btn_update_i:                       '.btn-update i',
+      btn_fetch_cover:                    '.btn-fetch-cover',
+      btn_fetch_cover_i:                  '.btn-fetch-cover i',
       btn_mark_seen:                      '.btn-mark-seen',
       btn_mark_fav:                       '.btn-mark-fav',
       btn_mark_trumpable:                 '.btn-mark-trumpable',
@@ -33,6 +35,7 @@ define([
       'click @ui.cover_image':            'enlargeCover',
       'click @ui.btn_play':               'playClick',
       'click @ui.btn_update':             'updateClick',
+      'click @ui.btn_fetch_cover':        'fetchCoverClick',
       'click @ui.btn_mark_seen':          'markSeenClick',
       'click @ui.btn_mark_fav':           'markFavClick',
       'click @ui.btn_mark_trumpable':     'markTrumpableClick',
@@ -107,11 +110,28 @@ define([
 
     updateClick: function() {
       var ui = this.ui;
-      ui.btn_update.addClass('disabled');
-      ui.btn_update_icon.addClass('fa-spin');
+      ui.btn_update.addClass('disabled')
+      ui.btn_update_i.addClass('fa-spin');
       App.vent.trigger('action:update', this.model, function() {
-        ui.btn_update.removeClass('disabled');
-        ui.btn_update_icon.removeClass('fa-spin');
+        ui.btn_update.removeClass('disabled')
+        ui.btn_update_i.removeClass('fa-spin');
+      });
+    },
+
+    fetchCoverClick: function() {
+      var ui = this.ui, that = this;
+      ui.btn_fetch_cover.addClass('disabled');
+      ui.btn_fetch_cover_i.addClass('fa-spin')
+        .addClass('fa-refresh')
+        .removeClass('fa-file-image-o');
+      App.vent.trigger('action:fetch-cover', this.model, function() {
+        ui.btn_fetch_cover.removeClass('disabled');
+        ui.btn_fetch_cover_i.removeClass('fa-spin')
+          .removeClass('fa-refresh')
+          .addClass('fa-file-image-o');
+        // we have to redraw manually as the cover image is not part
+        // of the model
+        that.render();
       });
     },
 

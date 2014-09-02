@@ -16,6 +16,8 @@ urlpatterns = patterns('flicksapp.views',
     url(r'^index-by-id/(?P<movie_id>\d+)/$', 'get_index_by_id',
         name='get_index_by_id'),
     url(r'^imdb-import/(?P<movie_id>\d+)/$', 'imdb_import', name='imdb_import'),
+    url(r'^imdb-cover-import/(?P<movie_id>\d+)/$', 'imdb_cover_import',
+        name='imdb_cover_import'),
     url(r'^imdb-search/$', 'imdb_search', name='imdb_search'),
 
     # old frontend

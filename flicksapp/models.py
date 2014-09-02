@@ -200,15 +200,18 @@ class Movie(models.Model):
     def cover_filepath(self):
         return '%s/movies_%d.jpg' % (settings.COVERS_ROOT, self.id)
 
-    def sync_with_imdb(self, ia=None):
-        """Update movie with IMDb data. Use ia as IMDb access."""
+    def _get_im(self):
+        from imdb import IMDb
+        ia = IMDb()
+        return ia.get_movie(
+            self.imdb_id, info=('main', 'plot', 'akas', 'keywords'))
+
+    def sync_with_imdb(self, fetch_cover=False, im=None):
+        '''Update movie with IMDb data.'''
         if not self.imdb_id:
             return False
-        if not ia:
-            from imdb import IMDb
-            ia = IMDb()
-        im = ia.get_movie(
-            self.imdb_id, info=('main', 'plot', 'akas', 'keywords'))
+        if not im:
+            im = self._get_im()
 
         # first clear all imdb relations
         self.clear_imdb_relations()
@@ -277,6 +280,20 @@ class Movie(models.Model):
             except KeyError:
                 continue
 
+        if fetch_cover:
+            self.fetch_cover_from_imdb(im=im)
+
+        # save movie
+        self.imdb_sync_on = datetime.datetime.now()
+        return True
+
+    def fetch_cover_from_imdb(self, im=None):
+        '''Download cover from IMDb.'''
+        if not self.imdb_id:
+            return False
+        if not im:
+            im = self._get_im()
+
         # cover
         if im.has_key('cover url'):
             m = re.search('^(.+)(SX[0-9]+_SY[0-9]+)(.+)$', im['cover url'])
@@ -290,13 +307,8 @@ class Movie(models.Model):
                 coverfile = urllib.URLopener()
                 coverfile.retrieve(cover_url, self.cover_filepath)
 
-        # save movie
-        self.imdb_sync_on = datetime.datetime.now()
-        return True
-
-
 @receiver(post_save, sender=Movie)
 def sync_with_imdb(sender, instance, created, **kwargs):
     if created and instance.imdb_id is not None:
-        instance.sync_with_imdb()
+        instance.sync_with_imdb(fetch_cover=True)
         instance.save()

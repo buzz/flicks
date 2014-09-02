@@ -256,6 +256,13 @@ module.exports = function(grunt) {
           port: 8000,
           https: false,
           changeOrigin: true
+        },
+        {
+          context: '/imdb-cover-import',
+          host: 'localhost',
+          port: 8000,
+          https: false,
+          changeOrigin: true
         }
       ]
     },
