@@ -2,7 +2,7 @@ define([
   'marionette',
   'router',
   'state',
-  'collection',
+  'movies',
   'imdb-results',
   'util/jst_render',
 
