@@ -288,13 +288,7 @@ define([
 
   // Load configuration
   // TODO: Bootstrap into index.html (prod) or hard-coded (dev)
-  App.config = {
-    movie_root:  '/movie/',
-    movies_root: '/movies/',
-    image_url:   '/covers/',
-    imdb_import: '/imdb-import/',
-    imdb_search: '/imdb-search/'
-  },
+  App.config = window.FLICKS_CONFIG,
 
   // Content pane resize
   $(window).resize(function() {

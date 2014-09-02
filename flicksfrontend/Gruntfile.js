@@ -44,7 +44,7 @@ module.exports = function(grunt) {
     'bgShell:compasscompile',
     // 'compass:dist',
     'cssjoin:dist',
-    'cssmin',
+    'cssmin:dist',
 
     // js
     'requirejs:dist',
@@ -88,9 +88,7 @@ module.exports = function(grunt) {
     // The jst task compiles all application templates into JavaScript
     // functions with the underscore.js template function
     jst: {
-      'tmp/templates_compiled.js': [
-        'app/templates/*.html'
-      ]
+      'tmp/templates_compiled.js': [ 'app/templates/*.html' ]
     },
 
     // The concatenate task is used here to merge the almond
@@ -144,7 +142,7 @@ module.exports = function(grunt) {
     targethtml: {
       dist: {
         files: {
-          'dist/index.html': 'index.html'
+          'dist/templates/index.html': 'index.html'
         }
       }
     },
@@ -174,7 +172,7 @@ module.exports = function(grunt) {
     uglify: {
       dist: {
         files: {
-          'dist/flicks.js': ['tmp/concat.js']
+          'dist/static/flicks.js': ['tmp/concat.js']
         }
       }
     },
@@ -182,7 +180,7 @@ module.exports = function(grunt) {
     cssmin: {
       dist: {
         src: 'tmp/flicks.css',
-        dest: 'dist/flicks.css'
+        dest: 'dist/static/flicks.css'
       }
     },
 
@@ -194,13 +192,13 @@ module.exports = function(grunt) {
             expand: true,
             cwd: 'app/style/images',
             src: './**',
-            dest: 'dist/images/'
+            dest: 'dist/static/images/'
           },
           {
             expand: true,
             cwd: 'bower_components/font-awesome/fonts/',
             src: 'fontawesome-webfont.{eot,woff,ttf}',
-            dest: 'dist/fonts/'
+            dest: 'dist/static/fonts/'
           },
         ]
       }
@@ -233,6 +231,13 @@ module.exports = function(grunt) {
         },
         {
           context: '/movie',
+          host: 'localhost',
+          port: 8000,
+          https: false,
+          changeOrigin: true
+        },
+        {
+          context: '/index-by-id',
           host: 'localhost',
           port: 8000,
           https: false,

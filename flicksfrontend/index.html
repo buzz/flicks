@@ -1,4 +1,4 @@
-<!doctype html>
+<!--(if target dist)>{% load static from staticfiles %}<!(endif)--><!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -6,21 +6,33 @@
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
     <!--(if target dev)><!-->
-        <link rel="stylesheet" href="app/style/index.css" type="text/css" charset="utf-8"/>
+    <link rel="stylesheet" href="app/style/index.css" type="text/css" charset="utf-8"/>
     <!--<!(endif)-->
-
     <!--(if target dist)>
-        <link rel="stylesheet" href="flicks.css" type="text/css" charset="utf-8"/>
+    <link rel="stylesheet" href="{% static "flicks.css" %}" type="text/css" charset="utf-8"/>
     <!(endif)-->
   </head>
   <body>
     <!--(if target dev)><!-->
-        <script data-main="app/main" src="bower_components/requirejs/require.js"></script>
-        <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+    <script>
+      window.FLICKS_DEBUG = true;
+      window.FLICKS_CONFIG = {
+        movie_root:      '/movie/',
+        movies_root:     '/movies/',
+        covers_root:     '/covers/',
+        get_index_by_id: '/index-by-id/99999/',
+        imdb_import:     '/imdb-import/99999/',
+        imdb_search:     '/imdb-search/'
+      };
+    </script>
+    <script data-main="app/main" src="bower_components/requirejs/require.js"></script>
+    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
     <!--<!(endif)-->
-
     <!--(if target dist)>
-        <script src="flicks.js"></script>
+    <script>
+      window.FLICKS_CONFIG = {{ config|safe }};
+    </script>
+    <script src="{% static "flicks.js" %}"></script>
     <!(endif)-->
-</body>
+  </body>
 </html>
