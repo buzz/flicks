@@ -39,7 +39,7 @@ define([
 
     destroy: function(options) {
       localStorage.removeItem(local_storage_id);
-    },
+    }
 
   });
 

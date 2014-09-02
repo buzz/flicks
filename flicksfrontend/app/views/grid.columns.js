@@ -50,7 +50,7 @@ define([
       sortable:  true,
       cssClass:  'align-center',
       maxWidth:  60,
-      minWidth:  60,
+      minWidth:  60
     },
     {
       id:        'rating',
@@ -60,6 +60,11 @@ define([
       minWidth:  80,
       sortable:  true,
       cssClass:  'align-center',
+      formatter: function(row, cell, value, columnDef, dataContext) {
+        if (!value)
+          return 'N/A';
+        return '%.1f'.format(value);
+      }
     },
     {
       id:        'runtime',
