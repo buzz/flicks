@@ -14,7 +14,8 @@ define([
       'search':             {},
       'results_count':      0,
       'order_by':           'title',
-      'sidebar_enabled':    true,
+      'filters_enabled':    false,
+      'details_enabled':    true,
 
       // preferences
       // empty for now...

@@ -11,7 +11,6 @@ define([
   var DetailsView = Marionette.ItemView.extend({
 
     template: 'details',
-    id:       'details',
 
     ui: {
       cover_image:                        '.cover-image',
@@ -60,10 +59,10 @@ define([
 
           // AKA titles
           '.top': {
-            placement: 'right',
+            placement: 'left',
             title: '<strong>Also known as</strong>',
             content: function() {
-              var model = App.layout.sidebar.currentView.model;
+              var model = App.layout.details.currentView.model;
               if (!model)
                 return '';
               var lis = _.map(model.get('akas'), function(aka) {
@@ -78,7 +77,7 @@ define([
             placement: 'top',
             title: '<strong># votes</strong>',
             content: function() {
-              var model = App.layout.sidebar.currentView.model;
+              var model = App.layout.details.currentView.model;
               if (!model)
                 return '';
               return '%d'.format(model.get('votes'));

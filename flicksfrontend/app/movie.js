@@ -116,8 +116,12 @@ define([
         success: function() {
           cb(that);
         },
-        error: function() {
-          alert('Error: Communication with server failed!');
+        error: function(resp) {
+          if (resp.status === 404)
+            console.log('TODO');
+            // TODO: show error (example: ID 662)
+          else
+            alert('Error: Communication with server failed!');
         }
       });
     }

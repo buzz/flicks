@@ -306,6 +306,8 @@ class Movie(models.Model):
                 import urllib
                 coverfile = urllib.URLopener()
                 coverfile.retrieve(cover_url, self.cover_filepath)
+                return True
+        return False
 
 @receiver(post_save, sender=Movie)
 def sync_with_imdb(sender, instance, created, **kwargs):
