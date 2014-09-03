@@ -1,65 +1,70 @@
 <div class="container-fluid">
 
-<!-- Display -->
-<button id="btn-toggle-sidebar" title="Toggle details" type="button" class="btn btn-default enable-tooltip<%= sidebar_enabled === true ? ' active' : '' %>" data-toggle="button">
-  <i class="fa"></i>
-</button>
-
-<div class="btn-group" id="radio-display-mode" data-toggle="buttons">
-  <label title="List view" class="btn btn-default navbar-btn active enable-tooltip">
-    <input type="radio" name="options" value="grid">
-    <i class="fa fa-list"></i>
-  </label>
-  <label title="Tiles view" class="btn btn-default navbar-btn enable-tooltip">
-    <input type="radio" name="options" value="tiles">
-    <i class="fa fa-th"></i>
-  </label>
-</div>
-
-<!-- Add movie -->
-<button id="btn-add-movie" type="button" class="btn btn-default navbar-btn">
-  <i class="fa fa-plus"></i>
-  Add movie
-</button>
-
-<!-- Preferences button -->
-<button id="btn-prefs" type="button" class="btn btn-default navbar-btn">
-  <i class="fa fa-sliders"></i>
-  Preferences
-</button>
-
-<!-- Search input -->
-<form class="navbar-form navbar-right" role="search">
-  <div class="form-group">
-    <div class="input-group">
-
-      <span class="input-group-btn">
-        <button title="Advanced search" id="btn-adv-search" class="btn btn-default enable-tooltip" type="button">
-          <i class="fa fa-search-plus"></i>
-        </button>
-      </span>
-      <input type="text" class="form-control" placeholder="Search" value="<%= typeof(search) === 'string' ? search : '' %>">
-
-      <span class="input-group-btn">
-        <button title="Clear search" id="btn-clear-search" class="btn btn-default enable-tooltip" type="button">
-          <i class="fa fa-times"></i>
-        </button>
-
-        <button title="Go!" class="btn btn-default enable-tooltip disabled" type="submit">
-          <i class="fa fa-search"></i>
-        </button>
-      </span>
-
-    </div>
+  <!-- Display -->
+  <div class="btn-group" id="radio-display-mode" data-toggle="buttons">
+    <label title="List view" class="btn btn-default navbar-btn active enable-tooltip">
+      <input type="radio" name="options" value="grid">
+      <i class="fa fa-list"></i>
+    </label>
+    <label title="Tiles view" class="btn btn-default navbar-btn enable-tooltip">
+      <input type="radio" name="options" value="tiles">
+      <i class="fa fa-th"></i>
+    </label>
   </div>
-</form>
 
-<!-- Status text -->
-<p id="status-text" class="navbar-text navbar-right"></p>
+  <div class="btn-group">
+    <label title="Toggle filters" class="btn btn-default navbar-btn enable-tooltip btn-toggle-filters">
+      <i class="fa fa-filter"></i>
+    </label>
+    <label title="Toggle details" class="btn btn-default navbar-btn enable-tooltip btn-toggle-details">
+      <i class="fa fa-info-circle"></i>
+    </label>
+  </div>
 
-<!-- Load indicator -->
-<p id="spinner" class="navbar-text navbar-right">
-  <i class="fa fa-spinner fa-2x fa-spin"></i>
-</p>
+  <!-- Add movie -->
+  <button id="btn-add-movie" type="button" class="btn btn-default navbar-btn">
+    <i class="fa fa-plus"></i>
+    Add movie
+  </button>
+
+  <!-- Preferences button -->
+  <button id="btn-prefs" type="button" class="btn btn-default navbar-btn">
+    <i class="fa fa-sliders"></i>
+    Preferences
+  </button>
+
+  <!-- Search input -->
+  <form class="navbar-form navbar-right" role="search">
+    <div class="form-group">
+      <div class="input-group">
+
+        <span class="input-group-btn">
+          <button title="Advanced search" id="btn-adv-search" class="btn btn-default enable-tooltip" type="button">
+            <i class="fa fa-search-plus"></i>
+          </button>
+        </span>
+        <input type="text" class="form-control" placeholder="Search" value="<%= typeof(search) === 'string' ? search : '' %>">
+
+        <span class="input-group-btn">
+          <button title="Clear search" id="btn-clear-search" class="btn btn-default enable-tooltip" type="button">
+            <i class="fa fa-times"></i>
+          </button>
+
+          <button class="btn btn-default disabled" type="submit">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+
+      </div>
+    </div>
+  </form>
+
+  <!-- Status text -->
+  <p id="status-text" class="navbar-text navbar-right"></p>
+
+  <!-- Load indicator -->
+  <p id="spinner" class="navbar-text navbar-right">
+    <i class="fa fa-spinner fa-2x fa-spin"></i>
+  </p>
 
 </div>

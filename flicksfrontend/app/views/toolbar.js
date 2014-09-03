@@ -10,9 +10,10 @@ define([
     className: 'navbar navbar-default navbar-static-top',
 
     ui: {
-      btn_toggle_sidebar:              '#btn-toggle-sidebar',
       display_mode:                    '#radio-display-mode',
       display_mode_input:              '#radio-display-mode input',
+      btn_toggle_filters:              '.btn-toggle-filters',
+      btn_toggle_details:              '.btn-toggle-details',
       btn_add_movie:                   '#btn-add-movie',
       btn_prefs:                       '#btn-prefs',
       status_text:                     '#status-text',
@@ -25,8 +26,9 @@ define([
     },
 
     events: {
-      'click  @ui.btn_toggle_sidebar': 'toggleSidebarClick',
       'change @ui.display_mode_input': 'displayModeClick',
+      'click  @ui.btn_toggle_filters': 'toggleFiltersClick',
+      'click  @ui.btn_toggle_details': 'toggleDetailsClick',
 
       'click  @ui.btn_add_movie':      'addMovieClick',
       'click  @ui.btn_prefs':          'prefsClick',
@@ -40,7 +42,8 @@ define([
     modelEvents: {
       'change:search':                 'searchChanged',
       'change:results_count':          'resultsCountChanged',
-      'change:sidebar_enabled':        'sidebarEnabledChanged'
+      'change:details_enabled':        'detailsEnabledChanged',
+      'change:filters_enabled':        'filtersEnabledChanged'
     },
 
     behaviors: {
@@ -61,8 +64,10 @@ define([
 
     onRender: function() {
       this.resultsCountChanged(this.model, this.model.get('results_count'));
-      this.sidebarEnabledChanged(
-        this.model, this.model.get('sidebar_enabled'));
+      this.detailsEnabledChanged(
+        this.model, this.model.get('details_enabled'));
+      this.filtersEnabledChanged(
+        this.model, this.model.get('filters_enabled'));
       this.updateSearchButtons();
     },
 
@@ -83,14 +88,18 @@ define([
       }
     },
 
-    sidebarEnabledChanged: function(state, enabled) {
-      var $i = this.ui.btn_toggle_sidebar.find('i');
+    filtersEnabledChanged: function(state, enabled) {
       if (enabled)
-        $i.removeClass('fa-caret-square-o-right')
-          .addClass('fa-caret-square-o-left');
+        this.ui.btn_toggle_filters.addClass('active')
       else
-        $i.addClass('fa-caret-square-o-right')
-          .removeClass('fa-caret-square-o-left');
+        this.ui.btn_toggle_filters.removeClass('active')
+    },
+
+    detailsEnabledChanged: function(state, enabled) {
+      if (enabled)
+        this.ui.btn_toggle_details.addClass('active')
+      else
+        this.ui.btn_toggle_details.removeClass('active')
     },
 
     resultsCountChanged: function(state, count) {
@@ -101,8 +110,12 @@ define([
 
     // UI handlers
 
-    toggleSidebarClick: function(ev) {
-      App.vent.trigger('display:toggle-sidebar');
+    toggleFiltersClick: function(ev) {
+      App.vent.trigger('display:toggle-filters');
+    },
+
+    toggleDetailsClick: function(ev) {
+      App.vent.trigger('display:toggle-details');
     },
 
     displayModeClick: function(ev) {
@@ -113,27 +126,6 @@ define([
     addMovieClick: function(ev) {
       App.vent.trigger('display:add-movie');
     },
-
-    // TODO: this has to go to the vent
-    // addMovieClick: function(ev) {
-    //   var that = this, m = new Movie();
-    //   m.save({}, {
-    //     success: function(m) {
-    //       // reload collection
-    //       that.listenToOnce(App.movie_collection, 'dataloaded', function() {
-    //         // select new movie
-    //         App.movie_collection.getIndexById(m.id, function(index) {
-    //           App.layout.movies.currentView.scrollToRow(index);
-    //           App.router.navigate('movie/%d'.format(m.id), { trigger: true });
-    //         });
-    //       });
-    //       App.movie_collection.reset();
-    //     },
-    //     error: function() {
-    //       alert('Error: Could not create movie!');
-    //     }
-    //   });
-    // },
 
     prefsClick: function(ev) {
       App.vent.trigger('display:preferences');

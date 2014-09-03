@@ -13,21 +13,32 @@ define([
       modal:   '#modal',
       toolbar: '#toolbar',
       movies:  '#movies',
-      sidebar: '#sidebar'
+      filters: '#filters',
+      details: '#details'
     },
 
     modelEvents: {
-      'change:sidebar_enabled':   'sidebarEnabledChanged'
+      'change:details_enabled':   'detailsEnabledChanged'
     },
 
-    sidebarEnabledChanged: function(state, enabled) {
-      var $el = App.layout.sidebar.$el;
+    filtersEnabledChanged: function(state, enabled) {
+      var $el = App.layout.filters.$el;
+      if (enabled)
+        $el.removeClass('collapsed');
+      else
+        $el.addClass('collapsed');
+      App.vent.trigger('display:content-resize');
+    },
+
+    detailsEnabledChanged: function(state, enabled) {
+      var $el = App.layout.details.$el;
       if (enabled)
         $el.removeClass('collapsed');
       else
         $el.addClass('collapsed');
       App.vent.trigger('display:content-resize');
     }
+
 
   });
 

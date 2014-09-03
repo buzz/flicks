@@ -121,9 +121,12 @@ def imdb_cover_import(request, movie_id):
         return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
                             content_type='application/json', status=404)
 
-    movie.fetch_cover_from_imdb()
-
-    json = res.serialize(None, res.full_dehydrate(bundle), 'application/json')
+    if movie.fetch_cover_from_imdb():
+        json = res.serialize(None, res.full_dehydrate(bundle), 'application/json')
+    else:
+        return HttpResponse(enc.encode({ 'error': 'No cover found.' }),
+                            content_type='application/json', status=404)
+        json = res.serialize(None, res.full_dehydrate(bundle), 'application/json')
     return HttpResponse(json, content_type='application/json')
 
 

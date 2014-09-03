@@ -117,7 +117,7 @@ define([
     }
 
     App.listenTo(App.state, {
-        // display details in sidebar
+      // display details
       'change:selected_movie_id': function(state, id) {
         if (!id) {
           App.vent.trigger('display:details', undefined);
@@ -160,22 +160,26 @@ define([
         console.info('TODO: adv search');
       },
 
-      'display:details': function(movie) {
-        if (movie) {
-          var details = App.layout.sidebar.currentView;
-          if (details)
-            details.destroy();
-          // create view
-          details = new DetailsView({ model: movie });
-          App.layout.sidebar.show(details);
-        }
-        else
-          App.layout.sidebar.empty();
+      'display:toggle-filters': function() {
+        v = !App.state.get('filters_enabled');
+        App.state.set('filters_enabled', v);
       },
 
-      'display:toggle-sidebar': function() {
-        v = !App.state.get('sidebar_enabled');
-        App.state.set('sidebar_enabled', v);
+      'display:details': function(movie) {
+        if (movie) {
+          var details = App.layout.details.currentView;
+          if (details)
+            details.destroy();
+          details = new DetailsView({ model: movie });
+          App.layout.details.show(details);
+        }
+        else
+          App.layout.details.empty();
+      },
+
+      'display:toggle-details': function() {
+        v = !App.state.get('details_enabled');
+        App.state.set('details_enabled', v);
       },
 
       'display:add-movie': function() {
