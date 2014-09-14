@@ -1,0 +1,26 @@
+<div class="panel-heading" data-toggle="collapse" data-target="#filter-collapse-<%= key %>">
+  <h4 class="panel-title">
+    <i class="fa fa-caret-right"></i>
+    <span class="title"><%= name %></span>
+    <a class="badge enable-tooltip" title="Reset this filter" href="#"></a>
+  </h4>
+</div>
+<div id="filter-collapse-<%= key %>" class="panel-collapse collapse">
+  <div class="panel-body">
+    <div class="range-slider">
+      <div class="slider-value slider-value-low">
+        <form>
+          <input type="text" class="form-control input-sm" value="<%= low %>">
+        </form>
+      </div>
+      <div class="slider-wrapper">
+        <input type="text" class="slider" value="" data-slider-min="<%= min %>" data-slider-max="<%= max %>" data-slider-value="[<%= low %>,<%= high %>]" data-slider-precision="<%= precision %>" data-slider-step="<%= step %>">
+      </div>
+      <div class="slider-value slider-value-high">
+        <form>
+          <input type="text" class="form-control input-sm" value="<%= high %>">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

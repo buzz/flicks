@@ -1,6 +1,6 @@
 define([
   'backbone',
-  'movie',
+  'models/movie',
   'constants'
 ], function(
   Backbone,
@@ -15,8 +15,6 @@ define([
   // blocks are loaded at once. on the other hand scrolling slowly
   // should load new data on the fly. so it mustn't be too high!
   var FETCH_DELAY = 180
-
-  var timeout = null;
 
   var MovieCollection = Backbone.Collection.extend({
 
@@ -37,9 +35,8 @@ define([
 
     initialize: function() {
 
-      // Read current state
-      this.setSearchQuery(App.state, App.state.get('search'));
-      this.setSorting(App.state, App.state.get('order_by'));
+      this.throttledFetchPages = _.throttle(
+        this._fetchPages, FETCH_DELAY, { leading: false });
 
       this.listenTo(App.state, {
 
@@ -58,8 +55,10 @@ define([
               movie.set('_selected', true);
           }
         },
-        'change:order_by': this.setSorting,
-        'change:search':   this.setSearchQuery
+        'change:order_by': function() {
+          this.setSorting.apply(this, arguments);
+          this.reset();
+        }
       }, this);
 
       this.on({
@@ -132,44 +131,14 @@ define([
     setSorting: function(state, order_by) {
       if (order_by !== this.order_by_args.order_by) {
         this.order_by_args = { order_by: order_by };
-        this.reset();
       }
     },
 
-    setSearchQuery: function(state, q) {
-      var search_args = {};
-      // search arguments
-      if (typeof q === "string" && q.length > 0)
-        // top/simple search
-        search_args.q = q;
-      else if (typeof q === "object") {
-        // advanced search
-        _.each(q, function(v, k) {
-          if (typeof v === 'string' && v !== '') {
-            // exact model field
-            if (k === 'year')
-              search_args[k] = v;
-            // string model field (search)
-            if (_.indexOf(['title', 'mpaa'], k) !== -1)
-              search_args[k + '__search'] = v;
-            // boolean model field
-            else if (_.indexOf(['seen', 'favourite'], k) !== -1)
-              search_args[k] = v;
-            // related field
-            else if (_.indexOf(['countries', 'languages', 'genres', 'keywords',
-                                'cast', 'directors', 'producers', 'writers'], k)
-                     !== -1)
-              search_args[k + '__name__search'] = v;
-          }
-          // range field
-          else if (typeof v === 'object' && v[0] !== '' && v[1] !== '') {
-            if (_.indexOf(['year', 'runtime', 'rating'], k) !== -1)
-              search_args[k + '__range'] = v[0] + ',' + v[1];
-          }
-        });
-      }
+    // set filters and search query
+    setSearchArgs: function(query, search_args) {
+      if (typeof(query) === 'string' && query.length > 0)
+        search_args.q = query;
       this.search_args = search_args;
-      this.reset();
     },
 
     _fetchPages: function(fromPage, toPage) {
@@ -186,10 +155,8 @@ define([
         if (data.offset in this.req_info)
           continue;
 
-        // order by
+        // ordering/search/filtering
         _.extend(data, this.order_by_args);
-
-        // search
         _.extend(data, this.search_args);
 
         // create request
@@ -234,8 +201,6 @@ define([
     },
 
     ensureData: function(from, to) {
-      var that = this;
-
       // valid range check
       if (from < 0)
         from = 0;
@@ -259,12 +224,7 @@ define([
 
       // fetch items (delay loading so it doesn't get triggered if
       // user just scrolls down the list quickly
-      if (timeout)
-        clearTimeout(timeout);
-      timeout = setTimeout(function() {
-        timeout = null;
-        that._fetchPages(fromPage, toPage);
-      }, FETCH_DELAY);
+      this.throttledFetchPages(fromPage, toPage);
     }
 
   });

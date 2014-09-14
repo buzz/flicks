@@ -1,9 +1,7 @@
 define([
-  'marionette',
-  'movie'
+  'marionette'
 ], function(
-  Marionette,
-  Movie
+  Marionette
 ) {
 
   var Router = Marionette.AppRouter.extend({
@@ -27,10 +25,13 @@ define([
 
       showMovie: function(id) {
         App.movie_collection.getIndexById(id, function(index) {
-          if (index >= 0)
+          if (index >= 0) {
             App.state.set('selected_movie_id', id);
-          else
+          }
+          else {
+            App.state.set('selected_movie_id', undefined);
             App.router.navigate('', { trigger: true });
+          }
         });
       }
 

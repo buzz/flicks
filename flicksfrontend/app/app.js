@@ -1,13 +1,16 @@
 define([
   'marionette',
   'router',
-  'state',
-  'movies',
-  'imdb-results',
+  'models/state',
   'util/jst_render',
+
+  'collections/movies',
+  'collections/filters',
+  'collections/imdb-results',
 
   'views/layout',
   'views/toolbar',
+  'views/filters',
   'views/details',
   'views/grid',
   'views/tiles',
@@ -18,12 +21,15 @@ define([
   Marionette,
   Router,
   AppState,
-  MovieCollection,
-  ImdbResultCollection,
   jstRender,
+
+  MovieCollection,
+  FilterCollection,
+  ImdbResultCollection,
 
   AppLayout,
   ToolbarView,
+  FiltersView,
   DetailsView,
   GridView,
   TilesView,
@@ -72,6 +78,81 @@ define([
     App.layout = new AppLayout({ model: App.state });
     App.main.show(App.layout);
     App.layout.toolbar.show(new ToolbarView({ model: App.state }));
+
+    /*
+     * Filters
+     */
+    App.filters = new FilterCollection();
+    App.filters.addFromDefinition([
+      {
+        name: 'Genres',
+        key: 'genres',
+        type: 'token',
+        url: '/genre/',
+        enable_search: false
+      },
+      {
+        name: 'Keywords',
+        key: 'keywords',
+        type: 'token',
+        url: '/keyword/'
+      },
+      {
+        name: 'Directors',
+        key: 'directors',
+        type: 'token',
+        url: '/director/'
+      },
+      {
+        name: 'Cast',
+        key: 'cast',
+        type: 'token',
+        url: '/cast/'
+      },
+      {
+        name: 'Countries',
+        key: 'countries',
+        type: 'token',
+        url: '/country/'
+      },
+      {
+        name: 'Languages',
+        key: 'languages',
+        type: 'token',
+        url: '/language/'
+      },
+      {
+        name: 'Year',
+        key: 'year',
+        type: 'range',
+        min: App.config.year_min,
+        max: App.config.year_max,
+        precision: 0
+      },
+      {
+        name: 'Rating',
+        key: 'rating',
+        type: 'range',
+        min: 0.0,
+        max: 10.0,
+        precision: 1,
+        step: 0.1
+      },
+      {
+        name: 'Runtime',
+        key: 'runtime',
+        type: 'range',
+        min: App.config.runtime_min,
+        max: App.config.runtime_max
+      }
+    ]);
+
+    App.layout.filters.show(new FiltersView({
+      model:      App.state,
+      collection: App.filters
+    }));
+    App.movie_collection.setSearchArgs(
+      App.state.get('search'), App.layout.filters.currentView.getSearchArgs());
 
     /*
      * Events
@@ -153,13 +234,6 @@ define([
         App.layout.movies.show(view);
       },
 
-      'display:adv-search': function() {
-        // TODO
-        // var view = new AdvancedView( ... );
-        // App.layout.modal.show(view);
-        console.info('TODO: adv search');
-      },
-
       'display:toggle-filters': function() {
         v = !App.state.get('filters_enabled');
         App.state.set('filters_enabled', v);
@@ -212,6 +286,13 @@ define([
           }
         });
         App.layout.modal.show(view);
+      },
+
+      'display:fetch-movies': function() {
+        App.movie_collection.setSearchArgs(
+          App.state.get('search'),
+          App.layout.filters.currentView.getSearchArgs());
+        App.movie_collection.reset();
       },
 
       // ACTIONS
@@ -272,6 +353,31 @@ define([
 
       'action:search': function(q) {
         App.state.set('search', q);
+      },
+
+      'action:add-token-filter': function(key, value) {
+        App.state.addTokenFilter(key, value);
+        App.vent.trigger('display:fetch-movies');
+      },
+
+      'action:remove-token-filter': function(key, value) {
+        App.state.removeTokenFilter(key, value);
+        App.vent.trigger('display:fetch-movies');
+      },
+
+      'action:set-token-filter-any': function(key, any) {
+        App.state.setFilterAny(key, any);
+        App.vent.trigger('display:fetch-movies');
+      },
+
+      'action:add-range-filter': function(key, value) {
+        App.state.addRangeFilter(key, value);
+        App.vent.trigger('display:fetch-movies');
+      },
+
+      'action:remove-range-filter': function(key) {
+        App.state.removeRangeFilter(key);
+        App.vent.trigger('display:fetch-movies');
       },
 
       'action:imdb-search': function(q) {

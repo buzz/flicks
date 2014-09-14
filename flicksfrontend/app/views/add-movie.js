@@ -1,5 +1,5 @@
 define([
-  'movie',
+  'models/movie',
   'views/modal',
   'views/imdb-results'
 ], function(

@@ -6,6 +6,7 @@ module.exports = {
 
   dev: [
 
+    'ensureTmp',
     'clean:app_css',
     'fontAwesomeVars:dev',
     'configureProxies',
@@ -18,6 +19,7 @@ module.exports = {
   dist: [
 
     // prepare
+    'ensureTmp',
     'clean:app_css',
     'clean:tmp',
     'clean:dist',

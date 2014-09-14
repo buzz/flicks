@@ -1,5 +1,4 @@
 module.exports = {
-  options: { spawn: false },
   sass: {
     files: ['app/style/sass/*.sass'],
     tasks: ['compass:dev']

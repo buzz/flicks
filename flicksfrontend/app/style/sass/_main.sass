@@ -34,28 +34,55 @@ html
         z-index: 0
         flex: 1
 
-        #details
-          +default-gradient-inside
-          order: 2
+        .sidebar
+          +default-gradient($reverse: true)
+          position: relative
           width: 23%
           min-width: 355px
           min-height: 100%
-          position: relative
           border-top: 1px solid $color-border-lighter
-          border-left: 1px solid $color-border-lighter
           overflow: hidden
           z-index: 500
 
           &.collapsed
             width: 0
             min-width: 0
-            border-right: none
+
+          &#filters
+            order: 1
+            border-right: 1px solid $color-border-lighter
+
+            &.collapsed
+              border-right: none
+
+          &#details
+            order: 3
+            border-left: 1px solid $color-border-lighter
+
+            &.collapsed
+              border-left: none
 
         #movies
-          order: 1
+          order: 2
           flex: 1
           position: relative
           min-height: 100%
           background-color: #ebebeb
           border-top: 1px solid $color-border-lighter
           z-index: -100
+
+.token
+  +transition-property(color, background-color, border-color)
+  +transition-duration($default-duration)
+  color: $color-default-font
+  background-color: $color-bg2
+  margin: 0 ($padding / 3) ($padding / 3) 0
+  border: 1px solid $color-badge
+
+  &:hover
+    color: $color-default-font !important
+
+  &.selected
+    background: $color-selected
+    border-color: $color-selected-dark
+    color: darken($color-selected-dark, 12%) !important

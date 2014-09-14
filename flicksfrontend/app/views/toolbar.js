@@ -10,18 +10,17 @@ define([
     className: 'navbar navbar-default navbar-static-top',
 
     ui: {
-      display_mode:                    '#radio-display-mode',
-      display_mode_input:              '#radio-display-mode input',
+      display_mode:                    '.radio-display-mode',
+      display_mode_input:              '.radio-display-mode input',
       btn_toggle_filters:              '.btn-toggle-filters',
       btn_toggle_details:              '.btn-toggle-details',
-      btn_add_movie:                   '#btn-add-movie',
-      btn_prefs:                       '#btn-prefs',
-      status_text:                     '#status-text',
-      spinner:                         '#spinner',
+      btn_add_movie:                   '.btn-add-movie',
+      btn_prefs:                       '.btn-prefs',
+      status_text:                     '.status-text',
+      spinner:                         '.spinner',
       search_form:                     'form[role=search]',
       search_input:                    'form[role=search] input',
-      btn_adv_search:                  'form[role=search] #btn-adv-search',
-      btn_clear_search:                'form[role=search] #btn-clear-search',
+      btn_clear_search:                'form[role=search] .btn-clear-search',
       btn_submit_search:               'form[role=search] button[type=submit]'
     },
 
@@ -34,7 +33,6 @@ define([
       'click  @ui.btn_prefs':          'prefsClick',
 
       'submit @ui.search_form':        'search',
-      'click  @ui.btn_adv_search':     'advSearch',
       'click  @ui.btn_clear_search':   'clearSearch',
       'input  @ui.search_input':       'updateSearchButtons'
     },
@@ -42,6 +40,7 @@ define([
     modelEvents: {
       'change:search':                 'searchChanged',
       'change:results_count':          'resultsCountChanged',
+      'change:filters_count':          'filtersCountChanged',
       'change:details_enabled':        'detailsEnabledChanged',
       'change:filters_enabled':        'filtersEnabledChanged'
     },
@@ -64,6 +63,7 @@ define([
 
     onRender: function() {
       this.resultsCountChanged(this.model, this.model.get('results_count'));
+      this.filtersCountChanged(this.model, this.model.get('filters_count'));
       this.detailsEnabledChanged(
         this.model, this.model.get('details_enabled'));
       this.filtersEnabledChanged(
@@ -82,10 +82,14 @@ define([
 
     searchChanged: function(state, search) {
       var $i = this.ui.search_input;
-      if ($i.val() !== search) {
-        $i.val(search);
-        this.updateSearchButtons();
+      if (typeof(search) === 'string') {
+        if ($i.val() !== search) {
+          $i.val(search);
+          this.updateSearchButtons();
+        }
       }
+      else
+        $i.val('');
     },
 
     filtersEnabledChanged: function(state, enabled) {
@@ -106,6 +110,19 @@ define([
       var word = 'movie%s'.format(count == 1 ? '' : 's');
       this.ui.status_text.html(
         '<strong>%d</strong> %s found'.format(count, word));
+    },
+
+    filtersCountChanged: function(state, count) {
+      if (count > 0) {
+        this.ui.btn_toggle_filters
+          .addClass('btn-primary')
+          .removeClass('btn-default');
+      }
+      else {
+        this.ui.btn_toggle_filters
+          .addClass('btn-default')
+          .removeClass('btn-primary');
+      }
     },
 
     // UI handlers
@@ -141,10 +158,6 @@ define([
       this.ui.search_input.val('');
       this.updateSearchButtons();
       App.vent.trigger('action:search', '');
-    },
-
-    advSearch: function() {
-      App.vent.trigger('display:adv-search');
     },
 
     updateSearchButtons: function() {

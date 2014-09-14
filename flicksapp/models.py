@@ -4,7 +4,6 @@ import math
 
 from django.conf import settings
 from django.db import models
-from django.db.models import Q, Count
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -15,10 +14,13 @@ from flicksapp.constants import COVER_MAX_WIDTH, COVER_MAX_HEIGHT
 from flicksapp.fields import ListField
 from flicksapp.validators import validate_imdb_id
 from flicksapp.choices import FILE_TYPE_CHOICES, TRACK_TYPE_CHOICES, VIDEO_TYPE
+from flicksapp.managers import NumMoviesManager, PersonManager
 
 
 class Country(models.Model):
     name = models.CharField('Country', max_length=200, unique=True)
+
+    objects = NumMoviesManager()
 
     def __unicode__(self):
         return self.name
@@ -26,29 +28,18 @@ class Country(models.Model):
 class Genre(models.Model):
     name = models.CharField('Name', max_length=200, unique=True)
 
+    objects = NumMoviesManager()
+
     def __unicode__(self):
         return self.name
 
-class PersonManager(models.Manager):
-    def actors(self):
-        """Returns people that acted in at least one movie."""
-        return self.annotate(
-            acted_in_count=Count('acted_in')).filter(acted_in_count__gt=0)
-    def directors(self):
-        """Returns people that directed at least one movie."""
-        return self.annotate(
-            directed_count=Count('directed')).filter(directed_count__gt=0)
-    def writers(self):
-        """Returns people that have written at least one movie script."""
-        return self.annotate(
-            written_count=Count('written')).filter(written_count__gt=0)
-
 class Person(models.Model):
-    objects = PersonManager()
     imdb_id = models.PositiveIntegerField('IMDb ID', null=True, blank=True,
                                           unique=True,
                                           validators=[validate_imdb_id])
     name = models.CharField('Name', max_length=200)
+
+    objects = PersonManager()
 
     def __unicode__(self):
         return self.name
@@ -56,11 +47,15 @@ class Person(models.Model):
 class Language(models.Model):
     name = models.CharField('Name', max_length=200, unique=True)
 
+    objects = NumMoviesManager()
+
     def __unicode__(self):
         return self.name
 
 class Keyword(models.Model):
     name = models.CharField('Name', max_length=200, unique=True)
+
+    objects = NumMoviesManager()
 
     def __unicode__(self):
         return self.name

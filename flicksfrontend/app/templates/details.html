@@ -1,9 +1,7 @@
 <div class="top">
   <div class="title">
-    <span>
-      <i class="fa fa-film"></i>
-      <%- title %>
-    </span>
+    <i class="fa fa-film"></i>
+    <%- title %>
   </div>
   <div class="year">
      <%- year %>
@@ -77,10 +75,12 @@
         </p>
       <% }) %>
 
+      <% if (mpaa !== '') { %>
       <p class="row mpaa">
         <label>MPAA</label>
         <span class="value"><%- mpaa %></span>
       </p>
+      <% } %>
 
     </div>
 
@@ -95,11 +95,11 @@
     </div>
 
     <div class="tab-pane" id="tab-cast">
-      <%= _.map(cast, function(entry) { return '<a class="cast" href="#">%s</a>'.format(entry)  }).join(', ') %>
+      <%= _.map(cast, function(entry) { return '<a class="cast token badge" href="#">%s</a>'.format(entry)  }).join(' ') %>
     </div>
 
     <div class="tab-pane" id="tab-keywords">
-      <%= _.map(keywords, function(entry) { return '<a class="keywords" href="#">%s</a>'.format(entry)  }).join(' ') %>
+      <%= _.map(keywords, function(entry) { return '<a class="keywords token badge" href="#">%s</a>'.format(entry)  }).join(' ') %>
     </div>
 
     <div class="tab-pane" id="tab-notes">

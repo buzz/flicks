@@ -10,7 +10,7 @@ define([
 
     id: 'tiles',
 
-    itemView: TileView,
+    childView: TileView,
 
     events: {
       'scroll': 'loadViewport'
@@ -57,6 +57,10 @@ define([
       // console.log('to %d'.format(to));
 
       this.collection.ensureData(from, to);
+    },
+
+    keypress: function(key_code) {
+      // TODO
     }
 
   });
