@@ -49,7 +49,7 @@
 
   .slick-viewport
     overflow-x: hidden !important
-    overflow-y: scroll !important
+    overflow-y: auto !important
 
     .slick-row
 
@@ -69,7 +69,7 @@
         height: 25px
 
         &.selected
-          background-color: $color-selected
+          +default-gradient(lighten($brand-primary, 40%), lighten($brand-primary, 45%))
           color: $color-emph-font
 
         &.align-right

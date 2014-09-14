@@ -118,14 +118,6 @@ define([
         that.loadViewport();
       });
 
-      // cell get active (we prevent it or it causes clicks to be
-      // swallowed)
-      this.grid.onActiveCellChanged.subscribe(function() {
-        // prevent any cell from being active
-        // TODO: better way to do this?
-        that.grid.resetActiveCell()
-      });
-
       // user selected a row
       this.grid.onSelectedRowsChanged.subscribe(function(e, args) {
         if (args.rows.length == 1) {
@@ -173,6 +165,30 @@ define([
 
     close: function() {
       this.grid.unsubscribeAll();
+    },
+
+    // arrow up/down is handled by slickgrid already
+    keypress: function(key_code) {
+      var vp = this.grid.getViewport(), per_page = vp.bottom - vp.top - 1,
+        selected_row = this.grid.getSelectedRows()[0], row;
+
+      if (key_code === 33)      // page up
+        var row = selected_row - per_page;
+      else if (key_code === 34) // page down
+        var row = selected_row + per_page;
+      else if (key_code === 35) // end
+        var row = this.collection.getLength() - 1;
+      else if (key_code === 36) // home
+        var row = 0;
+      else
+        return;
+
+      // honor limits
+      row = Math.min(this.collection.getLength() - 1, Math.max(0, row));
+      if (row !== selected_row) {
+        this.grid.setActiveCell(row, 0);
+        this.grid.setSelectedRows([row]);
+      }
     }
 
   });

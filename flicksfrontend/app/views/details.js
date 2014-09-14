@@ -1,9 +1,7 @@
 define([
-  'backbone',
   'marionette',
   'util/formatter'
 ], function(
-  Backbone,
   Marionette,
   formatter
 ) {
@@ -55,35 +53,30 @@ define([
       ToolTips: {},
 
       PopOvers: {
-        selectors: {
-
-          // AKA titles
-          '.top': {
-            placement: 'left',
-            title: '<strong>Also known as</strong>',
-            content: function() {
-              var model = App.layout.details.currentView.model;
-              if (!model)
-                return '';
-              var lis = _.map(model.get('akas'), function(aka) {
-                return '<li>%s</li>'.format(formatter.aka(aka));
-              }).join('');
-              return '<ul class="akas">%s</ul>'.format(lis)
-            }
-          },
-
-          // number of votes
-          '.row.rating .value': {
-            placement: 'top',
-            title: '<strong># votes</strong>',
-            content: function() {
-              var model = App.layout.details.currentView.model;
-              if (!model)
-                return '';
-              return '%d'.format(model.get('votes'));
-            }
+        // AKA titles
+        '.top': {
+          placement: 'left',
+          title: '<strong>Also known as</strong>',
+          content: function() {
+            var model = App.layout.details.currentView.model;
+            if (!model)
+              return '';
+            var lis = _.map(model.get('akas'), function(aka) {
+              return '<li>%s</li>'.format(formatter.aka(aka));
+            }).join('');
+            return '<ul class="akas">%s</ul>'.format(lis)
           }
-
+        },
+        // number of votes
+        '.row.rating .value': {
+          placement: 'top',
+          title: '<strong># votes</strong>',
+          content: function() {
+            var model = App.layout.details.currentView.model;
+            if (!model)
+              return '';
+            return '%d'.format(model.get('votes'));
+          }
         }
       }
     },

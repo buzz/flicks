@@ -1,0 +1,32 @@
+<div class="panel-heading" data-toggle="collapse" data-target="#filter-collapse-<%= key %>">
+  <div class="filter-any">
+    <input type="checkbox" name="filter-any" data-size="mini" data-on-text="Any" data-off-text="All" data-on-color="default" data-off-color="default"<%= any ? ' checked' : '' %>>
+  </div>
+  <h4 class="panel-title">
+    <i class="fa fa-caret-right"></i>
+    <span class="title"><%= name %></span>
+    <a class="filters-count badge enable-tooltip" title="Reset this filter" href="#"><%= filters_count %></a>
+  </h4>
+</div>
+<div id="filter-collapse-<%= key %>" class="panel-collapse collapse">
+  <div class="panel-body">
+    <% if (enable_search) { %>
+    <form role="search">
+      <div class="form-group">
+        <div class="input-group">
+
+          <input type="text" class="token-search form-control input-sm" placeholder="Search" value="<%= typeof(search) === 'string' ? search : '' %>">
+
+          <span class="input-group-btn">
+            <button class="btn btn-sm btn-default btn-clear-search enable-tooltip" type="button" title="Clear search">
+              <i class="fa fa-times"></i>
+            </button>
+          </span>
+
+        </div>
+      </div>
+    </form>
+    <% } %>
+    <div class="token-list <%= key %>"></div>
+  </div>
+</div>

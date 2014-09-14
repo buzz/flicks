@@ -11,7 +11,9 @@ define([
       // current state
       'view_mode':          'grid',
       'selected_movie_id':  undefined,
-      'search':             {},
+      'search':             '',
+      'filters':            {},
+      'filters_count':      0,
       'results_count':      0,
       'order_by':           'title',
       'filters_enabled':    false,
@@ -23,6 +25,9 @@ define([
 
     initialize: function() {
       this.on('change', this.save, this);
+      this.on('change:search', function() {
+        App.vent.trigger('display:fetch-movies');
+      }, this);
     },
 
     onCollSync: function(coll) {
@@ -40,6 +45,33 @@ define([
 
     destroy: function(options) {
       localStorage.removeItem(local_storage_id);
+    },
+
+    addTokenFilter: function(key, value) {
+      App.state.get('filters')[key].ids.push(value);
+      this.save();
+    },
+
+    removeTokenFilter: function(key, value) {
+      App.state.get('filters')[key].ids.pop(value);
+      this.save();
+    },
+
+    setFilterAny: function(key, any) {
+      this.get('filters')[key].any = any;
+      this.save();
+    },
+
+    addRangeFilter: function(key, limits) {
+      var filter = App.state.get('filters')[key];
+      filter.low = limits[0];
+      filter.high = limits[1];
+      this.save();
+    },
+
+    removeRangeFilter: function(key) {
+      App.state.get('filters')[key] = {};
+      this.save();
     }
 
   });

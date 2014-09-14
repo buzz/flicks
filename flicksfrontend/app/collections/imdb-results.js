@@ -1,6 +1,6 @@
 define([
   'backbone',
-  'imdb-result'
+  'models/imdb-result'
 ], function(
   Backbone,
   ImdbResult

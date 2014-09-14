@@ -19,7 +19,6 @@ def bootstrap(request):
     '''
     enc = FlicksJSONEncoder()
     agg = Movie.objects.aggregate(Min('year'), Max('year'),
-                                  Min('rating'), Max('rating'),
                                   Min('runtime'), Max('runtime'))
 
     movie_root = reverse('api_dispatch_list', kwargs={
@@ -45,12 +44,10 @@ def bootstrap(request):
             'imdb_search':       imdb_search,
 
             # for search form
-            'year_min': agg['year__min'],
-            'year_max': agg['year__max'],
-            'rating_min': agg['rating__min'],
-            'rating_max': agg['rating__max'],
-            'runtime_min': agg['runtime__min'],
-            'runtime_max': agg['runtime__max'],
+            'year_min':          agg['year__min'],
+            'year_max':          agg['year__max'],
+            'runtime_min':       agg['runtime__min'],
+            'runtime_max':       agg['runtime__max'],
         })
     }
     return render(request, 'index.html', ctx)

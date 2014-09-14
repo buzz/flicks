@@ -1,43 +1,106 @@
-from django.db.models import Q
+from django.db.models import Q, Count
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL_WITH_RELATIONS
 from tastypie.authorization import Authorization
+from tastypie.exceptions import InvalidFilterError
+
 
 from flicksapp.models import Movie, Person, Genre, Keyword, File, Language,\
     Country
 import flicksapp.constants as c
 
 
-class PersonResource(ModelResource):
+class NumMoviesMixin(object):
+    def dehydrate_num_movies(self, bundle):
+        try:
+            return bundle.obj.num_movies
+        except AttributeError:
+            return None
+
+
+class PersonResource(ModelResource, NumMoviesMixin):
+    num_movies = fields.IntegerField()
     class Meta:
         queryset = Person.objects.all()
         resource_name = 'person'
-        fields = ('name',)
+        fields = ('id', 'name', 'num_movies')
         include_resource_uri = False
         filtering = {
-            'name': 'search',
+            'id': ('exact', 'in'),
+            'name': 'icontains',
         }
 
-class GenreResource(ModelResource):
+
+class DirectorResource(PersonResource):
     class Meta:
-        queryset = Genre.objects.all()
+        queryset = Person.objects.directors().add_num_movies('directed')
+        resource_name = 'director'
+
+
+class CastResource(PersonResource):
+    class Meta:
+        queryset = Person.objects.actors().add_num_movies('acted_in')
+        resource_name = 'cast'
+        filtering = {
+            'id': ('exact', 'in'),
+            'name': 'icontains',
+        }
+
+
+class GenreResource(ModelResource, NumMoviesMixin):
+    num_movies = fields.IntegerField()
+    class Meta:
+        queryset = Genre.objects.add_num_movies()
         resource_name = 'genre'
-        fields = ('name',)
+        fields = ('id', 'name', 'num_movies')
         include_resource_uri = False
         filtering = {
-            'name': 'search',
+            'id': ('exact', 'in'),
+            'name': 'icontains',
+        }
+        max_limit = None
+        limit = 9999
+
+
+class KeywordResource(ModelResource, NumMoviesMixin):
+    num_movies = fields.IntegerField()
+    class Meta:
+        queryset = Keyword.objects.add_num_movies()
+        resource_name = 'keyword'
+        fields = ('id', 'name', 'num_movies')
+        include_resource_uri = False
+        filtering = {
+            'id': ('exact', 'in'),
+            'name': 'icontains',
         }
 
-class KeywordResource(ModelResource):
+
+class LanguageResource(ModelResource, NumMoviesMixin):
+    num_movies = fields.IntegerField()
     class Meta:
-        queryset = Keyword.objects.all()
-        resource_name = 'keyword'
-        fields = ('name',)
+        queryset = Language.objects.add_num_movies()
+        resource_name = 'language'
+        fields = ('id', 'name', 'num_movies')
         include_resource_uri = False
         filtering = {
-            'name': 'search',
+            'id': ('exact', 'in'),
+            'name': 'icontains',
         }
+
+
+class CountryResource(ModelResource, NumMoviesMixin):
+    num_movies = fields.IntegerField()
+    class Meta:
+        queryset = Country.objects.add_num_movies()
+        resource_name = 'country'
+        fields = ('id', 'name', 'num_movies')
+        include_resource_uri = False
+        filtering = {
+            'id': ('exact', 'in'),
+            'name': 'icontains',
+        }
+
 
 class FileResource(ModelResource):
     class Meta:
@@ -46,30 +109,11 @@ class FileResource(ModelResource):
         fields = ('filename',)
         include_resource_uri = False
 
-class LanguageResource(ModelResource):
-    class Meta:
-        queryset = Language.objects.all()
-        resource_name = 'language'
-        fields = ('name',)
-        include_resource_uri = False
-        filtering = {
-            'name': 'search',
-        }
-
-class CountryResource(ModelResource):
-    class Meta:
-        queryset = Country.objects.all()
-        resource_name = 'country'
-        fields = ('name',)
-        include_resource_uri = False
-        filtering = {
-            'name': 'search',
-        }
 
 class BaseMovieResource(ModelResource):
-    """
+    '''
     Basic dehydrate functions.
-    """
+    '''
     def dehydrate_cast(self, bundle):
         return [p.data['name'] for p in bundle.data['cast']]
 
@@ -97,10 +141,11 @@ class BaseMovieResource(ModelResource):
     def dehydrate_languages(self, bundle):
         return [p.data['name'] for p in bundle.data['languages']]
 
+
 class MovieDetailResource(BaseMovieResource):
-    """
+    '''
     Lists all relevant properties.
-    """
+    '''
     cast = fields.ToManyField(PersonResource, 'cast', full=True, readonly=True)
     directors = fields.ToManyField(PersonResource, 'directors', full=True, readonly=True)
     producers = fields.ToManyField(PersonResource, 'producers', full=True, readonly=True)
@@ -120,8 +165,9 @@ class MovieDetailResource(BaseMovieResource):
         authorization = Authorization() # anyone can write!
         always_return_data = True
 
+
 class MovieListResource(BaseMovieResource):
-    """
+    '''
     Lists only properties necessary for the grid columns.
 
     We include only include fields that are shown in the grid. That
@@ -129,11 +175,11 @@ class MovieListResource(BaseMovieResource):
     grid). BUT: tastypie can't filter on fields that are not included
     as resource fields by default. This is why we implement a custom
     filter using 'build_filters' and add the remaining field manually.
-    """
+    '''
 
     # these are the related fields we need to show in the grid
     directors = fields.ToManyField(PersonResource,   'directors', full=True)
-    genres = fields.ToManyField(PersonResource,      'genres',    full=True)
+    genres    = fields.ToManyField(PersonResource,   'genres',    full=True)
     languages = fields.ToManyField(LanguageResource, 'languages', full=True)
     countries = fields.ToManyField(CountryResource,  'countries', full=True)
 
@@ -161,7 +207,7 @@ class MovieListResource(BaseMovieResource):
             'cast': ALL_WITH_RELATIONS,
             'directors': ALL_WITH_RELATIONS,
             'producers': ALL_WITH_RELATIONS,
-            'year': ('range', 'exact'),
+            'year': 'range',
             'runtime': 'range',
             'rating': 'range',
         }
@@ -169,38 +215,77 @@ class MovieListResource(BaseMovieResource):
     def build_filters(self, filters=None):
         if filters is None:
             filters = {}
-        orm_filters = super(MovieListResource, self).build_filters(filters)
+        try:
+            orm_filters = super(MovieListResource, self).build_filters(filters)
+        except InvalidFilterError:
+            orm_filters = {}
 
-        # all the fields tastypie would ignore because they are not
-        # fields in resource
-        queries = ('cast__name__search', 'producers__name__search',
-                   'writers__name__search', 'keywords__name__search',
-                   'mpaa__search', 'languages__name__search')
-        for q in queries:
-            if q in filters:
-                kwargs = { q: filters[q] }
-                orm_filters[q] = Q(**kwargs)
+        # list of Qs not handled by tastypie that evaluated manually
+        # in apply_filters
+        qs = []
 
-        # "simple search" (the search input at the top of the app) is
-        # special because instead of filtering (logical AND) it search
-        # in several fields at the same time (logical OR).
+        # id filters
+        id_lists = ('cast', 'directors', 'writers', 'producers', 'keywords',
+                    'countries', 'languages', 'genres')
+        for q in id_lists:
+            id_key = '%s__id[]' % q
+            any_key = '%s__any' % q
+            if id_key in filters:
+
+                try:
+                    ids = map(int, filters.getlist(id_key))
+                except ValueError:
+                    continue
+
+                try:
+                    any = filters[any_key] == '1' and True or False
+                except KeyError:
+                    any = True
+
+                if any:
+                    # any of the ids
+                    orm_filters['%s__id__in' % q] = ids
+                else:
+                    # all ids
+                    for id in ids:
+                        kwargs = {}
+                        kwargs['%s__id' % q] = id
+                        qs.append(Q(**kwargs))
+
+        # range filters
+        ranges = ('year', 'rating', 'runtime')
+        for q in ranges:
+            range_key = '%s__range' % q
+            if range_key in filters:
+                limits = filters[range_key].split(',')
+                if len(limits) == 2:
+                    orm_filters[range_key] = limits
+
+        # text search over multiple fields
         if 'q' in filters:
-            q = filters['q']
-            qs = Q(title__search=q) | Q(directors__name__search=q)
-            if q.isdigit():
-                qs = qs | Q(id__exact=q)
-            orm_filters['q'] = qs
+            q_str = filters['q']
+            q = Q(title__search=q_str) | Q(directors__name__search=q_str)
+            if q_str.isdigit():
+                q = q | Q(id__exact=q_str)
+            qs.append(q)
 
+        if len(qs) > 0:
+            orm_filters['qs'] = qs
         return orm_filters
 
     def apply_filters(self, request, applicable_filters):
-        """
+        '''
         We override this method to support our custom filter 'q'
-        """
-        if 'q' in applicable_filters:
-            q = applicable_filters.pop('q')
+        '''
+        if 'qs' in applicable_filters:
+            qs = applicable_filters.pop('qs')
         else:
-            q = None
-        semi_filtered = super(MovieListResource, self).apply_filters(
+            qs = None
+
+        f = super(MovieListResource, self).apply_filters(
             request, applicable_filters)
-        return semi_filtered.filter(q) if q else semi_filtered
+
+        if qs:
+            for q in qs:
+                f = f.filter(q)
+        return f

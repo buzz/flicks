@@ -18,7 +18,12 @@ define([
     },
 
     modelEvents: {
+      'change:filters_enabled':    'filtersEnabledChanged',
       'change:details_enabled':   'detailsEnabledChanged'
+    },
+
+    events: {
+      'keyup #movies': 'keyupMovies'
     },
 
     filtersEnabledChanged: function(state, enabled) {
@@ -37,8 +42,14 @@ define([
       else
         $el.addClass('collapsed');
       App.vent.trigger('display:content-resize');
-    }
+    },
 
+    // key on movie grid/tiles region
+    keyupMovies: function(evt) {
+      var movies_view = this.movies.currentView;
+      if (movies_view)
+        movies_view.keypress(evt.which);
+    }
 
   });
 
