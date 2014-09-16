@@ -11,7 +11,7 @@ DEADJOE
 flicksfrontend/app/style/app.css
 flicksfrontend/app/templates/_templates_compiled.js
 flicksfrontend/dist
-flicksfrontend/tmp
+flicksfrontend/.tmp
 flicksfrontend/bower_components
 venv
 flicks/settings_local.py
