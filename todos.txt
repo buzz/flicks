@@ -1,17 +1,13 @@
 - movie details
- - details speichern: notes, title, imdb number?
+ - details speichern: notes, title, imdb number!
  - tile view
  - files importieren
- - karagarga nummer/flag notwendig??
- - play button
 
 - searching for terms with accent and other non-latin letters doesn't
-  work
+  work (CHECK THIS?)
 
 - bug: search for 'before': 'before sunset' should show up but
   doesn't!
-
-- state: save current movie, sorting, ... more?
 
 - COMMANDS:
 
@@ -28,7 +24,5 @@
 - fav/mark seen evtl via REST API?
 
 - filme aus verzeichnis importieren?
-
-- migrate from jquery ui to bootstrap for beauty?
 
 - statistics (later later)
