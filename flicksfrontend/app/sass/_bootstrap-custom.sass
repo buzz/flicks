@@ -1,0 +1,121 @@
+= brand-btn($base-color)
+  +default-gradient-darker($default-darken, darken($base-color, $default-darken), $base-color)
+
+.btn
+  +transition-property(background)
+  +transition-duration($default-duration * 10)
+
+  &.btn-default
+    +default-gradient-darker
+
+  &.btn-primary
+    +brand-btn($brand-primary)
+
+  &.btn-success
+    +brand-btn($brand-success)
+
+  &.btn-info
+    +brand-btn($brand-info)
+
+  &.btn-warning
+    +brand-btn($brand-warning)
+
+  &.btn-danger
+    +brand-btn($brand-danger)
+
+.btn-group
+
+  input[type=radio]
+    display: none
+
+.navbar
+  +default-gradient
+
+.nav-tabs
+  margin-bottom: 0
+
+  > li
+
+    &.active
+
+      > a
+        color: $color-emph-font
+        border-top: $default-border
+        border-right: $default-border
+        border-left: $default-border
+
+        &:hover
+          color: $color-emph-font
+          border-top: $default-border
+          border-right: $default-border
+          border-left: $default-border
+
+    > a
+      padding: 6px 10px 4px
+      margin: 0
+      color: $color-silver
+
+      &:hover
+        background-color: transparent
+        border-color: transparent
+        color: $color-emph-font
+
+input.form-control[type=text]
+  height: auto
+
+button.btn-default.disabled
+  color: $color-disabled
+
+.badge
+  +text-shadow(none)
+  font-weight: normal
+
+// collapse
+
+.panel-group
+
+  .panel
+
+    .panel-heading
+      +default-gradient-darker
+      cursor: pointer
+
+      &:hover
+        +default-gradient
+
+        .panel-title
+
+          .title
+            color: $color-default-font
+
+      .panel-title
+
+        .title
+          color: $color-default-font-lighten
+
+      i.fa-caret-right
+        +transform-origin(3px 8px)
+        +transition-property(transform)
+        +transition-duration($default-duration)
+        padding-right: $padding / 4
+
+    .panel-body
+      +default-gradient
+      +box-shadow(inset 0px 3px 4px rgba(0, 0, 0, 0.025))
+
+// switch
+
+.bootstrap-switch.bootstrap-switch-mini
+  min-width: 60px
+
+  &.bootstrap-switch-focused
+    +box-shadow(none)
+    border-color: #ccc
+
+  .bootstrap-switch-label
+    +default-gradient-darker
+
+  .bootstrap-switch-handle-on, .bootstrap-switch-handle-off
+    +box-shadow(inset 0px 0px 6px rgba(0, 0, 0, 0.05))
+    +text-shadow(none)
+    background-color: desaturate(lighten($brand-primary, 40%), 20%)

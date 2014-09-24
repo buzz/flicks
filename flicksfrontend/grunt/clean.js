@@ -1,7 +1,4 @@
 module.exports = {
-  app_css: [
-    'app/style/app.css'
-  ],
   tmp: {
     src: [ '.tmp/*' ],
     options: {

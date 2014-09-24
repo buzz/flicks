@@ -1,10 +1,10 @@
 module.exports = {
   sass: {
-    files: ['app/style/sass/*.sass'],
+    files: ['app/sass/*.sass'],
     tasks: ['compass:dev']
   },
   livereload: {
-    files: ['app/style/app.css'],
+    files: ['.tmp/app.css'],
     options: { livereload: true }
   }
 };

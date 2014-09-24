@@ -1,0 +1,131 @@
+=filter-badge
+  display: none
+  margin-left: $padding / 3
+  color: white
+  background-color: $brand-primary
+
+  &:hover
+    color: white
+    background-color: $brand-danger
+
+#filters > div
+  display: flex
+  flex-flow: column
+  position: absolute
+  width: 100%
+  height: 100%
+  padding: 0
+  min-height: 100%
+
+  .top
+    flex: 0 0 auto
+    display: flex
+    padding: ($padding / 1.5) $padding ($padding / 2) $padding
+
+    .title
+      +font-caption
+      flex: 1 0
+
+      .badge
+        +filter-badge
+
+  .scroller
+    flex: 1 0 200px
+    padding: 0 $padding
+    overflow-x: hidden
+    overflow-y: auto
+    height: 100%
+
+    .panel
+
+      &.filtered
+
+        .panel-heading
+          +selected-gradient
+
+          .panel-title
+
+            .title
+              color: $color-default-font
+
+      .panel-heading
+
+        .badge
+          +filter-badge
+
+        .filter-any
+          margin-top: -2px
+          float: right
+
+      .panel-body
+
+        form[role=search]
+
+          .input-group
+            width: 100%
+
+        .token-list
+          margin-bottom: - $padding / 3
+
+          .token
+            padding: 0 0 0 7px
+            margin: 0 ($padding / 3) ($padding / 3) 0
+            border-right: none
+
+            > .badge
+              +transition-property(color, background-color)
+              +transition-duration($default-duration)
+              color: $color-default-font
+              background-color: $color-badge
+
+            &.selected
+
+              > .badge
+                color: white
+                background-color: $color-selected-dark
+
+        .range-slider
+          $slider-width: 70%
+
+          > *
+            position: relative
+            float: left
+
+            &.slider-wrapper
+              width: $slider-width
+              padding: 2px ($padding / 1.5) 0
+
+              .slider
+                width: 100%
+
+                .slider-track
+                  $opacity: 0.5
+                  +default-gradient(fade-out($brand-primary, 0.9), fade-out($brand-primary, 0.95), $reverse: true)
+                  border-top: none
+                  border-right: none
+                  border-bottom: 1px solid fade-out($btn-default-border, $opacity)
+                  border-left: none
+
+                .slider-handle
+                  $width: 10px
+                  +box-shadow(rgba(0, 0, 0, 0.08) 0 2px 2px)
+                  +default-gradient-darker
+                  opacity: 1.0
+                  border-radius: $small-border-radius
+                  width: $width
+                  margin-left: - $width / 2
+                  border: 1px solid $btn-default-border
+
+                .slider-selection
+                  +box-shadow(inset 0 0px 4px rgba(0, 0, 0, 0.2))
+                  +selected-gradient
+                  border-bottom: none
+
+            &.slider-value
+              width: - ($slider-width - 100%) / 2
+
+              input
+                text-align: center
+                height: 24px
+                padding-right: 4px
+                padding-left: 4px

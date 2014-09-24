@@ -7,7 +7,6 @@ module.exports = {
   dev: [
 
     'ensureTmp',
-    'clean:app_css',
     'fontAwesomeVars:dev',
     'configureProxies',
     'compass:dev',
@@ -20,18 +19,17 @@ module.exports = {
 
     // prepare
     'ensureTmp',
-    'clean:app_css',
     'clean:tmp',
     'clean:dist',
     'fontAwesomeVars:dist',
-
-    // copy assets
-    'copy:dist',
 
     // styles
     'compass:dist',
     'cssjoin:dist',
     'cssmin:dist',
+
+    // copy assets
+    'copy:dist',
 
     // js
     'requirejs:dist',

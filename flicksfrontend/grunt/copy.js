@@ -3,8 +3,15 @@ module.exports = {
     files: [
       {
         expand: true,
-        cwd: 'app/style/images',
-        src: './**',
+        cwd:  'app/images',
+        src:  './*',
+        dest: 'dist/static/images/',
+        filter: 'isFile'
+      },
+      {
+        expand: true,
+        cwd:  '.tmp/images',
+        src:  './*.png',
         dest: 'dist/static/images/'
       },
       {
@@ -12,7 +19,7 @@ module.exports = {
         cwd: 'bower_components/font-awesome/fonts/',
         src: 'fontawesome-webfont.{eot,woff,ttf}',
         dest: 'dist/static/fonts/'
-      },
+      }
     ]
   }
 };

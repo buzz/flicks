@@ -1,20 +1,33 @@
 module.exports = {
-  options: {
-    sassDir: 'app/style/sass',
-    cssDir: 'app/style',
-    imagesDir: 'app/style/images',
-    fontsDir: 'bower_components/font-awesome/scss/font-awesome/fonts',
-    importPath: 'app/style/sass',
+
+   options: {
+    sassDir: 'app/sass',
+    cssDir: '.tmp/',
+    importPath: 'app/sass',
+    imagesDir: 'app/images',
+    generatedImagesDir: '.tmp/images',
     cacheDir: '.tmp/sass-cache'
-  },
-  dev: {
-    options: {
-      environment: 'development'
-    }
-  },
-  dist: {
-    options: {
-      environment: 'production'
-    }
-  }
+   },
+
+   dev: {
+     options: {
+       environment: 'development',
+       debugInfo: true,
+       sourcemap: true,
+       httpImagesPath: '/app/images',
+       httpGeneratedImagesPath: '/.tmp/images'
+     }
+   },
+
+   dist: {
+     options: {
+       environment: 'production',
+       debugInfo: false,
+       sourcemap: false,
+       httpImagesPath: 'images',
+       httpGeneratedImagesPath: 'images',
+       outputStyle: 'expanded' // minified later
+     }
+   }
+
 };

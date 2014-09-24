@@ -1,7 +1,7 @@
 module.exports = {
   dist: {
     files: {
-      '.tmp/flicks.css': 'app/style/index.css'
+      '.tmp/flicks.css': '.tmp/app.css'
     }
   }
 };

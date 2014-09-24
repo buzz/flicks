@@ -1,0 +1,47 @@
+.modal
+
+  .modal-header
+
+    .modal-title
+
+      i
+        margin-right: 10px
+
+  &.big-cover
+    text-align: center
+
+    .modal-dialog
+      width: auto
+      display: inline-block
+
+      .modal-content
+        background: transparent !important
+
+        .modal-body
+          padding: 5px
+          background-color: transparentize($color-silver, 0.15)
+
+          img.big-cover
+            max-height: 91%
+            border-radius: $default-border-radius
+
+  &.add-movie
+
+    .imdb-results
+      width: 100%
+
+      .imdb-result
+        cursor: pointer
+
+        &.selected
+
+          td
+            background-color: $color-selected
+            color: $color-emph-font
+
+        .btn-open-imdb
+          width: 84px
+          text-align: left
+
+        .title
+          font-weight: bold
