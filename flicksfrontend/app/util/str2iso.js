@@ -80,11 +80,14 @@ define([], function() {
     'Catalan':          'catalonia',
     'Urdu':             'pk',
     'India':            'in',
-    'Hindi':            'in',
+    'Hindi':            'in'
   };
 
   var str2iso = function(str) {
-    return STR_TO_ISO[str];
+    var iso = STR_TO_ISO[str];
+    if (_.isUndefined(iso))
+      return 'missing';
+    return iso;
   }
 
   return str2iso;

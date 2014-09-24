@@ -1,0 +1,140 @@
+#details > div
+  display: flex
+  flex-flow: column
+  position: absolute
+  width: 100%
+  height: 100%
+  padding: 0
+  min-height: 100%
+
+  .top
+    flex: 0 0 auto
+    display: flex
+    padding: ($padding / 1.5) $padding 0 $padding
+
+    .title
+      flex: 1 0
+      +font-caption
+      white-space: nowrap
+      text-overflow: ellipsis
+      overflow: hidden
+
+    .year
+      flex: 0 0 42px
+      +font-caption
+      color: $color-silver
+      text-align: right
+      margin: 0 8px 0 0
+
+  .menu
+    flex: 0 0 auto
+    padding: 0 $padding
+    margin-bottom: -1px
+
+    li label
+      display: none
+
+    li.active label
+      display: inline-block
+      margin-left: 4px
+
+  .actionbar
+    flex: 0 0 auto
+    padding: ($padding / 3) $padding ($padding / 3)
+
+    .navbar-btn
+      margin-top: 4px
+      margin-bottom: 4px
+
+    .navbar-text
+      margin: 4px 0 4px $padding
+
+      &.runtime
+        +font-caption
+        padding: 1px 6px
+
+  .content
+    flex: 1 0.2 200px
+    +border-top-radius($small-border-radius)
+    +border-bottom-radius($default-border-radius)
+    +light-box-shadow
+    +default-gradient
+    margin: 0 $padding
+    overflow-x: hidden
+    overflow-y: auto
+    border: $default-border
+
+    a
+      color: $color-default-font
+
+    > .tab-content
+      padding: 14px 16px
+
+      p.row
+        text-align: right
+        margin: 2px 0 2px
+        padding: 2px 6px 2px
+
+        &:nth-child(even)
+          background-color: #ececec
+          border-radius: $small-border-radius
+
+        &.rating
+
+          .value
+            +font-caption
+
+        label
+          float: left
+          margin: 0 6px 0 0
+          font-weight: bold
+
+      .author
+        text-align: right
+        font-style: italic
+
+      .notes
+        width: 100%
+
+      #tab-files
+
+        .file
+
+          label
+            +font-monospace
+            width: 100%
+            float: none
+            text-align: left
+            text-overflow: ellipsis
+            white-space: nowrap
+            overflow: hidden
+
+  .cover-image
+    flex: 0 1 45%
+    margin: ($padding / 2) ($padding - 2px)
+    text-align: center
+    max-height: 45%
+
+    a
+
+      img
+        +default-box-shadow
+        +border-radius($default-border-radius)
+        max-width: 100%
+        max-height: 100%
+        border: 1px solid silver
+
+ul.akas
+  +font-small
+  margin: 0
+  padding-left: 0
+  list-style: none
+
+  li
+    margin-bottom: 4px
+
+    &:last-child
+      margin-bottom: 0
+
+    .aka-title
+      font-weight: bold

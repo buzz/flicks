@@ -1,0 +1,103 @@
+#grid
+  position: absolute
+  width: 100%
+  height: 100%
+  border-left: 1px solid $color-border
+  +box-sizing(border-box)
+
+  .slick-header
+
+    .slick-header-columns
+      background-image: none
+      background-color: $color-header-bg
+      border-bottom: 1px solid $color-border
+
+      .slick-header-column
+        +box-sizing(content-box)
+        background-image: none
+
+        &.slick-header-column-sorted
+          background: black
+          background-color: $color-header-bg-sorted
+          font-style: normal
+
+        .slick-sort-indicator
+          display: inline-block
+          background-image: none
+          width: 12px
+          height: 16px
+          margin-top: 2px
+          font-size: 14px
+          font-family: FontAwesome
+          font-style: normal
+          font-weight: normal
+          line-height: 1
+          -webkit-font-smoothing: antialiased
+          -moz-osx-font-smoothing: grayscale
+
+          &::before
+            content: "\f0dc"
+
+          &.slick-sort-indicator-asc::before
+            content: "\f0dd"
+
+          &.slick-sort-indicator-desc::before
+            content: "\f0de"
+
+  .slick-viewport
+    overflow-x: hidden !important
+    overflow-y: auto !important
+
+    .slick-row
+
+      &.even
+        background-color: $color-bg2
+
+      &.odd
+        background-color: $color-bg1
+
+      .slick-cell
+        border-top: 0 solid transparent
+        border-right: 0 solid transparent
+        border-left: 0 solid transparent
+        border-bottom: solid 1px #ebebeb
+        padding: 2px 4px
+        color: $color-silver
+        height: 25px
+
+        &.selected
+          +default-gradient(lighten($brand-primary, 40%), lighten($brand-primary, 45%))
+          color: $color-silver !important
+          font-weight: bold
+
+        &.align-right
+          text-align: right
+
+        &.align-center
+          text-align: center
+
+        &.l0
+
+          i
+            width: 16px
+
+          .trumpable
+            color: $color-trumpable
+
+        &.l1
+          color: $color-emph-font
+
+        .flag
+          margin: 2px 1px 0 0
+          display: inline-block
+
+        i
+
+          &.seen
+            color: $color-seen
+
+          &.not-seen
+            color: lighten($color-seen, 50%)
+
+          &.fav
+            color: $color-fav

@@ -61,7 +61,7 @@ define([
       var html = '';
       if (countries !== undefined) {
         $.each(countries, function(i) {
-          html += '<div title="%s" class="flag %s enable-tooltip"></div>'.format(
+          html += '<div title="%s" class="flag flag-%s enable-tooltip"></div>'.format(
             this, str2iso(this));
         });
       }
