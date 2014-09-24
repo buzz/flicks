@@ -114,32 +114,44 @@ class BaseMovieResource(ModelResource):
     '''
     Basic dehydrate functions.
     '''
+    def _dehydrate_field_only(self, bundle, key, fieldname='name'):
+        return [{
+            fieldname: p.data[fieldname],
+        } for p in bundle.data[key]]
+        return [p.data[fieldname] for p in bundle.data[key]]
+
+    def _dehydrate_name_id_only(self, bundle, key):
+        return [{
+            'id': p.data['id'],
+            'name': p.data['name'],
+        } for p in bundle.data[key]]
+
     def dehydrate_cast(self, bundle):
-        return [p.data['name'] for p in bundle.data['cast']]
+        return self._dehydrate_name_id_only(bundle, 'cast')
 
     def dehydrate_directors(self, bundle):
-        return [p.data['name'] for p in bundle.data['directors']]
+        return self._dehydrate_name_id_only(bundle, 'directors')
 
     def dehydrate_producers(self, bundle):
-        return [p.data['name'] for p in bundle.data['producers']]
+        return self._dehydrate_name_id_only(bundle, 'producers')
 
     def dehydrate_writers(self, bundle):
-        return [p.data['name'] for p in bundle.data['writers']]
+        return self._dehydrate_name_id_only(bundle, 'writers')
 
     def dehydrate_genres(self, bundle):
-        return [p.data['name'] for p in bundle.data['genres']]
+        return self._dehydrate_name_id_only(bundle, 'genres')
 
     def dehydrate_keywords(self, bundle):
-        return [p.data['name'] for p in bundle.data['keywords']]
+        return self._dehydrate_name_id_only(bundle, 'keywords')
 
     def dehydrate_files(self, bundle):
-        return [p.data['filename'] for p in bundle.data['files']]
+        return self._dehydrate_field_only(bundle, 'files', fieldname='filename')
 
     def dehydrate_countries(self, bundle):
-        return [p.data['name'] for p in bundle.data['countries']]
+        return self._dehydrate_name_id_only(bundle, 'countries')
 
     def dehydrate_languages(self, bundle):
-        return [p.data['name'] for p in bundle.data['languages']]
+        return self._dehydrate_name_id_only(bundle, 'languages')
 
 
 class MovieDetailResource(BaseMovieResource):
@@ -211,6 +223,18 @@ class MovieListResource(BaseMovieResource):
             'runtime': 'range',
             'rating': 'range',
         }
+
+    def dehydrate_directors(self, bundle):
+        return self._dehydrate_field_only(bundle, 'directors')
+
+    def dehydrate_genres(self, bundle):
+        return self._dehydrate_field_only(bundle, 'genres')
+
+    def dehydrate_countries(self, bundle):
+        return self._dehydrate_field_only(bundle, 'countries')
+
+    def dehydrate_languages(self, bundle):
+        return self._dehydrate_field_only(bundle, 'languages')
 
     def build_filters(self, filters=None):
         if filters is None:

@@ -30,7 +30,8 @@ define([
       width:     190,
       sortable:  false,
       formatter: function(row, cell, value, columnDef, dataContext) {
-        return formatter.concatenate(value);
+        return formatter.concatenate(
+          _.map(value, function(obj) { return obj['name']; }));
       }
     },
     {
@@ -40,7 +41,8 @@ define([
       sortable:  false,
       width:     140,
       formatter: function(row, cell, value, columnDef, dataContext) {
-        return formatter.concatenate(value);
+        return formatter.concatenate(
+          _.map(value, function(obj) { return obj['name']; }));
       }
     },
     {
@@ -84,7 +86,8 @@ define([
       maxWidth:  69,
       cssClass:  'align-center',
       formatter: function(row, cell, value, columnDef, dataContext) {
-        return formatter.flagList(value);
+        return formatter.flagList(
+          _.map(value, function(obj) { return obj['name']; }));
       }
     },
     {
@@ -96,7 +99,8 @@ define([
       maxWidth:  75,
       cssClass:  'align-center',
       formatter: function(row, cell, value, columnDef, dataContext) {
-        return formatter.flagList(value);
+        return formatter.flagList(
+          _.map(value, function(obj) { return obj['name']; }));
       }
     }
   ];

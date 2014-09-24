@@ -70,7 +70,7 @@
         <p class="row <%= key %>">
           <label><%= label %></label>
           <span class="value <%= key %>">
-            <%= _.map(data, function(entry) { return '<a class="%s" href="#">%s</a>'.format(key, entry)  }).join(', ') %>
+            <%= _.map(data, function(entry) { return '<a class="%s id-%d" href="#">%s</a>'.format(key, entry.id, entry.name)  }).join(', ') %>
           </span>
         </p>
       <% }) %>
@@ -95,11 +95,11 @@
     </div>
 
     <div class="tab-pane" id="tab-cast">
-      <%= _.map(cast, function(entry) { return '<a class="cast token badge" href="#">%s</a>'.format(entry)  }).join(' ') %>
+      <%= _.map(cast, function(entry) { return '<a class="cast token badge id-%(id)d" href="#">%(name)s</a>'.format(entry)  }).join(' ') %>
     </div>
 
     <div class="tab-pane" id="tab-keywords">
-      <%= _.map(keywords, function(entry) { return '<a class="keywords token badge" href="#">%s</a>'.format(entry)  }).join(' ') %>
+      <%= _.map(keywords, function(entry) { return '<a class="keywords token badge id-%(id)d" href="#">%(name)s</a>'.format(entry)  }).join(' ') %>
     </div>
 
     <div class="tab-pane" id="tab-notes">
@@ -112,7 +112,7 @@
       <% _.each(files, function(f, i) { %>
       <div class="file">
         <p class="row">
-            <label class="enable-tooltip" title="<%= f %>"><%= f %></label>
+            <label class="enable-tooltip" title="<%= f.filename %>"><%= f.filename %></label>
         </p>
       </div>
       <% }); %>
