@@ -1,6 +1,7 @@
 import datetime
 import re
 import math
+import os
 
 from django.conf import settings
 from django.db import models
@@ -122,6 +123,17 @@ class File(models.Model):
 
     def __unicode__(self):
         return self.filename
+
+    def get_full_filename(self):
+        return os.path.join(self.movie.media_directory, self.filename)
+
+    def get_mod_date(self):
+        try:
+            return datetime.datetime.fromtimestamp(
+                os.path.getmtime(self.get_full_filename()))
+        except OSError:
+            return None
+
 
 class Movie(models.Model):
     # imdb
