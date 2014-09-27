@@ -1,15 +1,12 @@
 module.exports = {
 
-  default: [
-    'dev'
-  ],
+  default: [ 'dev' ],
 
   dev: [
 
     'ensureTmp',
     'fontAwesomeVars:dev',
     'configureProxies',
-    'compass:dev',
     'connect:dev',
     'concurrent:devwatch'
 

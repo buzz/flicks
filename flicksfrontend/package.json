@@ -27,6 +27,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-cssjoin": "^0.3.0",
     "grunt-font-awesome-vars": "^1.0.1",
+    "grunt-shell": "^1.1.1",
     "grunt-targethtml": "^0.2.6",
     "load-grunt-config": "^0.13.1",
     "lodash": "^2.4.1",

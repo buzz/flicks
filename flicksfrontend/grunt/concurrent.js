@@ -4,8 +4,8 @@ module.exports = {
   },
   devwatch: {
     tasks: [
-      'watch:sass',
-      'watch:livereload'
+      'watch:livereload',
+      'shell:compassWatch'
     ]
   }
 };

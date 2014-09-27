@@ -1,33 +1,23 @@
 module.exports = {
+  // dev is done by compass watch, see shell.js because it's faster
+  dist: {
+    options: {
+      sassDir: 'app/sass',
+      cssDir: '.tmp/',
+      importPath: 'app/sass',
 
-   options: {
-    sassDir: 'app/sass',
-    cssDir: '.tmp/',
-    importPath: 'app/sass',
-    imagesDir: 'app/images',
-    generatedImagesDir: '.tmp/images',
-    cacheDir: '.tmp/sass-cache'
-   },
+      environment: 'production',
+      cacheDir: '.tmp/sass-cache',
+      debugInfo: false,
+      sourcemap: false,
+      outputStyle: 'expanded', // minified later
+      relativeAssets: true,
 
-   dev: {
-     options: {
-       environment: 'development',
-       debugInfo: true,
-       sourcemap: true,
-       httpImagesPath: '/app/images',
-       httpGeneratedImagesPath: '/.tmp/images'
-     }
-   },
+      imagesDir: 'app/images',
+      generatedImagesDir: '.tmp/images',
 
-   dist: {
-     options: {
-       environment: 'production',
-       debugInfo: false,
-       sourcemap: false,
-       httpImagesPath: 'images',
-       httpGeneratedImagesPath: 'images',
-       outputStyle: 'expanded' // minified later
-     }
-   }
-
+      httpImagesPath: 'images',
+      httpGeneratedImagesPath: 'images'
+    }
+  }
 };
