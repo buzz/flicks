@@ -21,13 +21,17 @@ class NumMoviesManager(models.Manager, NumMoviesMixin):
 class PersonManager(NumMoviesManager):
     def actors(self):
         '''Returns people that acted in at least one movie.'''
-        return self.annotate(
-            acted_in_count=Count('acted_in')).filter(acted_in_count__gt=0)
+        return self.annotate(acted_in_count=Count('acted_in'))\
+            .filter(acted_in_count__gt=0).order_by('-acted_in_count')
     def directors(self):
         '''Returns people that directed at least one movie.'''
-        return self.annotate(
-            directed_count=Count('directed')).filter(directed_count__gt=0)
+        return self.annotate(directed_count=Count('directed'))\
+            .filter(directed_count__gt=0).order_by('-directed_count')
+    def producers(self):
+        '''Returns people that produced at least one movie.'''
+        return self.annotate(produced_count=Count('produced'))\
+            .filter(produced_count__gt=0).order_by('-produced_count')
     def writers(self):
         '''Returns people that have written at least one movie script.'''
-        return self.annotate(
-            written_count=Count('written')).filter(written_count__gt=0)
+        return self.annotate(written_count=Count('written'))\
+            .filter(written_count__gt=0).order_by('-written_count')

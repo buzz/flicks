@@ -1,8 +1,9 @@
+import math
+
 from django.conf import settings
-from django.core.serializers import serialize
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.db.models import Min, Max, Count
+from django.db.models import Min, Max
 from django.core.urlresolvers import reverse
 
 from imdb import IMDb
@@ -11,13 +12,16 @@ from flicksapp.models import Movie, Person, Country, Language, Genre, Keyword
 from flicksapp.api import MovieDetailResource, MovieListResource
 from flicksapp.utils import FlicksJSONEncoder
 import flicksapp.constants as c
+from flicksapp.stats import (bar_data, bar_data_hist, pie_data, mpaa_data,
+                             imdb_sync_on_data)
 
+
+enc = FlicksJSONEncoder()
 
 def bootstrap(request):
     '''
     Serves as entry point for this web application.
     '''
-    enc = FlicksJSONEncoder()
     agg = Movie.objects.aggregate(Min('year'), Max('year'),
                                   Min('runtime'), Max('runtime'))
 
@@ -55,7 +59,6 @@ def bootstrap(request):
 
 def imdb_search(request):
     '''Search IMDb.'''
-    enc = FlicksJSONEncoder()
     data = {
         'results': [],
         'meta': {},
@@ -85,7 +88,6 @@ def imdb_import(request, movie_id):
     '''
     Import movie data from IMDb.
     '''
-    enc = FlicksJSONEncoder()
     movie_id = int(movie_id)
     res = MovieDetailResource()
     bundle = res.build_bundle(request=request)
@@ -107,7 +109,6 @@ def imdb_cover_import(request, movie_id):
     '''
     Import cover from IMDb.
     '''
-    enc = FlicksJSONEncoder()
     movie_id = int(movie_id)
     res = MovieDetailResource()
     bundle = res.build_bundle(request=request)
@@ -129,7 +130,6 @@ def imdb_cover_import(request, movie_id):
 
 def get_index_by_id(request, movie_id):
     '''Get index in result list by movie id.'''
-    enc = FlicksJSONEncoder()
     movie_id = int(movie_id)
     res = MovieListResource()
     bundle = res.build_bundle(request=request)
@@ -149,3 +149,94 @@ def get_index_by_id(request, movie_id):
         'total_count': len(l),
     }
     return HttpResponse(enc.encode(ret), content_type='application/json')
+
+
+## Statistics
+
+def stats_genres(request):
+    data = pie_data(Genre.objects)
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_countries(request):
+    data = pie_data(Country.objects)
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+def stats_languages(request):
+    data = pie_data(Language.objects)
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_keywords(request):
+    data = bar_data(Keyword.objects.add_num_movies().only('name'), 'num_movies')
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_directors(request):
+    data = bar_data(Person.objects.directors().only('name'), 'directed_count')
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_cast(request):
+    data = bar_data(Person.objects.actors().only('name'), 'acted_in_count')
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_producers(request):
+    data = bar_data(Person.objects.producers().only('name'), 'produced_count')
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_writers(request):
+    data = bar_data(Person.objects.writers().only('name'), 'written_count')
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_rating(request):
+    agg = Movie.objects.aggregate(Min('rating'), Max('rating'))
+    rating_min = int(math.floor(agg['rating__min']))
+    rating_max = int(math.floor(agg['rating__max']))
+    data = bar_data_hist(
+        Movie.objects, lambda x, y: { 'rating__range': (x, y) },
+        rating_min, rating_max, 0.2)
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_year(request):
+    agg = Movie.objects.aggregate(Min('year'), Max('year'))
+    year_min = int(math.floor(agg['year__min'] / 10) * 10)
+    year_max = int(math.floor(agg['year__max'] / 10) * 10) + 10
+    data = bar_data_hist(
+        Movie.objects, lambda x, y: { 'year__range': (x, y) },
+        year_min, year_max, 5)
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_added_on(request):
+    agg = Movie.objects.aggregate(Min('added_on'), Max('added_on'))
+    added_on_min_year = agg['added_on__min'].year
+    added_on_max_year = agg['added_on__max'].year
+    data = bar_data_hist(
+        Movie.objects, lambda x, y: { 'added_on__year': x },
+        added_on_min_year, added_on_max_year)
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_imdb_sync_on(request):
+    data = imdb_sync_on_data(Movie.objects)
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_runtime(request):
+    agg = Movie.objects.aggregate(Min('runtime'), Max('runtime'))
+    runtime_min = int(math.floor(agg['runtime__min'] / 10) * 10)
+    runtime_max = c.STATS_MAX_RUNTIME
+    data = bar_data_hist(
+        Movie.objects, lambda x, y: { 'runtime__range': (x, y) },
+        runtime_min, runtime_max, 10)
+    return HttpResponse(enc.encode(data), content_type='application/json')
+
+
+def stats_mpaa(request):
+    data = mpaa_data(Movie.objects)
+    return HttpResponse(enc.encode(data), content_type='application/json')

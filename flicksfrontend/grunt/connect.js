@@ -13,7 +13,8 @@ var
     'index-by-id',
     'imdb-search',
     'imdb-import',
-    'imdb-cover-import'
+    'imdb-cover-import',
+    'stats'
   ];
 
 module.exports = {

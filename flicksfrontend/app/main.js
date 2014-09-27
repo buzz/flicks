@@ -9,6 +9,8 @@ require.config({
     'backbone':                '../bower_components/backbone/backbone',
     'marionette':              '../bower_components/marionette/lib/backbone.marionette',
 
+    'chartjs':                 '../bower_components/chartjs/Chart',
+
     // slickgrid
     'slick.core':              '../bower_components/slickgrid/slick.core',
     'slick.rowselectionmodel': '../bower_components/slickgrid/plugins/slick.rowselectionmodel',
@@ -65,7 +67,7 @@ require([
   'app',
   'sprintf',
   'bootstrap',
-  'views/behaviors',
+  'views/behaviors'
 ], function(
   App,
   sprintf,

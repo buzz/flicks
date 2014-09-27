@@ -28,6 +28,20 @@
   input[type=radio]
     display: none
 
+.nav-pills
+
+  > li
+
+    > a
+      color: $color-default-font
+
+      &:hover
+        background-color: transparent !important
+
+    &.active > a
+      +brand-btn($brand-primary)
+      +text-shadow(none)
+
 .navbar
   +default-gradient
 
@@ -69,6 +83,16 @@ button.btn-default.disabled
 .badge
   +text-shadow(none)
   font-weight: normal
+
+.modal-body
+
+  .nav-pills
+
+    a
+      padding: 4px 10px
+
+      &:hover
+        background-color: $color-selected
 
 // collapse
 
