@@ -15,6 +15,7 @@ define([
       btn_toggle_filters:              '.btn-toggle-filters',
       btn_toggle_details:              '.btn-toggle-details',
       btn_add_movie:                   '.btn-add-movie',
+      btn_stats:                       '.btn-stats',
       btn_prefs:                       '.btn-prefs',
       status_text:                     '.status-text',
       spinner:                         '.spinner',
@@ -30,6 +31,7 @@ define([
       'click  @ui.btn_toggle_details': 'toggleDetailsClick',
 
       'click  @ui.btn_add_movie':      'addMovieClick',
+      'click  @ui.btn_stats':          'statsClick',
       'click  @ui.btn_prefs':          'prefsClick',
 
       'submit @ui.search_form':        'search',
@@ -142,6 +144,10 @@ define([
 
     addMovieClick: function(ev) {
       App.vent.trigger('display:add-movie');
+    },
+
+    statsClick: function(ev) {
+      App.vent.trigger('display:statistics');
     },
 
     prefsClick: function(ev) {

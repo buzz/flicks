@@ -16,6 +16,7 @@ define([
   'views/tiles',
   'views/modal',
   'views/add-movie',
+  'views/statistics',
   'views/preferences'
 ], function(
   Marionette,
@@ -35,6 +36,7 @@ define([
   TilesView,
   ModalView,
   AddMovieView,
+  StatisticsView,
   PreferencesView
 ) {
 
@@ -262,6 +264,11 @@ define([
 
       'display:add-movie': function() {
         var view = new AddMovieView();
+        App.layout.modal.show(view);
+      },
+
+      'display:statistics': function() {
+        var view = new StatisticsView({ model: App.state });
         App.layout.modal.show(view);
       },
 
