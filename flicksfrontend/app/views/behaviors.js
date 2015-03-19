@@ -139,6 +139,7 @@ define([
 
   });
 
+
   window.Behaviors.Sliders = Marionette.Behavior.extend({
 
     ui: {

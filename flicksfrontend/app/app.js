@@ -172,12 +172,16 @@ define([
 
         if (sel_id) {
           var movie = App.movie_collection.get(sel_id);
-          if (!movie)
+          if (!movie) {
             // selected movie is not in the current set, trigger
             // selection of first movie
             sel_id = undefined;
-          else if (!movie.get('_fullFetch'))
-            movie.fetch();
+          }
+          else {
+            movie.set('_selected', true);
+            if (!movie.get('_fullFetch'))
+              movie.fetch();
+          }
         }
         if (!sel_id)
           App.selectFirstOrNone();
