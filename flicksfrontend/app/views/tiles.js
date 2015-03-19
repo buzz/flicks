@@ -22,6 +22,19 @@ define([
       this.tile_height = Math.floor(this.tile_width * 1.3);
       this.tile_padding  = 6;
 
+      // collection events
+      this.listenTo(this.collection, {
+
+        dataloaded: function(args) {
+          this.render();
+        },
+
+        reset: function() {
+          this.loadViewport();
+        }
+
+      }, this);
+
       this.listenTo(
         App.vent, 'display:content-resize', this.loadViewport, this);
     },

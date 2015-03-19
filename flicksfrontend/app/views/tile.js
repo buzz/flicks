@@ -6,7 +6,7 @@ define([
 
   var TileView = Marionette.ItemView.extend({
 
-    template: 'movie-tile',
+    template: 'tile',
     className: 'tile',
 
     events: {
@@ -17,29 +17,24 @@ define([
       'change:_selected': 'changeSelected'
     },
 
-    initialize: function() {
-      this.parent_view = App.layout.movies.currentView;
-      // this.calcPos();
+    onRender: function() {
+      this.changeSelected();
+    },
+
+    serializeData: function() {
+      var data = Marionette.ItemView.prototype.serializeData.apply(
+        this, arguments);
+      data.image_url = this.model.getImageUrl();
+      return data;
     },
 
     tileClick: function() {
-      this.model.set('_selected', !this.model.get('_selected'));
+      App.router.navigate('movie/%d'.format(this.model.id), { trigger: true });
     },
 
     changeSelected: function() {
       var func = this.model.get('_selected') ? 'addClass' : 'removeClass';
       this.$el[func]('selected');
-    },
-
-    calcPos: function() {
-      // var $e = this.$el, p = this.parent_view;
-      // var index = this.model.collection.indexOf(this.model);
-      // var x = index % p.cols;
-      // var y = Math.floor(index / p.cols);
-      // this.left = p.tile_padding + x * (p.tile_width + 4 * p.tile_padding);
-      // this.top = p.tile_padding + y * (p.tile_height + 4 * p.tile_padding);
-      // $e.css('left', this.left);
-      // $e.css('top', this.top);
     }
 
   });
