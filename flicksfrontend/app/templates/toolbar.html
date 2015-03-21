@@ -1,5 +1,34 @@
 <div class="container-fluid">
 
+  <!-- Search input -->
+  <form class="navbar-form navbar-right" role="search">
+    <div class="form-group">
+      <div class="input-group">
+
+        <input type="text" class="form-control" placeholder="Search" value="<%= typeof(search) === 'string' ? search : '' %>">
+
+        <span class="input-group-btn">
+          <button title="Clear search" class="btn btn-default btn-clear-search enable-tooltip" type="button">
+            <i class="fa fa-times"></i>
+          </button>
+
+          <button class="btn btn-default disabled" type="submit">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+
+      </div>
+    </div>
+  </form>
+
+  <!-- Status text -->
+  <p class="status-text navbar-text navbar-right"></p>
+
+  <!-- Load indicator -->
+  <p class="spinner navbar-text navbar-right">
+    <i class="fa fa-spinner fa-2x fa-spin"></i>
+  </p>
+
   <!-- Display -->
   <div class="btn-group radio-display-mode" data-toggle="buttons">
     <label title="List view" class="btn btn-default navbar-btn active enable-tooltip">
@@ -32,34 +61,5 @@
     <i class="fa fa-sliders"></i>
     Preferences
   </button>
-
-  <!-- Search input -->
-  <form class="navbar-form navbar-right" role="search">
-    <div class="form-group">
-      <div class="input-group">
-
-        <input type="text" class="form-control" placeholder="Search" value="<%= typeof(search) === 'string' ? search : '' %>">
-
-        <span class="input-group-btn">
-          <button title="Clear search" class="btn btn-default btn-clear-search enable-tooltip" type="button">
-            <i class="fa fa-times"></i>
-          </button>
-
-          <button class="btn btn-default disabled" type="submit">
-            <i class="fa fa-search"></i>
-          </button>
-        </span>
-
-      </div>
-    </div>
-  </form>
-
-  <!-- Status text -->
-  <p class="status-text navbar-text navbar-right"></p>
-
-  <!-- Load indicator -->
-  <p class="spinner navbar-text navbar-right">
-    <i class="fa fa-spinner fa-2x fa-spin"></i>
-  </p>
 
 </div>
