@@ -111,11 +111,17 @@
 
   .cover-image
     flex: 0 1 45%
+    position: relative
     margin: ($padding / 2) ($padding - 2px)
     text-align: center
-    max-height: 45%
 
     a
+      display: block
+      position: absolute
+      width: 100%
+      height: 100%
+      left: 0
+      top: 0
 
       img
         +default-box-shadow
