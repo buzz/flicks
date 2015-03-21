@@ -18,9 +18,8 @@ define([
 
     initialize: function() {
       // tile dimensions, TODO make configurable using App.state
-      this.tile_width  = 192;
-      this.tile_height = Math.floor(this.tile_width * 1.3);
-      this.tile_padding  = 6;
+      this.tile_width  = 200;
+      this.tile_height = 260;
 
       // collection events
       this.listenTo(this.collection, {

@@ -72,6 +72,9 @@
             margin: 0 ($padding / 3) ($padding / 3) 0
             border-right: none
 
+            &.badge:focus
+              color: $color-default-font
+
             > .badge
               +transition-property(color, background-color)
               +transition-duration($default-duration)
