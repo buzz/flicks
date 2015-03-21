@@ -106,7 +106,7 @@ define([
       });
     },
 
-    fetchCover: function(cb) {
+    fetchCover: function() {
       var that = this;
       var url = App.config.imdb_cover_import.replace('99999', this.get('id'));
       this.cacheBreakImage = new Date().getTime();
@@ -114,12 +114,12 @@ define([
         url: url,
         dataType: 'json',
         success: function() {
-          cb(that);
+          that.trigger('change-image', that);
         },
         error: function(resp) {
           if (resp.status === 404)
-            console.log('TODO');
             // TODO: show error (example: ID 662)
+            console.error('Error: Cover image error!');
           else
             alert('Error: Communication with server failed!');
         }

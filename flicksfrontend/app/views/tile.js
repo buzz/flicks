@@ -9,13 +9,18 @@ define([
     template: 'tile',
     className: 'tile',
 
+    ui: {
+      image: 'img'
+    },
+
     events: {
-      'click img': 'tileClick',
-      'dblclick img': 'tileDblClick'
+      'click @ui.image': 'tileClick',
+      'dblclick @ui.image': 'tileDblClick'
     },
 
     modelEvents: {
-      'change:_selected': 'changeSelected'
+      'change:_selected': 'changeSelected',
+      'change-image': 'changeImage'
     },
 
     onRender: function() {
@@ -40,6 +45,10 @@ define([
     changeSelected: function() {
       var func = this.model.get('_selected') ? 'addClass' : 'removeClass';
       this.$el[func]('selected');
+    },
+
+    changeImage: function(movie) {
+      this.ui.image.attr('src', movie.getImageUrl());
     }
 
   });

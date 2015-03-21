@@ -11,7 +11,8 @@ define([
     template: 'details',
 
     ui: {
-      cover_image:                        '.cover-image',
+      cover_image_wrapper:                '.cover-image',
+      cover_image:                        '.cover-image img',
       btn_play:                           '.btn-play',
       btn_update:                         '.btn-update',
       btn_update_i:                       '.btn-update i',
@@ -29,7 +30,7 @@ define([
     },
 
     events: {
-      'click @ui.cover_image':            'enlargeCover',
+      'click @ui.cover_image_wrapper':    'enlargeCover',
       'click @ui.btn_play':               'playClick',
       'click @ui.btn_update':             'updateClick',
       'click @ui.btn_fetch_cover':        'fetchCoverClick',
@@ -45,7 +46,8 @@ define([
     },
 
     modelEvents: {
-      'change': 'render'
+      'change': 'render',
+      'change-image': 'changeImage'
     },
 
     behaviors: {
@@ -116,15 +118,13 @@ define([
       ui.btn_fetch_cover_i.addClass('fa-spin')
         .addClass('fa-refresh')
         .removeClass('fa-file-image-o');
-      App.vent.trigger('action:fetch-cover', this.model, function() {
+      this.model.once('change-image', function() {
         ui.btn_fetch_cover.removeClass('disabled');
         ui.btn_fetch_cover_i.removeClass('fa-spin')
           .removeClass('fa-refresh')
           .addClass('fa-file-image-o');
-        // we have to redraw manually as the cover image is not part
-        // of the model
-        that.render();
       });
+      App.vent.trigger('action:fetch-cover', this.model);
     },
 
     markSeenClick: function() {
@@ -169,6 +169,10 @@ define([
     openYoutube: function() {
       var url = this.model.externalUrl('youtube');
       App.vent.trigger('action:open-external-url', url);
+    },
+
+    changeImage: function(movie) {
+      this.ui.cover_image.attr('src', movie.getImageUrl());
     }
 
   });
