@@ -57,6 +57,11 @@ define([
       'click @ui.btn_clear_search': 'clickButtonClearSearch'
     },
 
+    initialize: function() {
+      TokensView.prototype.initialize.call(this);
+      this.search = _.throttle(this._search, 500, { leading: false });
+    },
+
     onRender: function() {
       this.changeFiltersCount(this.model, this.model.get('filters_count'));
     },
@@ -70,12 +75,10 @@ define([
       if (count > 0) {
         this.$el.addClass('filtered');
         this.ui.filters_count.html(count).fadeIn();
-        this.ui.btn_clear_search.removeClass('disabled');
       }
       else {
         this.$el.removeClass('filtered');
         this.ui.filters_count.fadeOut();
-        this.ui.btn_clear_search.addClass('disabled');
       }
     },
 
@@ -96,6 +99,11 @@ define([
       return search_args;
     },
 
+    _search: function(v) {
+      this.model.set('search', v);
+      this.collection.fetch({ data: { name__icontains: v } });
+    },
+
     // UI callbacks
 
     switchChange: function(evt, any) {
@@ -112,8 +120,7 @@ define([
     searchFormSubmit: function(evt) {
       evt.preventDefault();
       var v = this.ui.search_input.val();
-      this.model.set('search', v);
-      this.collection.fetch({ data: { name__icontains: v } });
+      this.search(v);
     },
 
     searchInputChange: function() {
@@ -122,11 +129,13 @@ define([
         this.ui.btn_clear_search.removeClass('disabled');
       else
         this.ui.btn_clear_search.addClass('disabled');
+      this.search(v);
     },
 
     clickButtonClearSearch: function() {
       this.ui.search_input.val('');
-      this.searchInputChange();
+      this.ui.btn_clear_search.addClass('disabled');
+      this.search('');
     }
 
   });
