@@ -8,6 +8,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 from imdb import IMDb
 
@@ -213,6 +214,12 @@ class Movie(models.Model):
         return ia.get_movie(
             self.imdb_id, info=('main', 'plot', 'akas', 'keywords'))
 
+    def save(self, *args, **kwargs):
+        '''Update timestamps.'''
+        if not self.id and not self.added_on:
+            self.added_on = datetime.datetime.today()
+        return super(Movie, self).save(*args, **kwargs)
+
     def sync_with_imdb(self, fetch_cover=False, im=None):
         '''Update movie with IMDb data.'''
         if not self.imdb_id:
@@ -290,8 +297,7 @@ class Movie(models.Model):
         if fetch_cover:
             self.fetch_cover_from_imdb(im=im)
 
-        # save movie
-        self.imdb_sync_on = datetime.datetime.now()
+        self.imdb_sync_on = timezone.now()
         return True
 
     def fetch_cover_from_imdb(self, im=None):

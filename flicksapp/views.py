@@ -6,12 +6,9 @@ from django.http import HttpResponse
 from django.db.models import Min, Max
 from django.core.urlresolvers import reverse
 
-from imdb import IMDb
-from imdb._exceptions import IMDbDataAccessError
-
 from flicksapp.models import Movie, Person, Country, Language, Genre, Keyword
 from flicksapp.api import MovieDetailResource, MovieListResource
-from flicksapp.utils import FlicksJSONEncoder
+from flicksapp.utils import FlicksJSONEncoder, search_imdb
 import flicksapp.constants as c
 from flicksapp.stats import (bar_data, bar_data_hist, pie_data, mpaa_data,
                              imdb_sync_on_data)
@@ -67,21 +64,7 @@ def imdb_search(request):
     }
     q = request.GET.get('q', None)
     if q:
-        i = IMDb()
-        results = i.search_movie(q)
-        for r in results:
-            imdb_id = int(i.get_imdbID(r))
-            movie = {
-                'imdb_id': imdb_id,
-                'title':   r['title'],
-                'in_db':   Movie.objects.filter(imdb_id=imdb_id).count() > 0
-            }
-            # year is sometimes not present
-            try:
-                movie['year'] = r['year']
-            except KeyError:
-                movie['year'] = '????'
-            data['results'].append(movie)
+        data['results'] = search_imdb(q)
     data['meta']['total_count'] = len(data['results'])
     return HttpResponse(enc.encode(data), content_type='application/json')
 
