@@ -36,6 +36,10 @@ class DirectorResource(PersonResource):
     class Meta:
         queryset = Person.objects.directors().add_num_movies('directed')
         resource_name = 'director'
+        filtering = {
+            'id': ('exact', 'in'),
+            'name': 'icontains',
+        }
 
 
 class CastResource(PersonResource):
