@@ -336,8 +336,8 @@ define([
         movie.updateImdb(cb);
       },
 
-      'action:fetch-cover': function(movie, cb) {
-        movie.fetchCover(cb);
+      'action:fetch-cover': function(movie) {
+        movie.fetchCover();
       },
 
       'action:set-flag': function(movie, flag, value) {
