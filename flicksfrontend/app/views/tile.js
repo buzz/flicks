@@ -10,7 +10,8 @@ define([
     className: 'tile',
 
     events: {
-      'click img': 'tileClick'
+      'click img': 'tileClick',
+      'dblclick img': 'tileDblClick'
     },
 
     modelEvents: {
@@ -30,6 +31,10 @@ define([
 
     tileClick: function() {
       App.router.navigate('movie/%d'.format(this.model.id), { trigger: true });
+    },
+
+    tileDblClick: function() {
+      App.vent.trigger('display:cover', this.model);
     },
 
     changeSelected: function() {
