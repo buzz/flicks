@@ -63,7 +63,8 @@ html
           flex: 1
           position: relative
           min-height: 100%
-          background-color: $color-bg-movies
+          $color-bg-movies-top: darken($color-bg-movies, 14%)
+          +background-image(linear-gradient(top, $color-bg-movies-top 0%, $color-bg-movies-top 14%, $color-bg-movies 76%, $color-bg-movies 100%))
           border-top: 1px solid $color-border-lighter
           z-index: -100
 
