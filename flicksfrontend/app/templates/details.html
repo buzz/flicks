@@ -18,37 +18,37 @@
   <ul class="nav nav-tabs">
     <li class="active">
       <a href="#tab-info" data-toggle="tab" class="enable-tooltip" title="General">
-        <i class="fa fa-info fa-lg"></i>
+        <i class="fa fa-info"></i>
         <label>General</label>
       </a>
     </li>
     <li>
       <a href="#tab-plot" data-toggle="tab" class="enable-tooltip" title="Plot">
-        <i class="fa fa-book fa-lg"></i>
+        <i class="fa fa-book"></i>
         <label>Plot</label>
       </a>
     </li>
     <li>
       <a href="#tab-cast" data-toggle="tab" class="enable-tooltip" title="Cast">
-        <i class="fa fa-users fa-lg"></i>
+        <i class="fa fa-users"></i>
         <label>Cast</label>
       </a>
     </li>
     <li>
       <a href="#tab-keywords" data-toggle="tab" class="enable-tooltip" title="Keywords">
-        <i class="fa fa-tags fa-lg"></i>
+        <i class="fa fa-tags"></i>
         <label>Keywords</label>
       </a>
     </li>
     <li>
       <a href="#tab-notes" data-toggle="tab" class="enable-tooltip" title="Notes">
-        <i class="fa fa-file-text-o fa-lg"></i>
+        <i class="fa fa-file-text-o"></i>
         <label>Notes</label>
       </a>
     </li>
     <li>
       <a href="#tab-files" data-toggle="tab" class="enable-tooltip" title="Files">
-        <i class="fa fa-file-video-o fa-lg"></i>
+        <i class="fa fa-file-video-o"></i>
         <label>Files</label>
       </a>
     </li>
@@ -58,7 +58,7 @@
 <div class="content">
   <div class="tab-content">
 
-    <div class="tab-pane active" id="tab-info">
+    <div class="tab-pane fade in active" id="tab-info">
 
       <p class="row rating">
         <label>Rating</label>
@@ -84,7 +84,7 @@
 
     </div>
 
-    <div class="tab-pane" id="tab-plot">
+    <div class="tab-pane fade" id="tab-plot">
       <% var plot_splitted = plot.split('::'); %>
       <% if (plot_splitted.length > 1) { %>
         <p><%= plot_splitted[0] %></p>
@@ -94,21 +94,21 @@
       <% } %>
     </div>
 
-    <div class="tab-pane" id="tab-cast">
+    <div class="tab-pane fade" id="tab-cast">
       <%= _.map(cast, function(entry) { return '<a class="cast token badge id-%(id)d" href="#">%(name)s</a>'.format(entry)  }).join(' ') %>
     </div>
 
-    <div class="tab-pane" id="tab-keywords">
+    <div class="tab-pane fade" id="tab-keywords">
       <%= _.map(keywords, function(entry) { return '<a class="keywords token badge id-%(id)d" href="#">%(name)s</a>'.format(entry)  }).join(' ') %>
     </div>
 
-    <div class="tab-pane" id="tab-notes">
+    <div class="tab-pane fade" id="tab-notes">
       <form class="notes">
         <textarea class="form-control">notes</textarea>
       </form>
     </div>
 
-    <div class="tab-pane" id="tab-files">
+    <div class="tab-pane fade" id="tab-files">
       <% _.each(files, function(f, i) { %>
       <div class="file">
         <p class="row">
