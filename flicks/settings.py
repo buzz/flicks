@@ -37,6 +37,7 @@ USE_TZ = True
 # static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = ( '%s/static' % FRONTEND_DIST_ROOT, )
+IMAGES_URL = '%simages/' % STATIC_URL
 COVERS_URL = '%scovers/' % STATIC_URL
 
 # templates

@@ -42,6 +42,7 @@ def bootstrap(request):
             'movie_root':        movie_root,
             'movies_root':       movies_root,
             'covers_root':       settings.COVERS_URL,
+            'images_root':       settings.IMAGES_URL,
             'get_index_by_id':   get_index_by_id,
             'imdb_import':       imdb_import,
             'imdb_cover_import': imdb_cover_import,

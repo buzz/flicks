@@ -51,8 +51,9 @@ define([
     },
 
     behaviors: {
-
       ToolTips: {},
+
+      BrokenImageReplace: {},
 
       PopOvers: {
         // AKA titles

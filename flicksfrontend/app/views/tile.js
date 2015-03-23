@@ -23,6 +23,10 @@ define([
       'change-image': 'changeImage'
     },
 
+    behaviors: {
+      BrokenImageReplace: {}
+    },
+
     onRender: function() {
       this.changeSelected();
     },

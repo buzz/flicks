@@ -213,4 +213,26 @@ define([
 
   });
 
+  window.Behaviors.BrokenImageReplace = Marionette.Behavior.extend({
+
+    defaults: {
+      selector: 'img',
+      src: '%sno-cover.jpg'
+    },
+
+    onRender: function() {
+      var that = this, url = this.options.src.format(App.config.images_root);
+      this.$(this.options.selector).on('error', function() {
+        var $i = $(this);
+        if ($i.attr('src') !== url)
+          $i.attr('src', url);
+      });
+    },
+
+    onBeforeDestroy: function() {
+      this.$(this.options.selector).off('error');
+    }
+
+  });
+
 });

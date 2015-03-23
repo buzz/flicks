@@ -14,7 +14,7 @@ define([
   'views/details',
   'views/grid',
   'views/tiles',
-  'views/modal',
+  'views/cover',
   'views/add-movie',
   'views/statistics',
   'views/preferences'
@@ -34,7 +34,7 @@ define([
   DetailsView,
   GridView,
   TilesView,
-  ModalView,
+  CoverView,
   AddMovieView,
   StatisticsView,
   PreferencesView
@@ -278,13 +278,20 @@ define([
       },
 
       'display:cover': function(movie) {
-        var view = new ModalView({
+        var view = new CoverView({
           model: new Backbone.Model({
             title:     movie.get('title'),
             image_url: movie.getImageUrl()
-          }),
-          template: 'modal-cover'
+          })
         });
+        // var view = new ModalView({
+        //   behaviors: { BrokenImageReplace: {} },
+        //   model: new Backbone.Model({
+        //     title:     movie.get('title'),
+        //     image_url: movie.getImageUrl()
+        //   }),
+        //   template: 'modal-cover'
+        // });
         App.layout.modal.show(view);
       },
 
