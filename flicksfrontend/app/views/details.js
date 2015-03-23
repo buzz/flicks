@@ -17,7 +17,6 @@ define([
       btn_update:                         '.btn-update',
       btn_update_i:                       '.btn-update i',
       btn_fetch_cover:                    '.btn-fetch-cover',
-      btn_fetch_cover_i:                  '.btn-fetch-cover i',
       btn_mark_seen:                      '.btn-mark-seen',
       btn_mark_fav:                       '.btn-mark-fav',
       btn_mark_trumpable:                 '.btn-mark-trumpable',
@@ -114,17 +113,6 @@ define([
     },
 
     fetchCoverClick: function() {
-      var ui = this.ui, that = this;
-      ui.btn_fetch_cover.addClass('disabled');
-      ui.btn_fetch_cover_i.addClass('fa-spin')
-        .addClass('fa-refresh')
-        .removeClass('fa-file-image-o');
-      this.model.once('change-image', function() {
-        ui.btn_fetch_cover.removeClass('disabled');
-        ui.btn_fetch_cover_i.removeClass('fa-spin')
-          .removeClass('fa-refresh')
-          .addClass('fa-file-image-o');
-      });
       App.vent.trigger('action:fetch-cover', this.model);
     },
 

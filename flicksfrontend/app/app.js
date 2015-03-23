@@ -15,6 +15,7 @@ define([
   'views/grid',
   'views/tiles',
   'views/cover',
+  'views/fetch-cover',
   'views/add-movie',
   'views/statistics',
   'views/preferences'
@@ -35,6 +36,7 @@ define([
   GridView,
   TilesView,
   CoverView,
+  FetchCoverView,
   AddMovieView,
   StatisticsView,
   PreferencesView
@@ -351,7 +353,12 @@ define([
       },
 
       'action:fetch-cover': function(movie) {
-        movie.fetchCover();
+        var view = new FetchCoverView({ model: movie });
+        App.layout.modal.show(view);
+      },
+
+      'action:save-cover': function(movie, url, cb, cb_error) {
+        movie.saveCoverUrl(url, cb, cb_error);
       },
 
       'action:set-flag': function(movie, flag, value) {
@@ -419,8 +426,7 @@ define([
   });
 
   // Load configuration
-  // TODO: Bootstrap into index.html (prod) or hard-coded (dev)
-  App.config = window.FLICKS_CONFIG;
+   App.config = window.FLICKS_CONFIG;
 
   // Content pane resize
   $(window).resize(function() {

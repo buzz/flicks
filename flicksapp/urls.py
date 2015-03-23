@@ -14,6 +14,8 @@ urlpatterns = patterns('flicksapp.views',
     url(r'^imdb-import/(?P<movie_id>\d+)/$', 'imdb_import', name='imdb_import'),
     url(r'^imdb-cover-import/(?P<movie_id>\d+)/$', 'imdb_cover_import',
         name='imdb_cover_import'),
+    url(r'^imdb-cover-save/(?P<movie_id>\d+)/$', 'imdb_cover_save',
+        name='imdb_cover_save'),
     url(r'^imdb-search/$', 'imdb_search', name='imdb_search'),
 
     # Statistics

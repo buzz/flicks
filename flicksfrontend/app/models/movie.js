@@ -106,22 +106,41 @@ define([
       });
     },
 
-    fetchCover: function() {
+    fetchCoverUrl: function(cb, cb_error) {
       var that = this;
       var url = App.config.imdb_cover_import.replace('99999', this.get('id'));
-      this.cacheBreakImage = new Date().getTime();
       $.ajax({
         url: url,
         dataType: 'json',
-        success: function() {
-          that.trigger('change-image', that);
+        success: function(resp) {
+          cb(resp.url);
         },
         error: function(resp) {
-          if (resp.status === 404)
-            // TODO: show error (example: ID 662)
-            console.error('Error: Cover image error!');
+          if (resp.responseJSON)
+            cb_error(resp.responseJSON);
           else
-            alert('Error: Communication with server failed!');
+            cb_error();
+        }
+      });
+    },
+
+    saveCoverUrl: function(cover_url, cb, cb_error) {
+      var that = this;
+      var url = App.config.imdb_cover_save.replace('99999', this.get('id'));
+      $.ajax({
+        url: url,
+        dataType: 'json',
+        data: { url: cover_url },
+        success: function(resp) {
+          that.cacheBreakImage = new Date().getTime();
+          that.trigger('change-image', that);
+          cb();
+        },
+        error: function(resp) {
+          if (resp.responseJSON)
+            cb_error(resp.responseJSON);
+          else
+            cb_error();
         }
       });
     }

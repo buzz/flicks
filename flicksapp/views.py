@@ -7,6 +7,7 @@ from django.db.models import Min, Max
 from django.core.urlresolvers import reverse
 
 from imdb import IMDb
+from imdb._exceptions import IMDbDataAccessError
 
 from flicksapp.models import Movie, Person, Country, Language, Genre, Keyword
 from flicksapp.api import MovieDetailResource, MovieListResource
@@ -108,7 +109,7 @@ def imdb_import(request, movie_id):
 
 def imdb_cover_import(request, movie_id):
     '''
-    Import cover from IMDb.
+    Get cover URL from IMDb.
     '''
     movie_id = int(movie_id)
     res = MovieDetailResource()
@@ -120,12 +121,48 @@ def imdb_cover_import(request, movie_id):
         return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
                             content_type='application/json', status=404)
 
-    if movie.fetch_cover_from_imdb():
-        json = res.serialize(None, res.full_dehydrate(bundle), 'application/json')
+    try:
+        url = movie.fetch_cover_url_from_imdb()
+    except ImdbDataAccessError:
+        return HttpResponse(enc.encode({ 'error': 'Something went wrong :/' }),
+                            content_type='application/json', status=404)
+
+    if url:
+        json = enc.encode({ 'url': url })
     else:
         return HttpResponse(enc.encode({ 'error': 'No cover found.' }),
                             content_type='application/json', status=404)
         json = res.serialize(None, res.full_dehydrate(bundle), 'application/json')
+    return HttpResponse(json, content_type='application/json')
+
+
+def imdb_cover_save(request, movie_id):
+    '''
+    Download cover from URL and save to disk.
+    '''
+    movie_id = int(movie_id)
+    res = MovieDetailResource()
+    bundle = res.build_bundle(request=request)
+
+    try:
+        movie = res.obj_get(bundle, id=movie_id)
+    except Movie.DoesNotExist():
+        return HttpResponse(enc.encode({ 'error': 'Movie does not exist!' }),
+                            content_type='application/json', status=404)
+
+    try:
+        url = request.GET['url']
+    except KeyError:
+        return HttpResponse(enc.encode({ 'error': 'URL parameter missing!' }),
+                            content_type='application/json', status=404)
+
+    try:
+        movie.save_cover_from_url(url)
+    except:
+        return HttpResponse(enc.encode({ 'error': 'Cover download failed!' }),
+                            content_type='application/json', status=404)
+
+    json = res.serialize(None, res.full_dehydrate(bundle), 'application/json')
     return HttpResponse(json, content_type='application/json')
 
 
