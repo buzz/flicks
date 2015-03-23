@@ -1,4 +1,15 @@
 module.exports = {
+  dev: {
+    files: [
+      {
+        expand: true,
+        cwd:  'app/images',
+        src:  './*',
+        dest: '.tmp/images/',
+        filter: 'isFile'
+      }
+    ]
+  },
   dist: {
     files: [
       {

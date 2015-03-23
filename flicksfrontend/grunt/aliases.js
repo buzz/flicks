@@ -8,6 +8,7 @@ module.exports = {
     'fontAwesomeVars:dev',
     'configureProxies',
     'connect:dev',
+    'copy:dev',
     'concurrent:devwatch'
 
   ],
