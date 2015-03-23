@@ -1,0 +1,46 @@
+<div class="modal fade edit-movie" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <i class="fa fa-times"></i>
+        </button>
+        <h4 class="modal-title">
+          <i class="fa fa-pencil"></i>
+          Edit movie</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="alert alert-info"></div>
+            <form class="form-add-movie-search form-inline" role="form">
+              <div class="form-group">
+                <label for="input-imdb-number" class="col-sm-3 control-label">
+                  IMDb number
+                </label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" placeholder="Not set…" id="input-imdb-number" value="<%= imdb_id %>">
+                  <span class="help-block">
+                    Enter 7-digit IMDb number.
+                  </span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-save-movie btn btn-primary">
+          Save
+        </button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

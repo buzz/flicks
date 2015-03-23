@@ -16,6 +16,7 @@ define([
   'views/tiles',
   'views/cover',
   'views/fetch-cover',
+  'views/edit-movie',
   'views/add-movie',
   'views/statistics',
   'views/preferences'
@@ -37,6 +38,7 @@ define([
   TilesView,
   CoverView,
   FetchCoverView,
+  EditMovieView,
   AddMovieView,
   StatisticsView,
   PreferencesView
@@ -346,6 +348,11 @@ define([
             alert('Error deleting movie…');
           }
         });
+      },
+
+      'action:edit': function(movie) {
+        var view = new EditMovieView({ model: movie });
+        App.layout.modal.show(view);
       },
 
       'action:update': function(movie, cb) {

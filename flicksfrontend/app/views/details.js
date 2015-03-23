@@ -132,8 +132,7 @@ define([
     },
 
     editClick: function() {
-      // TODO
-      console.info('details: TODO... edit');
+      App.vent.trigger('action:edit', this.model);
     },
 
     deleteClick: function() {
