@@ -200,13 +200,6 @@ define([
 
     });
 
-    function viewModeChanged(state, view_mode) {
-      if (view_mode === 'grid')
-        App.vent.trigger('display:grid-mode');
-      else if (view_mode === 'tiles')
-        App.vent.trigger('display:tiles-mode');
-    }
-
     App.listenTo(App.state, {
       // display details
       'change:selected_movie_id': function(state, id) {
@@ -223,7 +216,10 @@ define([
         }
       },
 
-      'change:view_mode': viewModeChanged
+      // view mode
+      'change:display_mode': function(state, display_mode) {
+        App.vent.trigger('display:movies', display_mode);
+      }
 
     });
 
@@ -234,13 +230,15 @@ define([
 
       // DISPLAY
 
-      'display:grid-mode': function() {
-        var view = new GridView({ collection: App.movie_collection });
-        App.layout.movies.show(view);
-      },
-
-      'display:tiles-mode': function() {
-        var view = new TilesView({ collection: App.movie_collection });
+      'display:movies': function(mode) {
+        App.state.set('display_mode', mode);
+        var view;
+        if (mode === 'grid')
+          view = new GridView({ collection: App.movie_collection });
+        else if (mode === 'tiles')
+          view = new TilesView({ collection: App.movie_collection });
+        else
+          throw('Wrong display mode: ' + mode);
         App.layout.movies.show(view);
       },
 
@@ -288,14 +286,6 @@ define([
             image_url: movie.getImageUrl()
           })
         });
-        // var view = new ModalView({
-        //   behaviors: { BrokenImageReplace: {} },
-        //   model: new Backbone.Model({
-        //     title:     movie.get('title'),
-        //     image_url: movie.getImageUrl()
-        //   }),
-        //   template: 'modal-cover'
-        // });
         App.layout.modal.show(view);
       },
 
@@ -428,7 +418,7 @@ define([
     });
 
     // Start movie list view
-    viewModeChanged(App.state, App.state.get('view_mode'));
+    App.vent.trigger('display:movies', App.state.get('display_mode'));
 
   });
 
