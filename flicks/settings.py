@@ -1,9 +1,8 @@
 import os
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 FRONTEND_DIST_ROOT = os.path.join(BASE_DIR, 'flicksfrontend', 'dist')
-
-from settings_local import *
-
 
 ALLOWED_HOSTS = []
 
@@ -43,3 +42,9 @@ COVERS_URL = '%scovers/' % STATIC_URL
 # templates
 TEMPLATE_LOADERS = ( 'django.template.loaders.filesystem.Loader', )
 TEMPLATE_DIRS = ( '%s/templates' % FRONTEND_DIST_ROOT, )
+
+# local settings file
+try:
+    from flicks.settings_local import *
+except ImportError:
+    pass
