@@ -295,7 +295,13 @@ class Movie(models.Model):
         return True
 
     def fetch_cover_from_imdb(self, im=None):
-        '''Download cover from IMDb.'''
+        '''Download and save cover from IMDb.'''
+        url = self.fetch_cover_url_from_imdb(im)
+        if url:
+            this.save_cover_from_url(url)
+
+    def fetch_cover_url_from_imdb(self, im=None):
+        '''Get cover URL from IMDb.'''
         if not self.imdb_id:
             return False
         if not im:
@@ -308,13 +314,14 @@ class Movie(models.Model):
                 g = m.groups()
                 res = 'SX%d_SY%d' % (COVER_MAX_WIDTH, COVER_MAX_HEIGHT)
                 cover_url = '%s%s%s' % (g[0], res, g[2])
-
-                # save to disk
-                import urllib
-                coverfile = urllib.URLopener()
-                coverfile.retrieve(cover_url, self.cover_filepath)
-                return True
+                return cover_url
         return False
+
+    def save_cover_from_url(self, url):
+        import urllib
+        coverfile = urllib.URLopener()
+        coverfile.retrieve(url, self.cover_filepath)
+
 
 @receiver(post_save, sender=Movie)
 def sync_with_imdb(sender, instance, created, **kwargs):

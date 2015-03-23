@@ -25,6 +25,30 @@
             max-height: 91%
             border-radius: $default-border-radius
 
+  &.fetch-cover
+
+    .panel-heading
+      text-align: center
+
+      .cover-wrapper
+        +transition-property(opacity, max-height)
+        +transition-duration($very-long-duration)
+        max-height: 1000px
+        opacity: 1
+        overflow: hidden
+
+        &.not-loaded
+          max-height: 0px
+          opacity: 0
+
+        img
+          +cover-image
+          max-width: 530px
+          max-height: 700px
+
+      .alert-info, form.cover-image
+        display: none
+
   &.add-movie
 
     .imdb-results

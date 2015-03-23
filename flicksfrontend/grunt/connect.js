@@ -14,6 +14,7 @@ var
     'imdb-search',
     'imdb-import',
     'imdb-cover-import',
+    'imdb-cover-save',
     'stats'
   ];
 

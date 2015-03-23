@@ -1,21 +1,5 @@
 module.exports = function(grunt) {
 
-  // proxy configuration
-  grunt.option('proxies', [
-    'director',
-    'cast',
-    'genre',
-    'keyword',
-    'country',
-    'language',
-    'movies',
-    'movie',
-    'index-by-id',
-    'imdb-search',
-    'imdb-import',
-    'imdb-cover-import'
-  ]);
-
   // sprintf
   var sprintf = require('sprintf-js');
   String.prototype.format = function() {

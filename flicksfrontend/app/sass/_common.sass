@@ -24,6 +24,8 @@ $color-badge: #dadada
 $padding: 18px
 
 $default-duration: 0.3s
+$long-duration: $default-duration * 2
+$very-long-duration: $long-duration * 2
 $short-duration: $default-duration / 2
 
 $default-border-radius: 6px
@@ -62,3 +64,8 @@ $default-border: 1px solid #ccc
 
 = font-small
   font-size: 80%
+
+= cover-image
+  +default-box-shadow
+  +border-radius($default-border-radius)
+  border: 1px solid silver
