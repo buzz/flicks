@@ -66,6 +66,7 @@ define([
     onRender: function() {
       this.resultsCountChanged(this.model, this.model.get('results_count'));
       this.filtersCountChanged(this.model, this.model.get('filters_count'));
+      this.displayModeChanged(this.model, this.model.get('display_mode'));
       this.detailsEnabledChanged(
         this.model, this.model.get('details_enabled'));
       this.filtersEnabledChanged(
@@ -92,6 +93,10 @@ define([
       }
       else
         $i.val('');
+    },
+
+    displayModeChanged: function(state, mode) {
+      this.ui.display_mode.find('label.' + mode).button('toggle').find(':radio').prop('checked');
     },
 
     filtersEnabledChanged: function(state, enabled) {
@@ -139,7 +144,7 @@ define([
 
     displayModeClick: function(ev) {
       var mode = $(ev.currentTarget).val();
-      App.vent.trigger('display:%s-mode'.format(mode));
+      App.vent.trigger('display:movies', mode);
     },
 
     addMovieClick: function(ev) {
