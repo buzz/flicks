@@ -298,7 +298,7 @@ class Movie(models.Model):
         '''Download and save cover from IMDb.'''
         url = self.fetch_cover_url_from_imdb(im)
         if url:
-            this.save_cover_from_url(url)
+            self.save_cover_from_url(url)
 
     def fetch_cover_url_from_imdb(self, im=None):
         '''Get cover URL from IMDb.'''

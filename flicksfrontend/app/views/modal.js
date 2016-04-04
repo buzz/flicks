@@ -9,11 +9,22 @@ define([
     template:  'modal',
 
     ui: {
-      modal:       '.modal'
+      modal:       '.modal',
+      btn_confirm: '.btn-confirm'
     },
 
-    initialize: function() {
+    events: {
+      'click @ui.btn_confirm': 'confirm'
+    },
+
+    initialize: function(opts) {
       var that = this;
+      if ('confirm' in opts) {
+        this.confirm = opts.confirm;
+      }
+      else {
+        this.confirm = function() {};
+      }
       this.on('render', function() {
         this.ui.modal.modal().on('hidden.bs.modal', function() {
           that.destroy();

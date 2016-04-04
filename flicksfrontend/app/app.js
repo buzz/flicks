@@ -19,7 +19,8 @@ define([
   'views/edit-movie',
   'views/add-movie',
   'views/statistics',
-  'views/preferences'
+  'views/preferences',
+  'views/modal'
 ], function(
   Marionette,
   Router,
@@ -41,7 +42,8 @@ define([
   EditMovieView,
   AddMovieView,
   StatisticsView,
-  PreferencesView
+  PreferencesView,
+  ModalView
 ) {
 
   Marionette.Renderer.render = jstRender;
@@ -294,6 +296,7 @@ define([
           model:    movie,
           template: 'modal-confirm-delete',
           confirm:  function() {
+            this.ui.modal.modal('hide');
             App.vent.trigger('action:delete', movie);
           }
         });
