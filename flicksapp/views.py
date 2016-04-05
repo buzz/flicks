@@ -47,10 +47,10 @@ def bootstrap(request):
             'imdb_search':       imdb_search,
 
             # for search form
-            'year_min':          agg['year__min'],
-            'year_max':          agg['year__max'],
-            'runtime_min':       agg['runtime__min'],
-            'runtime_max':       agg['runtime__max'],
+            'year_min':          agg['year__min'] or 1950,
+            'year_max':          agg['year__max'] or 2018,
+            'runtime_min':       agg['runtime__min'] or 1,
+            'runtime_max':       agg['runtime__max'] or 200,
         })
     }
     return render(request, 'index.html', ctx)
