@@ -5,7 +5,7 @@ require.config({
     'sprintf':                 '../bower_components/sprintf/src/sprintf',
     'bootstrap':               '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap',
     'bootstrap-switch':        '../bower_components/bootstrap-switch/dist/js/bootstrap-switch',
-    'bootstrap-slider':        '../bower_components/seiyria-bootstrap-slider/js/bootstrap-slider',
+    'bootstrap-slider':        '../bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider',
     'backbone':                '../bower_components/backbone/backbone',
     'marionette':              '../bower_components/marionette/lib/backbone.marionette',
 
