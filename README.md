@@ -17,6 +17,7 @@ in the works…
 * [Node.js 5.1.0](https://nodejs.org/) *(other versions might work)*
 * [Bower](http://bower.io/)
 * [npm](https://www.npmjs.com/)
+* [MediaInfo](https://mediaarea.net/en/MediaInfo)
 
 Many more dependencies are automatically installed using pip, bower and npm.
 
