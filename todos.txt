@@ -22,7 +22,3 @@
  - purge orphan objects (persons, countries, ...)
 
 - fav/mark seen evtl via REST API?
-
-- filme aus verzeichnis importieren?
-
-- statistics (later later)
