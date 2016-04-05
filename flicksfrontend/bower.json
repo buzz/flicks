@@ -30,6 +30,9 @@
     "jquery": "~2.1.1",
     "requirejs": "~2.1.14",
     "slickgrid": "~2.1.0",
-    "chartjs": "~1.0.1-beta.4"
+    "chartjs": "~1.0.1-beta.4",
+    "famfamfam-flags": "^1.0.0",
+    "bootstrap-switch": "^3.3.2",
+    "seiyria-bootstrap-slider": "^6.1.8"
   }
 }
