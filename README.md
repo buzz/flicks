@@ -7,7 +7,23 @@ Flicks is a web application for movie collectors. It consists of
 
 ## Features
 
-in the works…
+* IMDb integration
+* Grid and tile view
+* Movie statistics
+* Search
+* Extensive filtering
+* Automatic cover fetching
+* Media file meta data parsing
+
+## Screenshots
+
+[![Grid view](https://whatimg.com/i/sUZ5eO_thumb.jpg)](https://whatimg.com/i/sUZ5eO.jpg)
+
+[![Tile view](https://whatimg.com/i/J6i04k_thumb.jpg)](https://whatimg.com/i/J6i04k.jpg)
+
+[![Keyword statistics](https://whatimg.com/i/HFenWO_thumb.png)](https://whatimg.com/i/HFenWO.png)
+
+[![Added-on statistics](https://whatimg.com/i/Dge1DJ_thumb.png)](https://whatimg.com/i/Dge1DJ.png)
 
 ## Requirements
 
@@ -18,6 +34,7 @@ in the works…
 * [Bower](http://bower.io/)
 * [npm](https://www.npmjs.com/)
 * [MediaInfo](https://mediaarea.net/en/MediaInfo)
+* [Compass](http://compass-style.org/)
 
 Many more dependencies are automatically installed using pip, bower and npm.
 
