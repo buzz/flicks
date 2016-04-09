@@ -1,4 +1,5 @@
 # -*- mode: python -*-
+
 import os
 import platform
 
@@ -83,7 +84,8 @@ exe = EXE(
   debug=False,
   strip=platform.system() == 'Linux' and True or False,
   upx=True,
-  console=False
+  console=False,
+  icon='flicks.ico'
 )
 
 coll = COLLECT(
