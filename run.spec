@@ -10,8 +10,7 @@ binaries = [
 datas = [
   ('venv/lib/python2.7/site-packages/cefpython3/locales/*', 'cefpython3/locales'),
   ('venv/lib/python2.7/site-packages/cefpython3/cef.pak', 'cefpython3'),
-  ('flicksfrontend/index.html', './flicksfrontend'),
-  ('flicksfrontend/dist', './flicksfrontend/dist'),
+  ('flicksfrontend/dist', 'flicksfrontend/dist'),
 ]
 
 hiddenimports = [

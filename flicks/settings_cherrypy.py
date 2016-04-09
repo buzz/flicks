@@ -31,6 +31,11 @@ COVERS_ROOT = os.path.join(FLICKS_DATA_ROOT, 'covers')
 if not os.path.exists(COVERS_ROOT):
   os.makedirs(COVERS_ROOT)
 
+TEMPLATE_DIRS = (
+  os.path.join(os.path.dirname(os.path.dirname(__file__)),
+               'flicksfrontend', 'dist', 'templates'),
+)
+
 STATIC_ROOT = ''
 
 SECRET_KEY = 'r(!#omcmwb%t(td)ei#d=n_dkz&^uk2jx=_j8&4!qlb2fam=q_'
