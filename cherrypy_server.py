@@ -8,9 +8,9 @@ from flicks.settings_cherrypy import STATICFILES_DIRS, COVERS_ROOT
 
 def run_server(port):
   cherrypy.config.update({
-    # listen only on localhost!
-    'server.socket_host': '127.0.0.1',
+    'server.socket_host': '127.0.0.1', # listen only on localhost!
     'server.socket_port': port,
+    'server.thread_pool': 4,
   })
 
   # wsgi app

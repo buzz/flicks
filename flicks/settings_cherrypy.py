@@ -11,8 +11,10 @@ if not os.path.exists(FLICKS_DATA_ROOT):
 
 DB_NAME = os.path.join(FLICKS_DATA_ROOT, 'flicksdb')
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 ADMINS = ()
 

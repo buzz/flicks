@@ -11,7 +11,7 @@ if os.path.exists(libcef_so):
     if 0x02070000 <= sys.hexversion < 0x03000000:
         import cefpython_py27 as cefpython
     else:
-        raise Exception("Unsupported python version: %s" % sys.version)
+        raise Exception('Unsupported python version: %s' % sys.version)
 else:
     # Import from package
     from cefpython3 import cefpython
@@ -22,6 +22,8 @@ import gtk
 import gobject
 import re
 
+from flicks.settings_cherrypy import DEBUG
+
 def GetApplicationPath(file=None):
     import re, os, platform
     # On Windows after downloading file and calling Browser.GoForward(),
@@ -29,17 +31,17 @@ def GetApplicationPath(file=None):
     # Calling os.path.dirname(os.path.realpath(__file__))
     # returns for eg. "C:\Users\user\Downloads". A solution
     # is to cache path on first call.
-    if not hasattr(GetApplicationPath, "dir"):
-        if hasattr(sys, "frozen"):
+    if not hasattr(GetApplicationPath, 'dir'):
+        if hasattr(sys, 'frozen'):
             dir = os.path.dirname(sys.executable)
-        elif "__file__" in globals():
+        elif '__file__' in globals():
             dir = os.path.dirname(os.path.realpath(__file__))
         else:
             dir = os.getcwd()
         GetApplicationPath.dir = dir
     # If file is None return current directory without trailing slash.
     if file is None:
-        file = ""
+        file = ''
     # Only when relative path.
     if not file.startswith("/") and not file.startswith("\\") and (
             not re.search(r"^[\w-]+:", file)):
@@ -55,28 +57,28 @@ def ExceptHook(excType, excValue, traceObject):
     # This hook does the following: in case of exception write it to
     # the "error.log" file, display it to the console, shutdown CEF
     # and exit application immediately by ignoring "finally" (_exit()).
-    errorMsg = "\n".join(traceback.format_exception(excType, excValue,
+    errorMsg = '\n'.join(traceback.format_exception(excType, excValue,
             traceObject))
-    errorFile = GetApplicationPath("error.log")
+    errorFile = GetApplicationPath('error.log')
     try:
-        appEncoding = cefpython.g_applicationSettings["string_encoding"]
+        appEncoding = cefpython.g_applicationSettings['string_encoding']
     except:
-        appEncoding = "utf-8"
+        appEncoding = 'utf-8'
     if type(errorMsg) == bytes:
-        errorMsg = errorMsg.decode(encoding=appEncoding, errors="replace")
+        errorMsg = errorMsg.decode(encoding=appEncoding, errors='replace')
     try:
-        with codecs.open(errorFile, mode="a", encoding=appEncoding) as fp:
-            fp.write("\n[%s] %s\n" % (
-                    time.strftime("%Y-%m-%d %H:%M:%S"), errorMsg))
+        with codecs.open(errorFile, mode='a', encoding=appEncoding) as fp:
+            fp.write('\n[%s] %s\n' % (
+                    time.strftime('%Y-%m-%d %H:%M:%S'), errorMsg))
     except:
-        print("[pygtk_.py]: WARNING: failed writing to error file: %s" % (
+        print('[pygtk_.py]: WARNING: failed writing to error file: %s' % (
                 errorFile))
     # Convert error message to ascii before printing, otherwise
     # you may get error like this:
     # | UnicodeEncodeError: 'charmap' codec can't encode characters
-    errorMsg = errorMsg.encode("ascii", errors="replace")
-    errorMsg = errorMsg.decode("ascii", errors="replace")
-    print("\n"+errorMsg+"\n")
+    errorMsg = errorMsg.encode('ascii', errors='replace')
+    errorMsg = errorMsg.decode('ascii', errors='replace')
+    print('\n'+errorMsg+'\n')
     cefpython.QuitMessageLoop()
     cefpython.Shutdown()
     os._exit(1)
@@ -104,7 +106,7 @@ class FlicksUI:
         try:
           windowID = self.vbox.get_window().handle
         except AttributeError:
-          m = re.search("GtkVBox at 0x(\w+)", str(self.vbox))
+          m = re.search('GtkVBox at 0x(\w+)', str(self.vbox))
           hexID = m.group(1)
           windowID = int(hexID, 16)
 
@@ -152,15 +154,15 @@ def startgui(port):
 
     # Application settings
     settings = {
-        "debug": True, # cefpython debug messages in console and in log_file
-        "log_severity": cefpython.LOGSEVERITY_INFO, # LOGSEVERITY_VERBOSE
-        "log_file": GetApplicationPath("debug.log"), # Set to "" to disable
-        "release_dcheck_enabled": True, # Enable only when debugging
-        # This directories must be set on Linux
-        "locales_dir_path": cefpython.GetModuleDirectory()+"/locales",
-        "resources_dir_path": cefpython.GetModuleDirectory(),
-        "browser_subprocess_path": "%s/%s" % (
-            cefpython.GetModuleDirectory(), "subprocess"),
+        'debug': DEBUG,
+        'log_severity': cefpython.LOGSEVERITY_INFO, # LOGSEVERITY_VERBOSE
+        'log_file': DEBUG and GetApplicationPath('debug.log') or '',
+        'release_dcheck_enabled': DEBUG,
+        'locales_dir_path': os.path.join(
+            cefpython.GetModuleDirectory(), 'locales'),
+        'resources_dir_path': cefpython.GetModuleDirectory(),
+        'browser_subprocess_path': os.path.join(
+            cefpython.GetModuleDirectory(), 'subprocess'),
     }
 
     cefpython.Initialize(settings)

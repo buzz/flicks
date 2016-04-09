@@ -27,7 +27,9 @@ datas.append(('flicksfrontend/dist', 'flicksfrontend/dist'))
 
 hiddenimports = [
   'django.core.cache.backends.locmem',
+  'django.core.mail.backends.smtp',
   'django.core.context_processors',
+  'django.views.defaults',
   'django.contrib.auth.context_processors',
   'django.contrib.messages.context_processors',
   'django.contrib.sessions.serializers',
@@ -77,11 +79,11 @@ exe = EXE(
   pyz,
   a.scripts,
   exclude_binaries=True,
-  name='run',
+  name='flicks',
   debug=False,
-  strip=False,
+  strip=platform.system() == 'Linux' and True or False,
   upx=True,
-  console=True
+  console=False
 )
 
 coll = COLLECT(
@@ -89,7 +91,7 @@ coll = COLLECT(
   a.binaries,
   a.zipfiles,
   a.datas,
-  strip=False,
+  strip=platform.system() == 'Linux' and True or False,
   upx=True,
-  name='run'
+  name='flicks'
 )
