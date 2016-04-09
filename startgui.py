@@ -1,4 +1,8 @@
-import ctypes, os, sys
+import platform
+import ctypes
+import os
+import sys
+
 libcef_so = os.path.join(os.path.dirname(os.path.abspath(__file__)),\
         'libcef.so')
 if os.path.exists(libcef_so):
@@ -88,16 +92,21 @@ class FlicksUI:
     def __init__(self, port):
         self.mainWindow = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.mainWindow.connect('destroy', self.OnExit)
-        self.mainWindow.set_size_request(width=800, height=600)
+        self.mainWindow.set_size_request(width=1000, height=800)
         self.mainWindow.set_title('Flicks')
         self.mainWindow.realize()
 
         self.vbox = gtk.VBox(False, 0)
+        if platform.system() == 'Windows':
+            self.vbox.connect('size-allocate', self.OnVboxSize)
         self.mainWindow.add(self.vbox)
 
-        m = re.search("GtkVBox at 0x(\w+)", str(self.vbox))
-        hexID = m.group(1)
-        windowID = int(hexID, 16)
+        try:
+          windowID = self.vbox.get_window().handle
+        except AttributeError:
+          m = re.search("GtkVBox at 0x(\w+)", str(self.vbox))
+          hexID = m.group(1)
+          windowID = int(hexID, 16)
 
         windowInfo = cefpython.WindowInfo()
         windowInfo.SetAsChild(windowID)
@@ -125,6 +134,9 @@ class FlicksUI:
         # add such line:
         # self.mainWindow.connect('focus-in-event', self.OnFocusIn)
         self.browser.SetFocus(True)
+
+    def OnVboxSize(self, widget, sizeAlloc):
+        cefpython.WindowUtils.OnSize(self.vbox.get_window().handle, 0, 0, 0)
 
     def OnExit(self, widget, data=None):
         self.exiting = True

@@ -1,17 +1,29 @@
 # -*- mode: python -*-
+import os
+import platform
 
 block_cipher = None
 
-binaries = [
-  ('venv/lib/python2.7/site-packages/cefpython3/libcef.so', 'cefpython3'),
-  ('venv/lib/python2.7/site-packages/cefpython3/subprocess', 'cefpython3'),
-]
+if platform.system() == 'Linux':
+  binaries = [
+    ('venv/lib/python2.7/site-packages/cefpython3/libcef.so', 'cefpython3'),
+    ('venv/lib/python2.7/site-packages/cefpython3/subprocess', 'cefpython3'),
+  ]
+  datas = [
+    ('venv/lib/python2.7/site-packages/cefpython3/locales/*', 'cefpython3/locales'),
+    ('venv/lib/python2.7/site-packages/cefpython3/cef.pak', 'cefpython3'),
+  ]
+elif platform.system() == 'Windows':
+  binaries = [
+    ('venv/Lib/site-packages/cefpython3/icudt.dll', '.'),
+    ('venv/Lib/site-packages/cefpython3/subprocess.exe', '.'),
+  ]
+  datas = [
+    ('venv/Lib/site-packages/cefpython3/locales/*', 'locales'),
+    ('venv/Lib/site-packages/cefpython3/cef.pak', '.'),
+  ]
 
-datas = [
-  ('venv/lib/python2.7/site-packages/cefpython3/locales/*', 'cefpython3/locales'),
-  ('venv/lib/python2.7/site-packages/cefpython3/cef.pak', 'cefpython3'),
-  ('flicksfrontend/dist', 'flicksfrontend/dist'),
-]
+datas.append(('flicksfrontend/dist', 'flicksfrontend/dist'))
 
 hiddenimports = [
   'django.core.cache.backends.locmem',
