@@ -2,28 +2,21 @@
 
 block_cipher = None
 
-files = [
-  ('flicksfrontend/index.html', './flicksfrontend'),
-  ('flicksfrontend/dist', './flicksfrontend/dist'),
+binaries = [
+  ('venv/lib/python2.7/site-packages/cefpython3/libcef.so', 'cefpython3'),
+  ('venv/lib/python2.7/site-packages/cefpython3/subprocess', 'cefpython3'),
 ]
 
-hiddenimports = [
-  'django.core.cache.backends.locmem',
-  'django.core.context_processors',
-  'django.contrib.auth.context_processors',
-  'django.contrib.messages.context_processors',
-  'django.contrib.sessions.serializers',
-  'django.contrib.sessions.middleware',
-  'django_extensions',
-  'flicksapp.urls',
-  'flicksapp.views'
+datas = [
+  ('venv/lib/python2.7/site-packages/cefpython3/locales/*', 'cefpython3/locales'),
+  ('venv/lib/python2.7/site-packages/cefpython3/cef.pak', 'cefpython3'),
 ]
 
-a = Analysis(['main.py'],
+a = Analysis(['startgui.py'],
              pathex=['/home/buzz/dokumente/dev/flicks'],
-             binaries=None,
-             datas=files,
-             hiddenimports=hiddenimports,
+             binaries=binaries,
+             datas=datas,
+             hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -35,7 +28,7 @@ pyz = PYZ(a.pure, a.zipped_data,
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name='main',
+          name='startgui',
           debug=False,
           strip=False,
           upx=True,
@@ -46,4 +39,4 @@ coll = COLLECT(exe,
                a.datas,
                strip=False,
                upx=True,
-               name='main')
+               name='startgui')
