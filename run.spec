@@ -22,6 +22,7 @@ hiddenimports = [
   'django.contrib.sessions.serializers',
   'django.contrib.sessions.middleware',
   'django_extensions',
+  'flicks.settings_cherrypy',
   'flicksapp.urls',
   'flicksapp.views'
 ]
@@ -32,9 +33,9 @@ excludes = [
   'jinja2',
   'OpenGL',
   'django.db.backends.oracle.base',
+  'django.db.backends.mysql',
   'sphinx',
   'dns.rdata',
-  'sqlite3',
   'babel',
   'PyQt4',
   'PyQt5',

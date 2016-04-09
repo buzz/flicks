@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Track.file'
         db.add_column(u'flicksapp_track', 'file',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='tracks', to=orm['flicksapp.File']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, null=True, related_name='tracks', to=orm['flicksapp.File']),
                       keep_default=False)
 
         # Removing M2M table for field files on 'Movie'
@@ -18,7 +18,7 @@ class Migration(SchemaMigration):
 
         # Adding field 'File.movie'
         db.add_column(u'flicksapp_file', 'movie',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='files', to=orm['flicksapp.Movie']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=None, null=True, related_name='files', to=orm['flicksapp.Movie']),
                       keep_default=False)
 
         # Removing M2M table for field tracks on 'File'

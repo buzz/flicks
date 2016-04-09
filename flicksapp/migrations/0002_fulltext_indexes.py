@@ -12,6 +12,10 @@ class Migration(SchemaMigration):
     """
 
     def forwards(self, orm):
+        from django.conf import settings
+        if settings.DATABASES['default']['ENGINE'] != 'django.db.backends.mysql':
+          return
+
         db.execute("CREATE FULLTEXT INDEX flicksapp_movie_fulltext ON flicksapp_movie (title, akas, notes, plot)")
         db.execute("CREATE FULLTEXT INDEX flicksapp_country_fulltext ON flicksapp_country (name);")
         db.execute("CREATE FULLTEXT INDEX flicksapp_genre_fulltext ON flicksapp_genre (name);")

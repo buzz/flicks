@@ -1,6 +1,5 @@
 import os
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 FRONTEND_DIST_ROOT = os.path.join(BASE_DIR, 'flicksfrontend', 'dist')
 
@@ -36,13 +35,13 @@ USE_TZ = True
 
 # static files
 STATIC_URL = '/static/'
-STATICFILES_DIRS = ( '%s/static' % FRONTEND_DIST_ROOT, )
+STATICFILES_DIRS = ( os.path.join(FRONTEND_DIST_ROOT, 'static'), )
 IMAGES_URL = '%simages/' % STATIC_URL
 COVERS_URL = '%scovers/' % STATIC_URL
 
 # templates
 TEMPLATE_LOADERS = ( 'django.template.loaders.filesystem.Loader', )
-TEMPLATE_DIRS = ( '%s/templates' % FRONTEND_DIST_ROOT, )
+TEMPLATE_DIRS = ( os.path.join(FRONTEND_DIST_ROOT, 'templates'), )
 
 # local settings file
 try:

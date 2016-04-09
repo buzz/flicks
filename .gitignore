@@ -14,3 +14,5 @@ flicksfrontend/.tmp
 flicksfrontend/bower_components
 venv
 flicks/settings_local.py
+debug.log
+dist
