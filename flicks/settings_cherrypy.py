@@ -6,6 +6,7 @@ from flicks.settings import *
 
 FLICKS_DATA_ROOT = appdirs.user_data_dir(APP_NAME)
 
+# create app data dir
 if not os.path.exists(FLICKS_DATA_ROOT):
   os.makedirs(FLICKS_DATA_ROOT)
 
@@ -41,3 +42,6 @@ TEMPLATE_DIRS = (
 STATIC_ROOT = ''
 
 SECRET_KEY = 'r(!#omcmwb%t(td)ei#d=n_dkz&^uk2jx=_j8&4!qlb2fam=q_'
+
+# create database if doesn't exist
+MIDDLEWARE_CLASSES.insert(0, 'flicks.init_db.InitDbMiddleware')
